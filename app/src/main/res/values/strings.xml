@@ -1,0 +1,108 @@
+<resources>
+    <string name="app_name">Client_Android5778_2638_6575</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="registerTextView"><a href="http://www.google.com/">register</a></string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_add_customer">AddCustomer</string>
+    <string name="menu_contact_us">Contact Us</string>
+    <string name="menu_make_order">Make Order</string>
+    <string name="menu_action">Action</string>
+
+
+    <!-- Strings related to login -->
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="error_invalid_username">Invalid Username</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
+    <!-- Strings Data -->
+    <string name="dataBranches">Branches</string>
+    <string name="dataCars">Cars</string>
+    <string name="dataCarModels">CarModels</string>
+
+    <!-- Strings Texts -->
+
+    <string name="textCarType">Type</string>
+    <string name="textEngineCapacity">Engine</string>
+    <string name="textCompany">Company</string>
+
+    <string name="textAddCustomer">New Customer</string>
+    <string name="textChooseDataList">Choose Data List To View And Edit:</string>
+    <string name="textUserNameAndPassword">Choose User Name And Password For Login</string>
+    <string name="textUserName">Create User Name</string>
+    <string name="textBranchDetails">Branch Details</string>
+    <string name="textCarModelDetails">Car Model Details</string>
+    <string name="textCarDetails">Car Details</string>
+    <string name="textName">Name: </string>
+    <string name="textID">ID : </string>
+    <string name="textDialogTitle">Make Order</string>
+    <string name="textDialogMessage">Do you want to order this car?</string>
+    <string name="textSuccessAddBranchMessage">Add Branch Id: </string>
+    <string name="textSuccessUpdateBranchMessage">Update Branch</string>
+    <string name="textSuccessCreateCarMessage">Create Car Id: </string>
+    <string name="textSuccessUpdateCarMessage">Update Car</string>
+    <string name="textSuccessAddReservationMessage">Create New Order\n Id: </string>
+    <string name="textSuccessUpdateCarModelMessage">Update Car Model</string>
+    <string name="textSuccessCreateCustomerMessage">Create Customer Id:</string>
+    <string name="textFiledAddMessage">Add failed!</string>
+    <string name="textFiledCreateMessage">Create failed!</string>
+    <string name="textFailedUpdateMessage">Update failed!</string>
+    <string name="textLinkSignup">No account yet? Create one</string>
+    <string name="textFreeCars">Free Cars:</string>
+    <!-- Strings Hints -->
+
+    <string name="hintName">Name</string>
+    <string name="hintCity">City</string>
+    <string name="hintAddress">Address</string>
+    <string name="hintParkingSpace">Parking Space</string>
+    <string name="hintSeats">Num of Seats</string>
+    <string name="hintMaxGas">Max Gas Tank</string>
+    <string name="hintUserName">User Name</string>
+    <string name="hintPassword">Password</string>
+    <string name="hintConfirmPassword">Confirm Password</string>
+    <string name="hintFirstName">First Name</string>
+    <string name="hintFamilyName">Family Name</string>
+    <string name="hintCustomerID">ID</string>
+    <string name="hintPhone">Phone</string>
+    <string name="hintEmail">Email</string>
+    <string name="hintCreditCard">Credit Card</string>
+    <string name="hintBirthDay">BirthDay</string>
+
+    <!-- Strings Buttons -->
+    <string name="buttonYes">Yes</string>
+    <string name="buttonNo">No</string>
+
+    <string name="buttonAdd">Add</string>
+    <string name="buttonCreate">Create</string>
+    <string name="buttonRemove">Remove</string>
+    <string name="buttonUpdate">Update</string>
+    <string name="buttonAddBranch">Add Branch</string>
+    <string name="buttonAddCar">Add Car</string>
+    <string name="buttonAddCArModel">Add Car Model</string>
+    <string name="buttonManage">Manage</string>
+    <string name="buttonSettings">Settings</string>
+    <string name="buttonLogin">Login</string>
+
+
+    <!-- Strings Exceptions -->
+    <string name="exceptionEmptyFileds">Can\'t Be Empty</string>
+    <string name="exceptionInvalidValue">Invalid Value</string>
+    <string name="exceptionUserName">User Name Must Be Less Than 25 Characters</string>
+    <string name="exceptionPassword">Password Dodn\'t Match</string>
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/White"
+    tools:context="lugassi.wallach.client_android5778_2638_6575.controller.AddCustomer">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/OrangeRed"
+        android:padding="15dp"
+        android:text="@string/textAddCustomer"
+        android:textAlignment="center"
+        android:textColor="@color/White"
+        android:textSize="30dp" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/firstNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="@string/hintFirstName"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/familyNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="@string/hintFamilyName"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/customerIDEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="@string/hintCustomerID"
+                android:inputType="number" />
+
+            <EditText
+                android:id="@+id/phoneEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="@string/hintPhone"
+                android:inputType="" />
+
+            <EditText
+                android:id="@+id/emailEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="@string/hintEmail"
+                android:inputType="textEmailAddress" />
+
+            <EditText
+                android:id="@+id/creditCardEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="@string/hintCreditCard"
+                android:inputType="number" />
+
+            <Spinner
+                android:id="@+id/genderSpinner"
+                style="@style/spinner_style" />
+            <EditText
+                android:id="@+id/birthDayEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="@string/hintBirthDay"
+                android:inputType="date" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_shape"
+                android:text="@string/buttonCreate"
+                android:textColor="@color/Black"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
