@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 
 import lugassi.wallach.client_android5778_2638_6575.R;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.Branch;
 
 public class MainNavigation extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -93,18 +92,17 @@ public class MainNavigation extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
+        Bundle args = new Bundle();
+        Fragment fragment = new Fragment();
+
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (id == R.id.nav_make_order) {
-            Bundle args = new Bundle();
-            Fragment fragment = new MakeOrder();
-            args.putInt(CarRentConst.CustomerConst.CUSTOMER_ID, customerID);
-            fragment.setArguments(args);
-            fragmentTransaction.replace(R.id.fragment_container, fragment);
-            fragmentTransaction.commit();
+            fragment = new MakeOrder();
 
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_free_cars) {
+            fragment = new FreeCars();
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_reservations) {
 
         } else if (id == R.id.nav_manage) {
 
@@ -113,7 +111,10 @@ public class MainNavigation extends AppCompatActivity
         } else if (id == R.id.nav_make_order) {
 
         }
-
+        args.putInt(CarRentConst.CustomerConst.CUSTOMER_ID, customerID);
+        fragment.setArguments(args);
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

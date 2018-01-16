@@ -3,14 +3,11 @@ package lugassi.wallach.client_android5778_2638_6575.controller;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
-import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +26,6 @@ import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentCons
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Branch;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Car;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.CarModel;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.Promotion;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Reservation;
 
 public class MakeOrder extends Fragment implements SearchView.OnQueryTextListener, AdapterView.OnItemClickListener {
@@ -81,7 +77,7 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Branch branch = (Branch) branchesListView.getItemAtPosition(position);
-                ArrayList<Car> freeCars = db_manager.getFreeCars(branch.getBranchID());
+                ArrayList<Car> freeCars = db_manager.getFreeCarsByBranchID(branch.getBranchID());
                 carsAdapter = new MyListAdapter<Car>(getActivity(), freeCars) {
                     @Override
                     public View getView(int position, View convertView, ViewGroup parent) {
@@ -168,7 +164,7 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                     Snackbar.make(getView(), getString(R.string.textFiledCreateMessage), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
 
-                ArrayList<Car> freeCars = db_manager.getFreeCars(car.getBranchID());
+                ArrayList<Car> freeCars = db_manager.getFreeCarsByBranchID(car.getBranchID());
                 carsAdapter = new MyListAdapter<Car>(getActivity(), freeCars) {
                     @Override
                     public View getView(int position, View convertView, ViewGroup parent) {

@@ -12,7 +12,6 @@ public class Reservation {
     private boolean isOpen;
     private Calendar startDate;
     private Calendar endDate;
-    private Calendar returnDate;
     private long beginMileage;
     private long finishMileage;
     private boolean isGasFull;
@@ -70,12 +69,12 @@ public class Reservation {
 
     public String getStartDateString() {
         if (startDate == null) return "";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(startDate.getTime());
     }
 
     public void setStartDate(String startDate) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             this.startDate = Calendar.getInstance();
             this.startDate.setTime(sdf.parse(startDate));
@@ -91,12 +90,12 @@ public class Reservation {
 
     public String getEndDateString() {
         if (endDate == null) return "";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(endDate.getTime());
     }
 
     public void setEndDate(String endDate) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             this.endDate = Calendar.getInstance();
             this.endDate.setTime(sdf.parse(endDate));
@@ -108,30 +107,6 @@ public class Reservation {
 
     public void setEndDate(Calendar endDate) {
         this.endDate = endDate;
-    }
-
-    public Calendar getReturnDate() {
-        return returnDate;
-    }
-
-    public String getReturnDateString() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(returnDate.getTime());
-    }
-
-    public void setReturnDate(String returnDate) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            this.returnDate = Calendar.getInstance();
-            this.returnDate.setTime(sdf.parse(returnDate));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void setReturnDate(Calendar returnDate) {
-        this.returnDate = returnDate;
     }
 
     public long getBeginMileage() {

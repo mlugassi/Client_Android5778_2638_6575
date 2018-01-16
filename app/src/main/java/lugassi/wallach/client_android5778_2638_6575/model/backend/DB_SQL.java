@@ -346,6 +346,46 @@ public class DB_SQL implements DB_manager {
 
     /// car models
 
+    public CarModel getCarModel(int modelCode) {
+        try {
+            return new AsyncTask<Integer, Object, CarModel>() {
+                @Override
+                protected CarModel doInBackground(Integer... params) {
+                    try {
+                        int param = params[0];
+                        Map<String, Object> data = new LinkedHashMap<>();
+
+                        data.put(CarModelConst.MODEL_CODE, param);
+
+                        JSONArray array = new JSONObject(POST(url + "CarModel/GetCarModel.php", data)).getJSONArray("carModel");
+                        JSONObject jsonObject = array.getJSONObject(0);
+
+                        CarModel carModel = new CarModel(jsonObject.getInt(CarModelConst.MODEL_CODE));
+                        carModel.setCompany(Company.valueOf(jsonObject.getString(CarModelConst.COMPANY)));
+                        carModel.setSeats(jsonObject.getInt(CarModelConst.SEATS));
+                        carModel.setCarType(CarType.valueOf(jsonObject.getString(CarModelConst.CAR_TYPE)));
+                        carModel.setEngineCapacity(EngineCapacity.valueOf(jsonObject.getString(CarModelConst.ENGINE_CAPACITY)));
+                        carModel.setMaxGasTank(jsonObject.getInt(CarModelConst.MAX_GAS_TANK));
+                        carModel.setModelName(jsonObject.getString(CarModelConst.MODEL_NAME));
+                        return carModel;
+                    } catch (Exception e) {
+                        return null;
+                    }
+                }
+
+                @Override
+                protected void onPostExecute(CarModel result) {
+                    super.onPostExecute(result);
+                }
+            }.execute(modelCode).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     public ArrayList<CarModel> getCarModels() {
         ArrayList<CarModel> carModels = new ArrayList<CarModel>();
@@ -398,6 +438,45 @@ public class DB_SQL implements DB_manager {
     }
 
     @Override
+    public Car getCar(int carID) {
+        try {
+            return new AsyncTask<Integer, Object, Car>() {
+                @Override
+                protected Car doInBackground(Integer... params) {
+                    try {
+                        int param = params[0];
+                        Map<String, Object> data = new LinkedHashMap<>();
+
+                        data.put(CarConst.CAR_ID, param);
+
+                        JSONArray array = new JSONObject(POST(url + "Car/GetCar.php", data)).getJSONArray("car");
+                        JSONObject jsonObject = array.getJSONObject(0);
+
+                        Car car = new Car(jsonObject.getInt(CarConst.CAR_ID));
+                        car.setModelCode(jsonObject.getInt(CarConst.MODEL_CODE));
+                        car.setBranchID(jsonObject.getInt(CarConst.BRANCH_ID));
+                        car.setReservations(jsonObject.getInt(CarConst.RESERVATIONS));
+                        car.setMileage(jsonObject.getInt(CarConst.MILEAGE));
+                        return car;
+                    } catch (Exception e) {
+                        return null;
+                    }
+                }
+
+                @Override
+                protected void onPostExecute(Car result) {
+                    super.onPostExecute(result);
+                }
+            }.execute(carID).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public ArrayList<Car> getFreeCars() {
         ArrayList<Car> cars = new ArrayList<Car>();
         try {
@@ -421,7 +500,52 @@ public class DB_SQL implements DB_manager {
     }
 
     @Override
-    public ArrayList<Car> getFreeCars(int branchID) {
+    public ArrayList<Car> getFreeCars(int modelCode) {
+        try {
+            return new AsyncTask<Integer, Object, ArrayList<Car>>() {
+                @Override
+                protected ArrayList<Car> doInBackground(Integer... params) {
+                    ArrayList<Car> cars = new ArrayList<Car>();
+                    try {
+                        Map<String, Object> data = new LinkedHashMap<>();
+
+                        int id = params[0];
+
+                        data.put(CarConst.MODEL_CODE, id);
+                        JSONArray array = new JSONObject(POST(url + "Car/GetFreeCarsByModelCode.php", data)).getJSONArray("cars");
+                        for (int i = 0; i < array.length(); i++) {
+                            JSONObject jsonObject = array.getJSONObject(i);
+
+                            Car car = new Car(jsonObject.getInt(CarConst.CAR_ID));
+                            car.setModelCode(jsonObject.getInt(CarConst.MODEL_CODE));
+                            car.setBranchID(jsonObject.getInt(CarConst.BRANCH_ID));
+                            car.setReservations(jsonObject.getInt(CarConst.RESERVATIONS));
+                            car.setMileage(jsonObject.getInt(CarConst.MILEAGE));
+
+                            cars.add(car);
+                        }
+                    } catch (Exception e) {
+                        String s = e.getMessage();
+                    }
+
+                    return cars;
+                }
+
+                @Override
+                protected void onPostExecute(ArrayList<Car> result) {
+                    super.onPostExecute(result);
+                }
+            }.execute(modelCode).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public ArrayList<Car> getFreeCarsByBranchID(int branchID) {
         try {
             return new AsyncTask<Integer, Object, ArrayList<Car>>() {
                 @Override
@@ -613,7 +737,6 @@ public class DB_SQL implements DB_manager {
                 reservation.setOpen(jsonObject.getBoolean(ReservationConst.IS_OPEN));
                 reservation.setStartDate(jsonObject.getString(ReservationConst.START_DATE));
                 reservation.setEndDate(jsonObject.getString(ReservationConst.END_DATE));
-                reservation.setReturnDate(jsonObject.getString(ReservationConst.RETURN_DATE));
                 reservation.setBeginMileage(jsonObject.getLong(ReservationConst.BEGIN_MILEAGE));
                 reservation.setFinishMileage(jsonObject.getLong(ReservationConst.FINISH_MILEAGE));
                 reservation.setGasFull(jsonObject.getBoolean(ReservationConst.IS_GAS_FULL));

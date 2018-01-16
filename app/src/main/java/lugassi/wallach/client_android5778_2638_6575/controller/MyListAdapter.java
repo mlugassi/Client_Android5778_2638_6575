@@ -54,6 +54,7 @@ public class MyListAdapter<T> extends BaseAdapter implements Filterable {
 
     @Override
     public Filter getFilter() {
+
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {

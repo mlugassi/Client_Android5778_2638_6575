@@ -101,10 +101,10 @@ public class AddCustomer extends Activity implements View.OnClickListener {
 //                return;
 //            int maxParkingSpace = Integer.parseInt(parkingSpaceEditText.getText().toString());
 //
-//            branch.setAddress(addressEditText.getText().toString());
-//            branch.setMaxParkingSpace(maxParkingSpace);
-//            branch.setCity(cityEditText.getText().toString());
-//            branch.setBranchName(nameEditText.getText().toString());
+//            car.setAddress(addressEditText.getText().toString());
+//            car.setMaxParkingSpace(maxParkingSpace);
+//            car.setCity(cityEditText.getText().toString());
+//            car.setBranchName(nameEditText.getText().toString());
 //
 //            new AsyncTask<Object, Object, Boolean>() {
 //                @Override
@@ -118,7 +118,7 @@ public class AddCustomer extends Activity implements View.OnClickListener {
 //
 //                @Override
 //                protected Boolean doInBackground(Object... params) {
-//                    return db_manager.updateBranch(branch.getBranchID(), CarRentConst.branchToContentValues(branch));
+//                    return db_manager.updateBranch(car.getBranchID(), CarRentConst.branchToContentValues(car));
 //                }
 //            }.execute();
 //

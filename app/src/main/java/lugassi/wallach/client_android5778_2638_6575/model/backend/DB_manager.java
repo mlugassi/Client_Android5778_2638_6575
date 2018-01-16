@@ -36,9 +36,15 @@ public interface DB_manager {
 
     public ArrayList<Branch> getBranches(int carModel);
 
+    public Car getCar(int carID);
+
     public ArrayList<Car> getFreeCars();
 
-    public ArrayList<Car> getFreeCars(int branchID);
+    public ArrayList<Car> getFreeCars(int modelCode);
+
+    public ArrayList<Car> getFreeCarsByBranchID(int branchID);
+
+    public CarModel getCarModel(int modelCode);
 
     public ArrayList<CarModel> getCarModels();
 

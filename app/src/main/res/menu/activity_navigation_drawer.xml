@@ -2,18 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_reservations"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/menu_reservations" />
+
         <item
             android:id="@+id/nav_make_order"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_make_order" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_free_cars"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:title="@string/menu_free_cars" />
+
     </group>
 
     <item android:title="@string/menu_action">

@@ -6,6 +6,8 @@
     <string name="title_activity_add_customer">AddCustomer</string>
     <string name="menu_contact_us">Contact Us</string>
     <string name="menu_make_order">Make Order</string>
+    <string name="menu_free_cars">Free Cars</string>
+    <string name="menu_reservations">Reservations</string>
     <string name="menu_action">Action</string>
 
 
@@ -37,6 +39,7 @@
     <string name="textUserNameAndPassword">Choose User Name And Password For Login</string>
     <string name="textUserName">Create User Name</string>
     <string name="textBranchDetails">Branch Details</string>
+    <string name="textFreeCars">Free Cars</string>
     <string name="textCarModelDetails">Car Model Details</string>
     <string name="textCarDetails">Car Details</string>
     <string name="textName">Name: </string>
@@ -54,7 +57,7 @@
     <string name="textFiledCreateMessage">Create failed!</string>
     <string name="textFailedUpdateMessage">Update failed!</string>
     <string name="textLinkSignup">No account yet? Create one</string>
-    <string name="textFreeCars">Free Cars:</string>
+    <string name="textModelCode">Model Code</string>
     <!-- Strings Hints -->
 
     <string name="hintName">Name</string>
