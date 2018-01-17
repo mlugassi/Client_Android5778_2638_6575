@@ -24,9 +24,9 @@ public interface DB_manager {
     public boolean addPromotion(ContentValues contentValues);
 
 
-    public boolean updateCar(int carID, ContentValues contentValues);
+    public boolean updateCar(ContentValues contentValues);
 
-    public boolean updateCustomer(int customerID, ContentValues contentValues);
+    public boolean updateCustomer(ContentValues contentValues);
 
     public boolean updatePromotion(ContentValues contentValues);
 
@@ -52,10 +52,12 @@ public interface DB_manager {
 
     public Promotion getPromotion(int customerID);
 
-    public ArrayList<Reservation> getReservationsOnGoing();
+    public Reservation getReservation(int reservationID);
+
+    public ArrayList<Reservation> getReservationsOnGoing(int customerID);
 
 
-    public boolean closeReservation(int reservationID, ContentValues contentValues);
+    public Float closeReservation(ContentValues contentValues);
 
 
     public boolean checkReservations();

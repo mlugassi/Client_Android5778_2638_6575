@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
@@ -76,44 +77,56 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
         branchesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Branch branch = (Branch) branchesListView.getItemAtPosition(position);
-                ArrayList<Car> freeCars = db_manager.getFreeCarsByBranchID(branch.getBranchID());
-                carsAdapter = new MyListAdapter<Car>(getActivity(), freeCars) {
+                final Branch branch = (Branch) branchesListView.getItemAtPosition(position);
+                new AsyncTask<Object, Object, ArrayList<Car>>() {
                     @Override
-                    public View getView(int position, View convertView, ViewGroup parent) {
-
-                        if (convertView == null)
-                            convertView = View.inflate(getActivity(), R.layout.car_list_view, null);
-
-                        TextView carIdEditText = (TextView) convertView.findViewById(R.id.carIdEditText);
-                        TextView modelNameAndCompanyEditText = (TextView) convertView.findViewById(R.id.modelNameAndCompanyEditText);
-                        TextView branchNameEditText = (TextView) convertView.findViewById(R.id.branchNameEditText);
-
-
-                        Car car = (Car) carsListView.getItemAtPosition(position);
-                        String branchName = "", modelName = "", companyName = "";
-                        for (Branch branch : db_manager.getBranches())
-                            if (branch.getBranchID() == car.getBranchID())
-                                branchName = branch.getBranchName();
-                        for (CarModel carModel : db_manager.getCarModels())
-                            if (carModel.getModelCode() == car.getModelCode()) {
-                                modelName = carModel.getModelName();
-                                companyName = carModel.getCompany().name();
-                            }
-
-                        carIdEditText.setText(((Integer) car.getCarID()).toString());
-                        modelNameAndCompanyEditText.setText(modelName + ", " + companyName);
-                        branchNameEditText.setText(branchName);
-
-                        return convertView;
+                    protected ArrayList<Car> doInBackground(Object... params) {
+                        return db_manager.getFreeCarsByBranchID(branch.getBranchID());
                     }
-                };
-                carsListView.setAdapter(carsAdapter);
+
+                    @Override
+                    protected void onPostExecute(ArrayList<Car> freeCars) {
+                        if (freeCars != null)
+                            carsAdapter = new MyListAdapter<Car>(getActivity(), freeCars) {
+                                @Override
+                                public View getView(int position, View convertView, ViewGroup parent) {
+
+                                    if (convertView == null)
+                                        convertView = View.inflate(getActivity(), R.layout.car_list_view, null);
+
+                                    TextView carIdEditText = (TextView) convertView.findViewById(R.id.carIdEditText);
+                                    TextView modelNameAndCompanyEditText = (TextView) convertView.findViewById(R.id.modelNameAndCompanyEditText);
+                                    TextView branchNameEditText = (TextView) convertView.findViewById(R.id.branchNameEditText);
+
+
+                                    Car car = (Car) carsListView.getItemAtPosition(position);
+                                    String branchName = "", modelName = "", companyName = "";
+                                    for (Branch branch : db_manager.getBranches())
+                                        if (branch.getBranchID() == car.getBranchID())
+                                            branchName = branch.getBranchName();
+                                    for (CarModel carModel : db_manager.getCarModels())
+                                        if (carModel.getModelCode() == car.getModelCode()) {
+                                            modelName = carModel.getModelName();
+                                            companyName = carModel.getCompany().name();
+                                        }
+
+                                    carIdEditText.setText(((Integer) car.getCarID()).toString());
+                                    modelNameAndCompanyEditText.setText(modelName + ", " + companyName);
+                                    branchNameEditText.setText(branchName);
+
+                                    return convertView;
+                                }
+                            };
+                        carsListView.setAdapter(carsAdapter);
+                    }
+                }.execute();
             }
         });
         carsListView.setOnItemClickListener(this);
 
-        branchesListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        branchesListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+
+        {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle args = new Bundle();
@@ -149,53 +162,72 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
         builder.setPositiveButton(getString(R.string.buttonYes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Car car = (Car) carsListView.getItemAtPosition(position);
-                Reservation reservation = new Reservation();
+                final Car car = (Car) carsListView.getItemAtPosition(position);
+                final Reservation reservation = new Reservation();
                 reservation.setCustomerID(customerID);
                 reservation.setCarID(((Car) carsListView.getItemAtPosition(position)).getCarID());
                 reservation.setBeginMileage(car.getMileage());
-                reservation.setStartDate(new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()));
+                reservation.setStartDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
 
-                int reservationID = db_manager.addReservation(CarRentConst.reservationToContentValues(reservation));
-                if (reservationID > 0)
-                    Snackbar.make(getView(), getString(R.string.textSuccessAddReservationMessage) + reservationID, Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                else
-                    Snackbar.make(getView(), getString(R.string.textFiledCreateMessage), Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-
-                ArrayList<Car> freeCars = db_manager.getFreeCarsByBranchID(car.getBranchID());
-                carsAdapter = new MyListAdapter<Car>(getActivity(), freeCars) {
+                new AsyncTask<Object, Object, Integer>() {
                     @Override
-                    public View getView(int position, View convertView, ViewGroup parent) {
+                    protected Integer doInBackground(Object... params) {
+                        return db_manager.addReservation(CarRentConst.reservationToContentValues(reservation));
+                    }
 
-                        if (convertView == null)
-                            convertView = View.inflate(getActivity(), R.layout.car_list_view, null);
-
-                        TextView carIdEditText = (TextView) convertView.findViewById(R.id.carIdEditText);
-                        TextView modelNameAndCompanyEditText = (TextView) convertView.findViewById(R.id.modelNameAndCompanyEditText);
-                        TextView branchNameEditText = (TextView) convertView.findViewById(R.id.branchNameEditText);
-
-
-                        Car car = (Car) carsListView.getItemAtPosition(position);
-                        String branchName = "", modelName = "", companyName = "";
-                        for (Branch branch : db_manager.getBranches())
-                            if (branch.getBranchID() == car.getBranchID())
-                                branchName = branch.getBranchName();
-                        for (CarModel carModel : db_manager.getCarModels())
-                            if (carModel.getModelCode() == car.getModelCode()) {
-                                modelName = carModel.getModelName();
-                                companyName = carModel.getCompany().name();
+                    @Override
+                    protected void onPostExecute(Integer integer) {
+                        if (integer > 0)
+                            Snackbar.make(getView(), getString(R.string.textSuccessAddReservationMessage) + integer, Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                        else
+                            Snackbar.make(getView(), getString(R.string.textFiledCreateMessage), Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                        new AsyncTask<Object, Object, ArrayList<Car>>() {
+                            @Override
+                            protected ArrayList<Car> doInBackground(Object... params) {
+                                return db_manager.getFreeCarsByBranchID(car.getBranchID());
                             }
 
-                        carIdEditText.setText(((Integer) car.getCarID()).toString());
-                        modelNameAndCompanyEditText.setText(modelName + ", " + companyName);
-                        branchNameEditText.setText(branchName);
+                            @Override
+                            protected void onPostExecute(ArrayList<Car> freeCars) {
+                                if (freeCars != null)
+                                    carsAdapter = new MyListAdapter<Car>(getActivity(), freeCars) {
+                                        @Override
+                                        public View getView(int position, View convertView, ViewGroup parent) {
 
-                        return convertView;
+                                            if (convertView == null)
+                                                convertView = View.inflate(getActivity(), R.layout.car_list_view, null);
+
+                                            TextView carIdEditText = (TextView) convertView.findViewById(R.id.carIdEditText);
+                                            TextView modelNameAndCompanyEditText = (TextView) convertView.findViewById(R.id.modelNameAndCompanyEditText);
+                                            TextView branchNameEditText = (TextView) convertView.findViewById(R.id.branchNameEditText);
+
+
+                                            Car car = (Car) carsListView.getItemAtPosition(position);
+                                            String branchName = "", modelName = "", companyName = "";
+                                            for (Branch branch : db_manager.getBranches())
+                                                if (branch.getBranchID() == car.getBranchID())
+                                                    branchName = branch.getBranchName();
+                                            for (CarModel carModel : db_manager.getCarModels())
+                                                if (carModel.getModelCode() == car.getModelCode()) {
+                                                    modelName = carModel.getModelName();
+                                                    companyName = carModel.getCompany().name();
+                                                }
+
+                                            carIdEditText.setText(((Integer) car.getCarID()).toString());
+                                            modelNameAndCompanyEditText.setText(modelName + ", " + companyName);
+                                            branchNameEditText.setText(branchName);
+
+                                            return convertView;
+                                        }
+                                    };
+                                carsListView.setAdapter(carsAdapter);
+                            }
+                        };
                     }
-                };
-                carsListView.setAdapter(carsAdapter);
+                }.execute();
+
             }
         });
         builder.setNegativeButton(getString(R.string.buttonNo), new DialogInterface.OnClickListener() {

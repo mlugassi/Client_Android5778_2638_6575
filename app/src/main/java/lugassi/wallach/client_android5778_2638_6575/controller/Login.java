@@ -2,6 +2,7 @@ package lugassi.wallach.client_android5778_2638_6575.controller;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -64,18 +65,29 @@ public class Login extends Activity implements View.OnClickListener {
     void login() {
         if (!checkValues())
             return;
-        Intent intent = new Intent(Login.this, MainNavigation.class);
-        String result = db_manager.checkUser(userNameEditText.getText().toString(), passwordEditText.getText().toString());
-        if (result.contains("Success")) {
-            result = result.substring("Success Login:".length(), result.length() - 1);
-            intent.putExtra(CarRentConst.CustomerConst.CUSTOMER_ID, Integer.parseInt(result));
+        new AsyncTask<String, Object, String>() {
+            @Override
+            protected void onPostExecute(String result) {
+                if (result.contains("Success")) {
+                    Intent intent = new Intent(Login.this, MainNavigation.class);
+                    result = result.substring("Success Login:".length(), result.length() - 1);
+                    intent.putExtra(CarRentConst.CustomerConst.CUSTOMER_ID, Integer.parseInt(result));
 
-            finish();
-            Login.this.startActivity(intent);
-        } else {
-            errorTextView.setText(result);
-            errorTextView.setVisibility(View.VISIBLE);
-        }
+                    finish();
+                    Login.this.startActivity(intent);
+                } else {
+                    errorTextView.setText(result);
+                    errorTextView.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                String result = db_manager.checkUser(params[0], params[1]);
+                return result;
+            }
+        }.execute(userNameEditText.getText().toString(), passwordEditText.getText().toString());
+
     }
 
     void signup() {

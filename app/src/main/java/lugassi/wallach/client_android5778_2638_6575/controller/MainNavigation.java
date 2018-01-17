@@ -103,13 +103,15 @@ public class MainNavigation extends AppCompatActivity
             fragment = new FreeCars();
 
         } else if (id == R.id.nav_reservations) {
+            fragment = new Reservations();
 
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_contact) {
+            fragment = new AboutUs();
 
-        } else if (id == R.id.nav_make_order) {
-
+        } else if (id == R.id.nav_exit) {
+            this.finishAffinity();
         }
         args.putInt(CarRentConst.CustomerConst.CUSTOMER_ID, customerID);
         fragment.setArguments(args);

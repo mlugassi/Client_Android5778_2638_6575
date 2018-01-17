@@ -15,6 +15,7 @@ import lugassi.wallach.client_android5778_2638_6575.R;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DBManagerFactory;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DB_manager;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Promotion;
 
 public class AddUser extends Activity implements View.OnClickListener {
 
@@ -74,9 +75,8 @@ public class AddUser extends Activity implements View.OnClickListener {
                 @Override
                 protected void onPostExecute(Boolean aBoolean) {
                     super.onPostExecute(aBoolean);
-                    if(aBoolean)
-                    {
-                        Intent intent = new Intent(AddUser.this , MainNavigation.class);
+                    if (aBoolean) {
+                        Intent intent = new Intent(AddUser.this, MainNavigation.class);
                         finish();
                         AddUser.this.startActivity(intent);
                     }
@@ -84,7 +84,12 @@ public class AddUser extends Activity implements View.OnClickListener {
 
                 @Override
                 protected Boolean doInBackground(Object... params) {
-                    return db_manager.createUser(userName, password , customerID);
+                    Promotion promotion = new Promotion();
+                    promotion.setCustomerID(customerID);
+                    promotion.setTotalRentDays(0);
+                    promotion.setUsed(false);
+                    boolean pRes = db_manager.addPromotion(CarRentConst.promotionToContentValues(promotion));
+                    return db_manager.createUser(userName, password, customerID) && pRes;
                 }
             }.execute();
 

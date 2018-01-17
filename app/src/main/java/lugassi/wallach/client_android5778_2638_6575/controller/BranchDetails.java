@@ -2,6 +2,7 @@ package lugassi.wallach.client_android5778_2638_6575.controller;
 
 
 import android.app.Dialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.app.DialogFragment;
@@ -36,7 +37,13 @@ public class BranchDetails extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db_manager = DBManagerFactory.getManager();
-        branch = db_manager.getBranch(getArguments().getInt(CarRentConst.BranchConst.BRANCH_ID));
+        new AsyncTask<Object, Object, Void>() {
+            @Override
+            protected Void doInBackground(Object... params) {
+                branch = db_manager.getBranch(getArguments().getInt(CarRentConst.BranchConst.BRANCH_ID));
+                return null;
+            }
+        }.execute();
     }
 
     @Override

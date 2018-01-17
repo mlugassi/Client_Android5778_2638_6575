@@ -4,11 +4,14 @@
     <string name="registerTextView"><a href="http://www.google.com/">register</a></string>
     <string name="title_activity_login">Sign in</string>
     <string name="title_activity_add_customer">AddCustomer</string>
+
+    <!--menu-->
     <string name="menu_contact_us">Contact Us</string>
     <string name="menu_make_order">Make Order</string>
     <string name="menu_free_cars">Free Cars</string>
     <string name="menu_reservations">Reservations</string>
     <string name="menu_action">Action</string>
+    <string name="menu_exit">Exit</string>
 
 
     <!-- Strings related to login -->
@@ -58,6 +61,13 @@
     <string name="textFailedUpdateMessage">Update failed!</string>
     <string name="textLinkSignup">No account yet? Create one</string>
     <string name="textModelCode">Model Code</string>
+    <string name="textReservationID">ID</string>
+    <string name="textCloseReservation">Close Reservation, Cost:</string>
+    <string name="textCallUs">Call Us:</string>
+    <string name="textReadAboutUs">Read About Us:</string>
+    <string name="textMail">Mail:</string>
+
+
     <!-- Strings Hints -->
 
     <string name="hintName">Name</string>
@@ -76,12 +86,16 @@
     <string name="hintEmail">Email</string>
     <string name="hintCreditCard">Credit Card</string>
     <string name="hintBirthDay">BirthDay</string>
+    <string name="hintMileageAmount">Mileage Done</string>
+    <string name="hintGasFill">Cost Of Gas</string>
 
     <!-- Strings Buttons -->
     <string name="buttonYes">Yes</string>
     <string name="buttonNo">No</string>
 
     <string name="buttonAdd">Add</string>
+    <string name="buttonOK">OK</string>
+    <string name="buttonCancel">Cancel</string>
     <string name="buttonCreate">Create</string>
     <string name="buttonRemove">Remove</string>
     <string name="buttonUpdate">Update</string>
@@ -90,7 +104,10 @@
     <string name="buttonAddCArModel">Add Car Model</string>
     <string name="buttonManage">Manage</string>
     <string name="buttonSettings">Settings</string>
+    <string name="buttonFinish">Finish Order</string>
     <string name="buttonLogin">Login</string>
+    <!-- Checks boxes -->
+    <string name="checkBoxGasFill">Is Gas Fill</string>
 
 
     <!-- Strings Exceptions -->
@@ -98,6 +115,7 @@
     <string name="exceptionInvalidValue">Invalid Value</string>
     <string name="exceptionUserName">User Name Must Be Less Than 25 Characters</string>
     <string name="exceptionPassword">Password Dodn\'t Match</string>
+    <string name="exceptionFailedRequest">Failed To Do The Request</string>
 
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
