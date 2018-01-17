@@ -3,6 +3,7 @@ package lugassi.wallach.client_android5778_2638_6575.model.backend;
 import android.content.ContentValues;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import lugassi.wallach.client_android5778_2638_6575.model.entities.*;
 
@@ -60,5 +61,5 @@ public interface DB_manager {
     public Float closeReservation(ContentValues contentValues);
 
 
-    public boolean checkReservations();
+    public boolean detectCarsChanges();
 }

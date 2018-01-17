@@ -18,11 +18,14 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import lugassi.wallach.client_android5778_2638_6575.controller.Reservations;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst.*;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.*;
 
@@ -669,8 +672,29 @@ public class DB_SQL implements DB_manager {
     }
 
     @Override
-    public boolean checkReservations() {
-        return false;
+    public boolean detectCarsChanges() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        String currentDate = sdf.format(calendar);
+        calendar.setTimeInMillis(calendar.getTimeInMillis() - 10000);
+        String lastDate = sdf.format(calendar);
+        try {
+            Map<String, Object> data = new LinkedHashMap<>();
+
+            data.put("lastDate", lastDate);
+            data.put("currentDate", currentDate);
+
+            String result = POST(url + "Reservation/DetectCarsChanges.php", data);
+            if (result.startsWith("true"))
+                return true;
+            else if (result.startsWith("false"))
+                return false;
+            else
+                throw new Exception("Error");
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /// post and get
