@@ -2,7 +2,6 @@ package lugassi.wallach.client_android5778_2638_6575.model.backend;
 
 import android.content.ContentValues;
 import android.os.AsyncTask;
-import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,13 +20,26 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import lugassi.wallach.client_android5778_2638_6575.controller.Reservations;
-import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst.*;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.*;
+import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst.BranchConst;
+import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst.CarConst;
+import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst.CarModelConst;
+import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst.CustomerConst;
+import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst.PromotionConst;
+import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst.ReservationConst;
+import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst.UserConst;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Branch;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Car;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.CarModel;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.CarType;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Company;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Customer;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.EngineCapacity;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Gender;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Promotion;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Reservation;
 
 /**
  * Created by Michael on 21/11/2017.
@@ -673,13 +685,13 @@ public class DB_SQL implements DB_manager {
 
     @Override
     public boolean detectCarsChanges() {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        String currentDate = sdf.format(calendar);
-        calendar.setTimeInMillis(calendar.getTimeInMillis() - 10000);
-        String lastDate = sdf.format(calendar);
         try {
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String currentDate = sdf.format(calendar.getTime());
+            calendar.setTimeInMillis(calendar.getTimeInMillis() - 10000);
+            String lastDate = sdf.format(calendar.getTime());
+
             Map<String, Object> data = new LinkedHashMap<>();
 
             data.put("lastDate", lastDate);

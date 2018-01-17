@@ -1,7 +1,9 @@
 package lugassi.wallach.client_android5778_2638_6575.controller;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -31,7 +33,43 @@ public class Login extends Activity implements View.OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);
         db_manager = DBManagerFactory.getManager();
+        checkSharedPreferences();
         findViews();
+    }
+
+    private void checkSharedPreferences() {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        String username = sharedPref.getString(getString(R.string.saved_username), "");
+        if (!username.equals("")) {
+            String password = sharedPref.getString(getString(R.string.saved_password), "");
+            new AsyncTask<String, Object, String>() {
+                @Override
+                protected void onPostExecute(String result) {
+                    if (result.contains("Success")) {
+                        Intent intent = new Intent(Login.this, MainNavigation.class);
+                        result = result.substring("Success Login:".length(), result.length() - 1);
+                        intent.putExtra(CarRentConst.CustomerConst.CUSTOMER_ID, Integer.parseInt(result));
+
+                        finish();
+                        Login.this.startActivity(intent);
+                    }
+                }
+
+                @Override
+                protected String doInBackground(String... params) {
+                    String result = db_manager.checkUser(params[0], params[1]);
+                    return result;
+                }
+            }.execute(username, password);
+        }
+    }
+
+    private void saveSharedPreferences(String username, String password) {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.saved_username), username);
+        editor.putString(getString(R.string.saved_password), password);
+        editor.commit();
     }
 
     private void findViews() {
@@ -69,6 +107,7 @@ public class Login extends Activity implements View.OnClickListener {
             @Override
             protected void onPostExecute(String result) {
                 if (result.contains("Success")) {
+                    saveSharedPreferences(userNameEditText.getText().toString(), passwordEditText.getText().toString());
                     Intent intent = new Intent(Login.this, MainNavigation.class);
                     result = result.substring("Success Login:".length(), result.length() - 1);
                     intent.putExtra(CarRentConst.CustomerConst.CUSTOMER_ID, Integer.parseInt(result));

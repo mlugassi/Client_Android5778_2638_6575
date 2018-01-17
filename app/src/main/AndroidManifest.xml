@@ -32,7 +32,26 @@
         <service
             android:name=".controller.DetectsCarReleasedService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <receiver
+            android:name=".controller.MyReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="lugassi.wallach.FREE_CARS_CHANGED" />
+                <action android:name="lugassi.wallach.ADD_CARS" />
+                <action android:name="lugassi.wallach.REMOVE_CARS" />
+                <action android:name="lugassi.wallach.RESERVATIONS_CHANGED" />
+                <action android:name="lugassi.wallach.BRANCHES_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name=".controller.MyContentProvider"
+            android:authorities="lugassi.wallach.MyContentProvider"
+            android:enabled="true"
+            android:exported="true"></provider>
     </application>
 
 </manifest>

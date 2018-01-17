@@ -26,6 +26,11 @@
         completions."
     </string>
 
+    <!--login-->
+    <string name="saved_username">username</string>
+    <string name="saved_password">password</string>
+
+
     <!-- Strings Data -->
     <string name="dataBranches">Branches</string>
     <string name="dataCars">Cars</string>

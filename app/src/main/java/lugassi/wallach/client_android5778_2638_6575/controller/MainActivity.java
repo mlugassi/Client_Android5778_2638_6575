@@ -1,10 +1,8 @@
 package lugassi.wallach.client_android5778_2638_6575.controller;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import lugassi.wallach.client_android5778_2638_6575.R;
+import android.support.v7.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,4 +14,5 @@ public class MainActivity extends AppCompatActivity {
         finish();
         MainActivity.this.startActivity(intent);
     }
+
 }
