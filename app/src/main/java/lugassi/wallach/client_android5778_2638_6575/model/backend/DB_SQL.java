@@ -36,10 +36,10 @@ public class DB_SQL implements DB_manager {
 
     public DB_SQL() {
         try {
-            new AsyncTask<Object, Object, String>() {
+            String reservationResult = new AsyncTask<Object, Object, String>() {
                 @Override
                 protected void onPostExecute(String reservationResult) {
-                    Reservation.setReservationCounter(Integer.parseInt(reservationResult.substring(0, reservationResult.length() - 1)));
+                    super.onPostExecute(reservationResult);
                 }
 
                 @Override
@@ -55,6 +55,7 @@ public class DB_SQL implements DB_manager {
                     return "0";
                 }
             }.execute().get();
+            Reservation.setReservationCounter(Integer.parseInt(reservationResult.substring(0, reservationResult.length() - 1)));
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -196,7 +197,7 @@ public class DB_SQL implements DB_manager {
 
             return promotion;
         } catch (Exception e) {
-            return null;
+            return new Promotion();
         }
 
 
@@ -206,9 +207,9 @@ public class DB_SQL implements DB_manager {
 
     @Override
     public ArrayList<Branch> getBranches() {
+        ArrayList<Branch> branches = new ArrayList<Branch>();
 
         try {
-            ArrayList<Branch> branches = new ArrayList<Branch>();
 
             JSONArray array = new JSONObject(GET(url + "Branch/GetBranches.php")).getJSONArray("branches");
             for (int i = 0; i < array.length(); i++) {
@@ -225,7 +226,7 @@ public class DB_SQL implements DB_manager {
             }
             return branches;
         } catch (Exception e) {
-            return null;
+            return branches;
         }
     }
 
@@ -247,7 +248,7 @@ public class DB_SQL implements DB_manager {
             branch.setActualParkingSpace(jsonObject.getInt(BranchConst.ACTUAL_PARKING_SPACE));
             return branch;
         } catch (Exception e) {
-            return null;
+            return new Branch(branchID);
         }
     }
 
@@ -298,14 +299,15 @@ public class DB_SQL implements DB_manager {
             carModel.setModelName(jsonObject.getString(CarModelConst.MODEL_NAME));
             return carModel;
         } catch (Exception e) {
-            return null;
+            return new CarModel(modelCode);
         }
     }
 
     @Override
     public ArrayList<CarModel> getCarModels() {
+        ArrayList<CarModel> carModels = new ArrayList<CarModel>();
+
         try {
-            ArrayList<CarModel> carModels = new ArrayList<CarModel>();
 
             JSONArray array = new JSONObject(GET(url + "CarModel/GetCarModels.php")).getJSONArray("carModels");
             for (int i = 0; i < array.length(); i++) {
@@ -324,7 +326,7 @@ public class DB_SQL implements DB_manager {
             return carModels;
 
         } catch (Exception e) {
-            return null;
+            return carModels;
         }
     }
 
@@ -357,7 +359,6 @@ public class DB_SQL implements DB_manager {
 
     @Override
     public Car getCar(int carID) {
-
         try {
             Map<String, Object> data = new LinkedHashMap<>();
 
@@ -373,14 +374,15 @@ public class DB_SQL implements DB_manager {
             car.setMileage(jsonObject.getInt(CarConst.MILEAGE));
             return car;
         } catch (Exception e) {
-            return null;
+            return new Car(carID);
         }
     }
 
     @Override
     public ArrayList<Car> getFreeCars() {
+        ArrayList<Car> cars = new ArrayList<Car>();
+
         try {
-            ArrayList<Car> cars = new ArrayList<Car>();
 
             JSONArray array = new JSONObject(GET(url + "Car/GetFreeCars.php")).getJSONArray("cars");
             for (int i = 0; i < array.length(); i++) {
@@ -397,15 +399,15 @@ public class DB_SQL implements DB_manager {
             return cars;
 
         } catch (Exception e) {
-            return null;
+            return cars;
         }
     }
 
     @Override
     public ArrayList<Car> getFreeCars(int modelCode) {
-        try {
-            ArrayList<Car> cars = new ArrayList<Car>();
+        ArrayList<Car> cars = new ArrayList<Car>();
 
+        try {
             Map<String, Object> data = new LinkedHashMap<>();
 
             data.put(CarConst.MODEL_CODE, modelCode);
@@ -425,14 +427,15 @@ public class DB_SQL implements DB_manager {
             return cars;
 
         } catch (Exception e) {
-            return null;
+            return cars;
         }
     }
 
     @Override
     public ArrayList<Car> getFreeCarsByBranchID(int branchID) {
+        ArrayList<Car> cars = new ArrayList<Car>();
+
         try {
-            ArrayList<Car> cars = new ArrayList<Car>();
 
             Map<String, Object> data = new LinkedHashMap<>();
 
@@ -452,7 +455,7 @@ public class DB_SQL implements DB_manager {
             return cars;
 
         } catch (Exception e) {
-            return null;
+            return cars;
         }
     }
 
@@ -573,6 +576,8 @@ public class DB_SQL implements DB_manager {
 
     @Override
     public Reservation getReservation(int reservationID) {
+        Reservation reservation = new Reservation();
+
         try {
             Map<String, Object> data = new LinkedHashMap<>();
 
@@ -581,7 +586,6 @@ public class DB_SQL implements DB_manager {
             JSONArray array = new JSONObject(POST(url + "Reservation/GetReservation.php", data)).getJSONArray("reservation");
             JSONObject jsonObject = array.getJSONObject(0);
 
-            Reservation reservation = new Reservation();
             reservation.setReservationID(jsonObject.getInt(ReservationConst.RESERVATION_ID));
             reservation.setCustomerID(jsonObject.getInt(ReservationConst.CUSTOMER_ID));
             reservation.setCarID(jsonObject.getInt(ReservationConst.CAR_ID));
@@ -596,14 +600,15 @@ public class DB_SQL implements DB_manager {
 
             return reservation;
         } catch (Exception e) {
-            return null;
+            return reservation;
         }
     }
 
     @Override
     public ArrayList<Reservation> getReservationsOnGoing(int customerID) {
+        ArrayList<Reservation> reservations = new ArrayList<Reservation>();
+
         try {
-            ArrayList<Reservation> reservations = new ArrayList<Reservation>();
 
             Map<String, Object> data = new LinkedHashMap<>();
 
@@ -630,7 +635,7 @@ public class DB_SQL implements DB_manager {
             }
             return reservations;
         } catch (Exception e) {
-            return null;
+            return reservations;
         }
     }
 

@@ -46,10 +46,10 @@ public class CarDetails extends DialogFragment {
         super.onCreate(savedInstanceState);
         db_manager = DBManagerFactory.getManager();
         try {
-            new AsyncTask<Integer, Object, Car>() {
+        car=  new AsyncTask<Integer, Object, Car>() {
                 @Override
                 protected void onPostExecute(Car result) {
-                    car = result;
+                    super.onPostExecute(result);
                 }
 
                 @Override
