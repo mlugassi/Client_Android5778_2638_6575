@@ -54,24 +54,35 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
         branchesListView = (ListView) view.findViewById(R.id.branchesListView);
         carsListView = (ListView) view.findViewById(R.id.freeCarListView);
 
-        branchesAdapter = new MyListAdapter(getActivity(), db_manager.getBranches()) {
+        new AsyncTask<Object, Object, ArrayList<Branch>>() {
             @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
+            protected void onPostExecute(ArrayList<Branch> branches) {
+                branchesAdapter = new MyListAdapter(getActivity(), branches) {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
 
-                if (convertView == null)
-                    convertView = View.inflate(getActivity(), R.layout.branch_list_view, null);
+                        if (convertView == null)
+                            convertView = View.inflate(getActivity(), R.layout.branch_list_view, null);
 
-                TextView nameAnIdTextView = (TextView) convertView.findViewById(R.id.nameAndIdEditText);
-                TextView addressTextView = (TextView) convertView.findViewById(R.id.addressEditText);
+                        TextView nameAnIdTextView = (TextView) convertView.findViewById(R.id.nameAndIdEditText);
+                        TextView addressTextView = (TextView) convertView.findViewById(R.id.addressEditText);
 
-                Branch branch = (Branch) branchesListView.getItemAtPosition(position);
-                nameAnIdTextView.setText(((Integer) branch.getBranchID()).toString() + " " + branch.getBranchName());
-                addressTextView.setText(branch.getAddress());
+                        Branch branch = (Branch) branchesListView.getItemAtPosition(position);
+                        nameAnIdTextView.setText(((Integer) branch.getBranchID()).toString() + " " + branch.getBranchName());
+                        addressTextView.setText(branch.getAddress());
 
-                return convertView;
+                        return convertView;
+                    }
+                };
+                branchesListView.setAdapter(branchesAdapter);
             }
-        };
-        branchesListView.setAdapter(branchesAdapter);
+
+            @Override
+            protected ArrayList<Branch> doInBackground(Object... params) {
+                return db_manager.getBranches();
+            }
+        }.execute();
+
 
         searchBar.setOnQueryTextListener(this);
         branchesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -95,27 +106,41 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                                         convertView = View.inflate(getActivity(), R.layout.car_list_view, null);
 
                                     TextView carIdEditText = (TextView) convertView.findViewById(R.id.carIdEditText);
-                                    TextView modelNameAndCompanyEditText = (TextView) convertView.findViewById(R.id.modelNameAndCompanyEditText);
-                                    TextView branchNameEditText = (TextView) convertView.findViewById(R.id.branchNameEditText);
+                                    final TextView modelNameAndCompanyEditText = (TextView) convertView.findViewById(R.id.modelNameAndCompanyEditText);
+                                    final TextView branchNameEditText = (TextView) convertView.findViewById(R.id.branchNameEditText);
 
 
-                                    Car car = (Car) carsListView.getItemAtPosition(position);
-                                    String branchName = "", modelName = "", companyName = "";
-                                    for (Branch branch : db_manager.getBranches())
-                                        if (branch.getBranchID() == car.getBranchID())
-                                            branchName = branch.getBranchName();
-                                    for (CarModel carModel : db_manager.getCarModels())
-                                        if (carModel.getModelCode() == car.getModelCode()) {
-                                            modelName = carModel.getModelName();
-                                            companyName = carModel.getCompany().name();
+                                    final Car car = (Car) carsListView.getItemAtPosition(position);
+                                    carIdEditText.setText(((Integer) car.getCarID()).toString());
+                                    new AsyncTask<Integer, Object, String>() {
+                                        @Override
+                                        protected void onPostExecute(String branchName) {
+                                            branchNameEditText.setText(branchName);
                                         }
 
-                                    carIdEditText.setText(((Integer) car.getCarID()).toString());
-                                    modelNameAndCompanyEditText.setText(modelName + ", " + companyName);
-                                    branchNameEditText.setText(branchName);
+                                        @Override
+                                        protected String doInBackground(Integer... params) {
+                                            return db_manager.getBranch(params[0]).getBranchName();
+                                        }
+                                    }.execute(car.getBranchID());
+
+                                    new AsyncTask<Integer, Object, String>() {
+                                        @Override
+                                        protected void onPostExecute(String modelNameAndCompany) {
+                                            modelNameAndCompanyEditText.setText(modelNameAndCompany);
+                                        }
+
+                                        @Override
+                                        protected String doInBackground(Integer... params) {
+
+                                            CarModel carModel = db_manager.getCarModel(params[0]);
+                                            return carModel.getModelName() + ", " + carModel.getCompany().name();
+                                        }
+                                    }.execute(car.getModelCode());
 
                                     return convertView;
                                 }
+
                             };
                         carsListView.setAdapter(carsAdapter);
                     }

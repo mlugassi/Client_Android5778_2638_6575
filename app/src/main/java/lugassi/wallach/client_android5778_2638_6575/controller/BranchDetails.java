@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.concurrent.ExecutionException;
+
 import lugassi.wallach.client_android5778_2638_6575.R;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DBManagerFactory;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DB_manager;
@@ -37,13 +39,23 @@ public class BranchDetails extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db_manager = DBManagerFactory.getManager();
-        new AsyncTask<Object, Object, Void>() {
-            @Override
-            protected Void doInBackground(Object... params) {
-                branch = db_manager.getBranch(getArguments().getInt(CarRentConst.BranchConst.BRANCH_ID));
-                return null;
-            }
-        }.execute();
+        try {
+            branch = new AsyncTask<Object, Object, Branch>() {
+                @Override
+                protected void onPostExecute(Branch branch) {
+                    super.onPostExecute(branch);
+                }
+
+                @Override
+                protected Branch doInBackground(Object... params) {
+                    return branch = db_manager.getBranch(getArguments().getInt(CarRentConst.BranchConst.BRANCH_ID));
+                }
+            }.execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
