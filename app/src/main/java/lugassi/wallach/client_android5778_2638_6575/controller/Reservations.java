@@ -1,29 +1,24 @@
 package lugassi.wallach.client_android5778_2638_6575.controller;
 
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-
-import javax.crypto.interfaces.PBEKey;
 
 import lugassi.wallach.client_android5778_2638_6575.R;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DBManagerFactory;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DB_manager;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.Branch;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Car;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.CarModel;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Reservation;
@@ -42,6 +37,8 @@ public class Reservations extends Fragment {
         super.onCreate(savedInstanceState);
         db_manager = DBManagerFactory.getManager();
         customerID = getArguments().getInt(CarRentConst.CustomerConst.CUSTOMER_ID);
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle(getString(R.string.title_reservation_fragment));
     }
 
     @Override
@@ -63,7 +60,7 @@ public class Reservations extends Fragment {
                         TextView carIdEditText = (TextView) convertView.findViewById(R.id.carIdEditText);
                         final TextView modelNameAndCompanyEditText = (TextView) convertView.findViewById(R.id.modelNameAndCompanyEditText);
                         final TextView branchNameEditText = (TextView) convertView.findViewById(R.id.branchNameEditText);
-                        Button finishOrderButton = (Button) convertView.findViewById(R.id.finishOrderButton);
+                        ImageButton finishOrderButton = (ImageButton) convertView.findViewById(R.id.finishOrderButton);
 
                         Reservation reservation = (Reservation) reservationsListView.getItemAtPosition(position);
                         reservationIDEditText.setText(((Integer) reservation.getReservationID()).toString());

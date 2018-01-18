@@ -12,24 +12,33 @@
         <SearchView
             android:id="@+id/searchBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:queryHint="Type city to filter branches" />
 
         <ListView
             android:id="@+id/branchesListView"
             android:layout_width="match_parent"
             android:layout_height="190dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp" />
+            android:layout_margin="10dp" />
 
         <TextView
+            android:id="@+id/freeCarsLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/textFreeCars" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="@string/textFreeCars"
+            android:textColor="@color/Gray"
+            android:textSize="20dp"
+            android:visibility="gone" />
 
         <ListView
             android:id="@+id/freeCarListView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:visibility="gone" />
     </LinearLayout>
 
 

@@ -5,17 +5,22 @@
 
         <item
             android:id="@+id/nav_reservations"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/reservation"
             android:title="@string/menu_reservations" />
 
         <item
             android:id="@+id/nav_make_order"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/make_oreder"
             android:title="@string/menu_make_order" />
         <item
             android:id="@+id/nav_free_cars"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/free_car"
             android:title="@string/menu_free_cars" />
+
+        <item
+            android:id="@+id/nav_favorite"
+            android:icon="@drawable/favorite_full"
+            android:title="@string/menu_favorite" />
 
     </group>
 
@@ -23,15 +28,15 @@
         <menu>
             <item
                 android:id="@+id/nav_contact"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/contact_us"
                 android:title="@string/menu_contact_us" />
             <item
                 android:id="@+id/nav_manage"
                 android:icon="@drawable/ic_menu_manage"
-                android:title="@string/buttonManage" />
+                android:title="@string/buttonSettings" />
             <item
                 android:id="@+id/nav_exit"
-                android:icon="@drawable/ic_menu_manage"
+                android:icon="@drawable/exit"
                 android:title="@string/menu_exit" />
         </menu>
     </item>

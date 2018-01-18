@@ -1,6 +1,8 @@
 package lugassi.wallach.client_android5778_2638_6575.model.datasource;
 
 import android.content.ContentValues;
+import android.content.UriMatcher;
+import android.net.Uri;
 
 import lugassi.wallach.client_android5778_2638_6575.model.entities.*;
 
@@ -12,9 +14,55 @@ public class CarRentConst {
 
     public static final String POSITION = "position";
 
-    public static class MyIntetFilter {
+    public static class MyIntentFilter {
         public static final String RESERVATIONS_CHANGED = "lugassi.wallach.RESERVATIONS_CHANGED";
 
+    }
+
+    public static class DataBaseConstants {
+        public static final String DATABASE_NAME = "carRentDB";
+        public static final String TABLE_NAME = "carModels";
+        public static final int DATABASE_VERSION = 1;
+
+        public static final String MODEL_CODE = "modelCode";
+        public static final String MODEL_NAME = "modelName";
+        public static final String COMPANY = "company";
+        public static final String ENGINE_CAPACITY = "engineCapacity";
+        public static final String SEATS = "seats";
+        public static final String CAR_TYPE = "carType";
+        public static final String MAX_GAS_TANK = "maxGasTank";
+
+        public static final String CREATE_DB_TABLE =
+                " CREATE TABLE " + TABLE_NAME +
+                        " ( " +
+                        "" + MODEL_CODE + " INTEGER PRIMARY KEY AUTOINCREMENT" +
+                        "," + MODEL_NAME + " TEXT " +
+                        "," + COMPANY + " TEXT " +
+                        "," + ENGINE_CAPACITY + " TEXT " +
+                        "," + SEATS + " INTEGER " +
+                        "," + CAR_TYPE + " TEXT  " +
+                        "," + MAX_GAS_TANK + " INTEGER  " +
+                        " ) ";
+
+
+    }
+
+    public static class ContentProviderConstants {
+
+        public static final String PROVIDER_NAME = "lugassi.wallach.MyContentProvider";
+        public static final String URL = "content://" + PROVIDER_NAME + "/" + DataBaseConstants.TABLE_NAME;
+        public static final Uri CONTENT_URI = Uri.parse(URL);
+
+        public static final int ALL = 0;
+        public static final int SINGLE = 1;
+
+        public static final UriMatcher uriMatcher;
+
+        static {
+            uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+            uriMatcher.addURI(PROVIDER_NAME, "carModels", ALL);
+            uriMatcher.addURI(PROVIDER_NAME, "carModels/#", SINGLE);
+        }
     }
 
     public static class UserConst {

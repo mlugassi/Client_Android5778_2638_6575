@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -169,7 +171,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
         super.onCreate(savedInstanceState);
         db_manager = DBManagerFactory.getManager();
         modelCode = -1;
-        getActivity().registerReceiver(carChangedReceiver, new IntentFilter(CarRentConst.MyIntetFilter.RESERVATIONS_CHANGED));
+        getActivity().registerReceiver(carChangedReceiver, new IntentFilter(CarRentConst.MyIntentFilter.RESERVATIONS_CHANGED));
     }
 
 
@@ -256,11 +258,26 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                 freeCarsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        Bundle args = new Bundle();
-                        args.putInt(CarRentConst.CarConst.CAR_ID, ((Car) freeCarsListView.getItemAtPosition(position)).getCarID());
-                        CarDetails myDialogFragment = new CarDetails();
-                        myDialogFragment.setArguments(args);
-                        myDialogFragment.show(getActivity().getFragmentManager(), "Car Details");
+
+                        Car car = (Car) freeCarsListView.getItemAtPosition(position);
+                        new AsyncTask<Integer, Object, CarModel>() {
+                            @Override
+                            protected void onPostExecute(CarModel carModel) {
+                                Uri uri = getActivity().getContentResolver().insert(CarRentConst.ContentProviderConstants.CONTENT_URI, CarRentConst.carModelToContentValues(carModel));
+                                Toast.makeText(getActivity(), "New record inserted", Toast.LENGTH_LONG)
+                                        .show();
+                            }
+
+                            @Override
+                            protected CarModel doInBackground(Integer... params) {
+                                return db_manager.getCarModel(params[0]);
+                            }
+                        }.execute(car.getModelCode());
+//                        Bundle args = new Bundle();
+//                        args.putInt(CarRentConst.CarConst.CAR_ID, ((Car) freeCarsListView.getItemAtPosition(position)).getCarID());
+//                        CarDetails myDialogFragment = new CarDetails();
+//                        myDialogFragment.setArguments(args);
+//                        myDialogFragment.show(getActivity().getFragmentManager(), "Car Details");
                         return false;
                     }
                 });
@@ -299,6 +316,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
 
         String[] modelDetails = carModelsAutoCompleteTextView.getText().toString().split("\n");
         carModelsAutoCompleteTextView.setText(modelDetails[0]);
@@ -358,4 +376,5 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
             }
         }.execute(modelCode);
     }
+
 }

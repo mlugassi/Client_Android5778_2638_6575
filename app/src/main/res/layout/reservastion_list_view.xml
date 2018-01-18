@@ -2,48 +2,39 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bottom_border"
     android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:layout_weight="5">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:textColor="@color/OrangeRed"
-            android:text="@string/textReservationID"
-            android:textSize="15dp" />
-        <TextView
+    <TextView
         android:id="@+id/reservationIDTextView"
-        android:layout_width="match_parent"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:textColor="@color/Black"
-        android:textSize="35dp" />
-    </LinearLayout>
-
+        android:layout_gravity="left|center"
+        android:layout_marginLeft="5dp"
+        android:textAlignment="center"
+        android:textColor="@color/Gray"
+        android:textSize="25dp" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="11"
+        android:layout_weight="1"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/carIdEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/OrangeRed"
-            android:textSize="25dp" />
 
         <TextView
             android:id="@+id/modelNameAndCompanyEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/OrangeRed"
+            android:textSize="25dp" />
+
+        <TextView
+            android:id="@+id/carIdEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:textColor="@color/Black"
             android:textSize="20dp" />
 
@@ -51,6 +42,7 @@
             android:id="@+id/branchNameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:textColor="@color/Gray"
             android:textSize="15dp" />
 
@@ -58,16 +50,24 @@
             android:id="@+id/startDateEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:textColor="@color/Gray"
             android:textSize="15dp" />
     </LinearLayout>
 
-    <Button
+
+    <ImageButton
         android:id="@+id/finishOrderButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_gravity="center"
-        android:layout_weight="4"
-        android:text="@string/buttonFinish" />
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/button_shape"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/finish_order" />
+
 
 </LinearLayout>

@@ -4,11 +4,15 @@
     <string name="registerTextView"><a href="http://www.google.com/">register</a></string>
     <string name="title_activity_login">Sign in</string>
     <string name="title_activity_add_customer">AddCustomer</string>
+    <string name="title_activity_main_title">Orange - Rental Cars</string>
+    <string name="title_make_order_fragment">Orange - Make Order</string>
+    <string name="title_reservation_fragment">Orange - Reservation</string>
 
     <!--menu-->
     <string name="menu_contact_us">Contact Us</string>
     <string name="menu_make_order">Make Order</string>
     <string name="menu_free_cars">Free Cars</string>
+    <string name="menu_favorite">Favorite Models</string>
     <string name="menu_reservations">Reservations</string>
     <string name="menu_action">Action</string>
     <string name="menu_exit">Exit</string>
@@ -41,7 +45,6 @@
     <string name="textCarType">Type</string>
     <string name="textEngineCapacity">Engine</string>
     <string name="textCompany">Company</string>
-
     <string name="textAddCustomer">New Customer</string>
     <string name="textChooseDataList">Choose Data List To View And Edit:</string>
     <string name="textUserNameAndPassword">Choose User Name And Password For Login</string>
@@ -50,6 +53,7 @@
     <string name="textFreeCars">Free Cars</string>
     <string name="textCarModelDetails">Car Model Details</string>
     <string name="textCarDetails">Car Details</string>
+    <string name="textOrderDetails">Order Details</string>
     <string name="textName">Name: </string>
     <string name="textID">ID : </string>
     <string name="textDialogTitle">Make Order</string>
@@ -66,11 +70,14 @@
     <string name="textFailedUpdateMessage">Update failed!</string>
     <string name="textLinkSignup">No account yet? Create one</string>
     <string name="textModelCode">Model Code</string>
-    <string name="textReservationID">ID</string>
+    <string name="textOrderID">ID</string>
+    <string name="textFinishOrder">Finish</string>
+    <string name="textReservationID">Order ID:</string>
     <string name="textCloseReservation">Close Reservation, Cost:</string>
     <string name="textCallUs">Call Us:</string>
     <string name="textReadAboutUs">Read About Us:</string>
     <string name="textMail">Mail:</string>
+    <string name="textUserNameCompany">Orange User</string>
 
 
     <!-- Strings Hints -->

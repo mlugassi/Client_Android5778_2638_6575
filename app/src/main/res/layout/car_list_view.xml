@@ -1,28 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="70dp"
+    android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/carIdEditText"
-        android:layout_width="match_parent"
+    <ImageView
+
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/OrangeRed"
-        android:textSize="25dp" />
+        android:layout_gravity="left|center"
+        android:layout_margin="10dp"
+        android:layout_weight="3"
+        android:src="@drawable/free_car" />
 
-    <TextView
-        android:id="@+id/modelNameAndCompanyEditText"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="16"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/modelNameAndCompanyEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/OrangeRed"
+            android:textSize="25dp" />
+
+        <TextView
+            android:id="@+id/carIdEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Black"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/branchNameEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Gray"
+            android:textSize="15dp" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/favoriteButton"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/Black"
-        android:textSize="20dp" />
-
-    <TextView
-        android:id="@+id/branchNameEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/Gray"
-        android:textSize="15dp" />
-
+        android:layout_gravity="right|center"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/favorite_empty" />
 </LinearLayout>

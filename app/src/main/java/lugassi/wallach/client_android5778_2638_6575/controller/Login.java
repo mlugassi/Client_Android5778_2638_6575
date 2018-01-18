@@ -39,7 +39,7 @@ public class Login extends Activity implements View.OnClickListener {
 
     private void checkSharedPreferences() {
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        String username = sharedPref.getString(getString(R.string.saved_username), "");
+        final String username = sharedPref.getString(getString(R.string.saved_username), "");
         if (!username.equals("")) {
             String password = sharedPref.getString(getString(R.string.saved_password), "");
             new AsyncTask<String, Object, String>() {
@@ -49,6 +49,7 @@ public class Login extends Activity implements View.OnClickListener {
                         Intent intent = new Intent(Login.this, MainNavigation.class);
                         result = result.substring("Success Login:".length(), result.length() - 1);
                         intent.putExtra(CarRentConst.CustomerConst.CUSTOMER_ID, Integer.parseInt(result));
+                        intent.putExtra(CarRentConst.UserConst.USER_NAME, username);
 
                         finish();
                         Login.this.startActivity(intent);
@@ -111,6 +112,7 @@ public class Login extends Activity implements View.OnClickListener {
                     Intent intent = new Intent(Login.this, MainNavigation.class);
                     result = result.substring("Success Login:".length(), result.length() - 1);
                     intent.putExtra(CarRentConst.CustomerConst.CUSTOMER_ID, Integer.parseInt(result));
+                    intent.putExtra(CarRentConst.UserConst.USER_NAME, Integer.parseInt(userNameEditText.getText().toString()));
 
                     finish();
                     Login.this.startActivity(intent);

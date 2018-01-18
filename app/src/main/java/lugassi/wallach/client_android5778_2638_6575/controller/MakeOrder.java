@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import lugassi.wallach.client_android5778_2638_6575.model.entities.Reservation;
 public class MakeOrder extends Fragment implements SearchView.OnQueryTextListener, AdapterView.OnItemClickListener {
 
     private int customerID;
+    private TextView freeCarTextView;
     private SearchView searchBar;
     private ListView branchesListView;
     private ListView carsListView;
@@ -44,6 +46,8 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
         super.onCreate(savedInstanceState);
         db_manager = DBManagerFactory.getManager();
         customerID = getArguments().getInt(CarRentConst.CustomerConst.CUSTOMER_ID);
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle(getString(R.string.title_make_order_fragment));
     }
 
     @Override
@@ -53,6 +57,7 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
         searchBar = (SearchView) view.findViewById(R.id.searchBar);
         branchesListView = (ListView) view.findViewById(R.id.branchesListView);
         carsListView = (ListView) view.findViewById(R.id.freeCarListView);
+        freeCarTextView = (TextView) view.findViewById(R.id.freeCarsLabel);
 
         new AsyncTask<Object, Object, ArrayList<Branch>>() {
             @Override
@@ -88,6 +93,10 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
         branchesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (carsListView.getVisibility() == View.GONE) {
+                    carsListView.setVisibility(View.VISIBLE);
+                    freeCarTextView.setVisibility(View.VISIBLE);
+                }
                 final Branch branch = (Branch) branchesListView.getItemAtPosition(position);
                 new AsyncTask<Object, Object, ArrayList<Car>>() {
                     @Override
