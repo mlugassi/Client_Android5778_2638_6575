@@ -9,52 +9,52 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_marginTop="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:orientation="horizontal">
+        <!--<LinearLayout-->
+            <!--android:layout_marginTop="5dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:orientation="horizontal">-->
 
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="3dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="3dp"
-                android:gravity="left|top"
-                android:text="@string/textOrderID"
-                android:textAlignment="center"
-                android:textColor="@color/DimGray"
-                android:textSize="19dp" />
+            <!--<TextView-->
+                <!--android:layout_width="50dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:layout_marginBottom="3dp"-->
+                <!--android:layout_marginLeft="5dp"-->
+                <!--android:layout_marginTop="3dp"-->
+                <!--android:gravity="left|top"-->
+                <!--android:text="@string/textOrderID"-->
+                <!--android:textAlignment="center"-->
+                <!--android:textColor="@color/DimGray"-->
+                <!--android:textSize="19dp" />-->
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="3dp"
-                android:layout_marginTop="3dp"
-                android:layout_weight="1"
-                android:background="@drawable/left_border"
-                android:gravity="top|center"
-                android:text="@string/textOrderDetails"
-                android:textAlignment="center"
-                android:textColor="@color/DimGray"
-                android:textSize="19dp" />
+            <!--<TextView-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:layout_marginBottom="3dp"-->
+                <!--android:layout_marginTop="3dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@drawable/left_border"-->
+                <!--android:gravity="top|center"-->
+                <!--android:text="@string/textOrderDetails"-->
+                <!--android:textAlignment="center"-->
+                <!--android:textColor="@color/DimGray"-->
+                <!--android:textSize="19dp" />-->
 
-            <TextView
-                android:layout_width="70dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="3dp"
-                android:layout_marginTop="3dp"
-                android:background="@drawable/left_border"
-                android:gravity="right|top"
-                android:text="@string/textFinishOrder"
-                android:textAlignment="center"
-                android:textColor="@color/DimGray"
-                android:textSize="19dp" />
-        </LinearLayout>
+            <!--<TextView-->
+                <!--android:layout_width="70dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:layout_marginBottom="3dp"-->
+                <!--android:layout_marginTop="3dp"-->
+                <!--android:background="@drawable/left_border"-->
+                <!--android:gravity="right|top"-->
+                <!--android:text="@string/textFinishOrder"-->
+                <!--android:textAlignment="center"-->
+                <!--android:textColor="@color/DimGray"-->
+                <!--android:textSize="19dp" />-->
+        <!--</LinearLayout>-->
 
         <ListView
             android:id="@+id/reservationsListView"

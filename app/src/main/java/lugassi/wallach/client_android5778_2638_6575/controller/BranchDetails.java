@@ -10,6 +10,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.concurrent.ExecutionException;
@@ -66,9 +67,10 @@ public class BranchDetails extends DialogFragment {
         ((TextView) view.findViewById(R.id.nameTextView)).setText(branch.getBranchName());
         ((TextView) view.findViewById(R.id.cityTextView)).setText(branch.getCity());
         ((TextView) view.findViewById(R.id.addressTextView)).setText(branch.getAddress());
-        ((TextView) view.findViewById(R.id.parkingSpaceTextView)).setText(((Integer) branch.getMaxParkingSpace()).toString());
-        ((TextView) view.findViewById(R.id.actualParkingSpaceTextView)).setText(((Integer) branch.getActualParkingSpace()).toString());
-
+        TextView parkingSpaceTextView = (TextView) view.findViewById(R.id.parkingSpaceTextView);
+        ProgressBar parkingSpaceProgressBar = (ProgressBar) view.findViewById(R.id.parkingSpaceProgressBar);
+        parkingSpaceTextView.setText(((Integer) branch.getActualParkingSpace()).toString() + "/" + ((Integer) branch.getMaxParkingSpace()).toString());
+        parkingSpaceProgressBar.setProgress(branch.getActualParkingSpace(), true);
 
         return view;
     }

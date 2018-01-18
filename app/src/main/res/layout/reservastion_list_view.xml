@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="60dp"
     android:background="@drawable/bottom_border"
     android:orientation="horizontal">
 
@@ -9,60 +9,57 @@
         android:id="@+id/reservationIDTextView"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="left|center"
-        android:layout_marginLeft="5dp"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:layout_weight="0"
         android:textAlignment="center"
         android:textColor="@color/Gray"
-        android:textSize="25dp" />
+        android:textSize="18dp" />
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_margin="5dp"
         android:layout_weight="1"
         android:orientation="vertical">
-
 
         <TextView
             android:id="@+id/modelNameAndCompanyEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:textColor="@color/OrangeRed"
-            android:textSize="25dp" />
+            android:textColor="@color/Black"
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/carIdEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:textColor="@color/Black"
-            android:textSize="20dp" />
+            android:textColor="@color/DimGray"
+            android:textSize="10dp" />
 
         <TextView
             android:id="@+id/branchNameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
             android:textColor="@color/Gray"
-            android:textSize="15dp" />
+            android:textSize="10dp" />
 
         <TextView
             android:id="@+id/startDateEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
             android:textColor="@color/Gray"
-            android:textSize="15dp" />
+            android:textSize="10dp" />
     </LinearLayout>
 
 
     <ImageButton
         android:id="@+id/finishOrderButton"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="center"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_margin="5dp"
+        android:layout_weight="0"
         android:adjustViewBounds="true"
         android:background="@drawable/button_shape"
         android:padding="10dp"
