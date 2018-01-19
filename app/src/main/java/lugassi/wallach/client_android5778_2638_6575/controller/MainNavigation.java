@@ -110,6 +110,16 @@ public class MainNavigation extends AppCompatActivity
 
         } else if (id == R.id.nav_exit) {
             this.finishAffinity();
+        } else if (id == R.id.nav_logout) {
+            Login login = new Login();
+            Login.setDefaults(CarRentConst.UserConst.USER_NAME, "", this);
+            Login.setDefaults(CarRentConst.UserConst.PASSWORD, "", this);
+
+            //  SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(login.getContext());
+            //  final String aa = preferences.getString(getString(R.string.saved_username), "");
+            Intent intent = new Intent(this, Login.class);
+            this.startActivity(intent);
+            finish();
         }
         args.putInt(CarRentConst.CustomerConst.CUSTOMER_ID, customerID);
         fragment.setArguments(args);

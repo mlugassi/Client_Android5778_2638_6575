@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -38,10 +39,13 @@ public class Login extends Activity implements View.OnClickListener {
     }
 
     private void checkSharedPreferences() {
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        final String username = sharedPref.getString(getString(R.string.saved_username), "");
+        // SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        //sharedPref.getString(getString(R.string.saved_username), "");
+        final String username = getDefaults(CarRentConst.UserConst.USER_NAME, this);
         if (!username.equals("")) {
-            String password = sharedPref.getString(getString(R.string.saved_password), "");
+
+            String password = getDefaults(CarRentConst.UserConst.PASSWORD, this);
+            //sharedPref.getString(getString(R.string.saved_password), "");
             new AsyncTask<String, Object, String>() {
                 @Override
                 protected void onPostExecute(String result) {
@@ -66,7 +70,7 @@ public class Login extends Activity implements View.OnClickListener {
     }
 
     private void saveSharedPreferences(String username, String password) {
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(R.string.saved_username), username);
         editor.putString(getString(R.string.saved_password), password);
@@ -108,11 +112,12 @@ public class Login extends Activity implements View.OnClickListener {
             @Override
             protected void onPostExecute(String result) {
                 if (result.contains("Success")) {
-                    saveSharedPreferences(userNameEditText.getText().toString(), passwordEditText.getText().toString());
+                    setDefaults(CarRentConst.UserConst.USER_NAME, userNameEditText.getText().toString(), Login.this);
+                    setDefaults(CarRentConst.UserConst.PASSWORD, passwordEditText.getText().toString(), Login.this);
                     Intent intent = new Intent(Login.this, MainNavigation.class);
                     result = result.substring("Success Login:".length(), result.length() - 1);
                     intent.putExtra(CarRentConst.CustomerConst.CUSTOMER_ID, Integer.parseInt(result));
-                    intent.putExtra(CarRentConst.UserConst.USER_NAME, Integer.parseInt(userNameEditText.getText().toString()));
+                    intent.putExtra(CarRentConst.UserConst.USER_NAME, userNameEditText.getText().toString());
 
                     finish();
                     Login.this.startActivity(intent);
@@ -144,4 +149,17 @@ public class Login extends Activity implements View.OnClickListener {
             signup();
 
     }
+
+    public static void setDefaults(String key, String value, Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+
+    public static String getDefaults(String key, Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getString(key, "");
+    }
+
 }

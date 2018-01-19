@@ -18,6 +18,7 @@
     <string name="menu_reservations">Reservations</string>
     <string name="menu_action">Action</string>
     <string name="menu_exit">Exit</string>
+    <string name="menu_logout">Logout</string>
 
 
     <!-- Strings related to login -->
