@@ -31,9 +31,9 @@
                 android:icon="@drawable/contact_us"
                 android:title="@string/menu_contact_us" />
             <item
-                android:id="@+id/nav_manage"
-                android:icon="@drawable/ic_menu_manage"
-                android:title="@string/buttonSettings" />
+                android:id="@+id/nav_profile"
+                android:icon="@drawable/user_icon"
+                android:title="@string/menu_profile" />
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/logout"

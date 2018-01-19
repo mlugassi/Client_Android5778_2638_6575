@@ -1,7 +1,9 @@
 package lugassi.wallach.client_android5778_2638_6575.controller;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -13,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import lugassi.wallach.client_android5778_2638_6575.R;
@@ -21,7 +22,6 @@ import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentCons
 
 public class MainNavigation extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private LinearLayout fragmentContainer;
     private int customerID;
 
     @Override
@@ -31,12 +31,13 @@ public class MainNavigation extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.title_activity_main_title));
         setSupportActionBar(toolbar);
-        startService(new Intent(this, DetectsCarReleasedService.class));
+        startService(new Intent(this, MyService.class));
         customerID = getIntent().getIntExtra(CarRentConst.CustomerConst.CUSTOMER_ID, -1);
         String userName = getIntent().getStringExtra(CarRentConst.UserConst.USER_NAME);
         NavigationView nav_view = (NavigationView) findViewById(R.id.nav_view);
         View header = nav_view.getHeaderView(0);
         ((TextView) header.findViewById(R.id.userTextView)).setText(userName);
+        setHomeFragment();
 
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -63,6 +64,8 @@ public class MainNavigation extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else {
+            setHomeFragment();
         }
     }
 
@@ -77,6 +80,9 @@ public class MainNavigation extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, AddCustomer.class);
+            intent.putExtra(CarRentConst.CustomerConst.CUSTOMER_ID, customerID);
+            this.startActivity(intent);
             return true;
         }
 
@@ -100,7 +106,10 @@ public class MainNavigation extends AppCompatActivity
         } else if (id == R.id.nav_reservations) {
             fragment = new Reservations();
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_profile) {
+            Intent intent = new Intent(this, AddCustomer.class);
+            intent.putExtra(CarRentConst.CustomerConst.CUSTOMER_ID, customerID);
+            this.startActivity(intent);
 
         } else if (id == R.id.nav_contact) {
             fragment = new AboutUs();
@@ -109,17 +118,17 @@ public class MainNavigation extends AppCompatActivity
             fragment = new FavoriteModels();
 
         } else if (id == R.id.nav_exit) {
-            this.finishAffinity();
+            if (showEnsureDialog(R.id.nav_exit))
+                this.finishAffinity();
         } else if (id == R.id.nav_logout) {
-            Login login = new Login();
-            Login.setDefaults(CarRentConst.UserConst.USER_NAME, "", this);
-            Login.setDefaults(CarRentConst.UserConst.PASSWORD, "", this);
+            if (showEnsureDialog(R.id.nav_logout)) {
+                Login.setDefaults(CarRentConst.UserConst.USER_NAME, "", this);
+                Login.setDefaults(CarRentConst.UserConst.PASSWORD, "", this);
 
-            //  SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(login.getContext());
-            //  final String aa = preferences.getString(getString(R.string.saved_username), "");
-            Intent intent = new Intent(this, Login.class);
-            this.startActivity(intent);
-            finish();
+                Intent intent = new Intent(this, Login.class);
+                this.startActivity(intent);
+                finish();
+            }
         }
         args.putInt(CarRentConst.CustomerConst.CUSTOMER_ID, customerID);
         fragment.setArguments(args);
@@ -128,5 +137,39 @@ public class MainNavigation extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    void setHomeFragment() {
+        Reservations fragment = new Reservations();
+        Bundle args = new Bundle();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        args.putInt(CarRentConst.CustomerConst.CUSTOMER_ID, customerID);
+        fragment.setArguments(args);
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.commit();
+    }
+
+    boolean showEnsureDialog(int action) {
+        final boolean[] answer = {false};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        if (action == R.id.nav_logout)
+            builder.setMessage(getString(R.string.textDialogMessageLogout));
+        else if (action == R.id.nav_exit)
+            builder.setMessage(getString(R.string.textDialogMessageExit));
+
+        builder.setPositiveButton(getString(R.string.buttonYes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                answer[0] = true;
+            }
+        });
+        builder.setNegativeButton(getString(R.string.buttonNo), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        builder.show();
+        return answer[0];
     }
 }

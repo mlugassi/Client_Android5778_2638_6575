@@ -79,17 +79,21 @@ public class AddUser extends Activity implements View.OnClickListener {
                         Intent intent = new Intent(AddUser.this, MainNavigation.class);
                         finish();
                         AddUser.this.startActivity(intent);
-                    }
+                    } else
+                        Toast.makeText(getBaseContext(), getString(R.string.textFiledAddMessage), Toast.LENGTH_SHORT).show();
+
                 }
 
                 @Override
                 protected Boolean doInBackground(Object... params) {
-                    Promotion promotion = new Promotion();
-                    promotion.setCustomerID(customerID);
-                    promotion.setTotalRentDays(0);
-                    promotion.setUsed(false);
-                    boolean pRes = db_manager.addPromotion(CarRentConst.promotionToContentValues(promotion));
-                    return db_manager.createUser(userName, password, customerID) && pRes;
+                    boolean pRes = false;
+                    try {
+                        pRes = db_manager.createUser(userName, password, customerID);
+                        return db_manager.addPromotion(CarRentConst.promotionToContentValues(new Promotion(customerID))) && pRes;
+                    } catch (Exception e) {
+                        Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        return false;
+                    }
                 }
             }.execute();
 

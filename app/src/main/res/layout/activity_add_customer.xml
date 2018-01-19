@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/White"
+    android:orientation="vertical"
     tools:context="lugassi.wallach.client_android5778_2638_6575.controller.AddCustomer">
 
     <TextView
@@ -13,10 +13,11 @@
         android:layout_height="wrap_content"
         android:background="@color/OrangeRed"
         android:padding="15dp"
-        android:text="@string/textAddCustomer"
+        android:text="@string/textCustomerDetails"
         android:textAlignment="center"
         android:textColor="@color/White"
         android:textSize="30dp" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -25,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <EditText
                 android:id="@+id/firstNameEditText"
                 android:layout_width="match_parent"
@@ -100,6 +102,7 @@
             <Spinner
                 android:id="@+id/genderSpinner"
                 style="@style/spinner_style" />
+
             <EditText
                 android:id="@+id/birthDayEditText"
                 android:layout_width="match_parent"
@@ -109,6 +112,7 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
                 android:ems="10"
+                android:focusable="false"
                 android:hint="@string/hintBirthDay"
                 android:inputType="date" />
 
@@ -123,7 +127,8 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/button_shape"
                 android:text="@string/buttonCreate"
-                android:textColor="@color/Black"/>
+                android:textColor="@color/Black" />
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>

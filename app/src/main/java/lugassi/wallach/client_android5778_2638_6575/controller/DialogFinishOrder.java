@@ -51,7 +51,12 @@ public class DialogFinishOrder extends DialogFragment implements View.OnClickLis
 
                 @Override
                 protected Reservation doInBackground(Integer... params) {
-                    return db_manager.getReservation(params[0]);
+                    try {
+                        return db_manager.getReservation(params[0]);
+                    } catch (Exception e) {
+                        Snackbar.make(getView(), e.getMessage(), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                        return null;
+                    }
                 }
             }.execute(getArguments().getInt(CarRentConst.ReservationConst.RESERVATION_ID)).get();
         } catch (InterruptedException e) {
@@ -63,6 +68,7 @@ public class DialogFinishOrder extends DialogFragment implements View.OnClickLis
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (reservation == null) return null;
         View view = inflater.inflate(R.layout.dialog_finish_order, container, false);
 
         mileageEditText = (EditText) view.findViewById(R.id.mileageEditText);

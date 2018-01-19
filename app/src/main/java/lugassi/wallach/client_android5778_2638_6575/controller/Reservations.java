@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -19,6 +20,7 @@ import lugassi.wallach.client_android5778_2638_6575.R;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DBManagerFactory;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DB_manager;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Branch;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Car;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.CarModel;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Reservation;
@@ -70,25 +72,42 @@ public class Reservations extends Fragment {
                         new AsyncTask<Integer, Object, String>() {
                             @Override
                             protected void onPostExecute(String s) {
-                                branchNameEditText.setText(s);
+                                if (s != null)
+                                    branchNameEditText.setText(s);
                             }
 
                             @Override
                             protected String doInBackground(Integer... params) {
-                                Car car = db_manager.getCar(params[0]);
-                                return db_manager.getBranch(car.getBranchID()).getBranchName();
+                                Branch branch = null;
+                                try {
+                                    Car car = db_manager.getCar(params[0]);
+                                    branch = db_manager.getBranch(car.getBranchID());
+
+                                } catch (Exception e) {
+                                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                    return null;
+
+                                }
+                                return branch.getBranchName();
                             }
                         }.execute(reservation.getCarID());
                         new AsyncTask<Integer, Object, String>() {
                             @Override
                             protected void onPostExecute(String s) {
-                                modelNameAndCompanyEditText.setText(s);
+                                if (s != null)
+                                    modelNameAndCompanyEditText.setText(s);
                             }
 
                             @Override
                             protected String doInBackground(Integer... params) {
-                                Car car = db_manager.getCar(params[0]);
-                                CarModel carModel = db_manager.getCarModel(car.getModelCode());
+                                CarModel carModel = null;
+                                try {
+                                    Car car = db_manager.getCar(params[0]);
+                                    carModel = db_manager.getCarModel(car.getModelCode());
+                                } catch (Exception e) {
+                                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                    return null;
+                                }
                                 return carModel.getModelName() + ", " + carModel.getCompany().name();
                             }
                         }.execute(reservation.getCarID());
@@ -116,7 +135,12 @@ public class Reservations extends Fragment {
 
             @Override
             protected ArrayList<Reservation> doInBackground(Object... params) {
-                return db_manager.getReservationsOnGoing(customerID);
+                try {
+                    return db_manager.getReservationsOnGoing(customerID);
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    return new ArrayList<Reservation>();
+                }
             }
         }.execute();
 

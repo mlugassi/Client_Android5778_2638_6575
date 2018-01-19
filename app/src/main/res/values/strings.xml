@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Client_Android5778_2638_6575</string>
     <string name="title_activity_test">TestActivity</string>
-    <string name="registerTextView"><a href="http://www.google.com/">register</a></string>
+    <!--<string name="registerTextView"><a href="http://www.google.com/">register</a></string>-->
     <string name="title_activity_login">Sign in</string>
     <string name="title_activity_add_customer">AddCustomer</string>
     <string name="title_activity_main_title">Orange - Rental Cars</string>
@@ -19,6 +19,7 @@
     <string name="menu_action">Action</string>
     <string name="menu_exit">Exit</string>
     <string name="menu_logout">Logout</string>
+    <string name="menu_profile">My Profile</string>
 
 
     <!-- Strings related to login -->
@@ -50,7 +51,7 @@
     <string name="textCarType">Type</string>
     <string name="textEngineCapacity">Engine</string>
     <string name="textCompany">Company</string>
-    <string name="textAddCustomer">New Customer</string>
+    <string name="textCustomerDetails">Customer Profile</string>
     <string name="textChooseDataList">Choose Data List To View And Edit:</string>
     <string name="textUserNameAndPassword">Choose User Name And Password For Login</string>
     <string name="textUserName">Create User Name</string>
@@ -63,8 +64,11 @@
     <string name="textID">ID: </string>
     <string name="textDialogTitle">Make Order</string>
     <string name="textDialogMessage">Do you want to order this car?</string>
+    <string name="textDialogMessageLogout">Do you want logout?</string>
+    <string name="textDialogMessageExit">Do you want exit?</string>
     <string name="textSuccessAddBranchMessage">Add Branch Id: </string>
     <string name="textSuccessUpdateBranchMessage">Update Branch</string>
+    <string name="textSuccessUpdateCustomerMessage">Update Your Details</string>
     <string name="textSuccessCreateCarMessage">Create Car Id: </string>
     <string name="textSuccessUpdateCarMessage">Update Car</string>
     <string name="textSuccessAddReservationMessage">Create New Order\n Id: </string>
@@ -83,7 +87,8 @@
     <string name="textReadAboutUs">Read About Us:</string>
     <string name="textMail">Mail:</string>
     <string name="textUserNameCompany">Orange User</string>
-
+    <string name="textEditUsername">User Name Details:</string>
+    <string name="textEditCustomer">Customer Details</string>
     <string name="textAddress">Address:</string>
     <string name="textCity">City:</string>
     <string name="textParkingSpace">Parking Space:</string>

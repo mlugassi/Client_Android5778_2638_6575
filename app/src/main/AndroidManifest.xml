@@ -30,7 +30,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service
-            android:name=".controller.DetectsCarReleasedService"
+            android:name=".controller.MyService"
             android:enabled="true"
             android:exported="false" />
 

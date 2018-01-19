@@ -5,6 +5,17 @@ public class Promotion {
     private int totalRentDays;
     private boolean isUsed;
 
+
+    public Promotion() {
+
+    }
+
+    public Promotion(int customerID) {
+        this.customerID = customerID;
+        totalRentDays = 0;
+        isUsed = false;
+    }
+
     public int getCustomerID() {
         return customerID;
     }

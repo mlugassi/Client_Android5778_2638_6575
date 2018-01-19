@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/White"
-    tools:context="lugassi.wallach.android5778_2638_6575_client.controller.AddUser">
+    android:orientation="vertical"
+    tools:context="lugassi.wallach.client_android5778_2638_6575.controller.AddUser">
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,6 +17,7 @@
         android:textAlignment="center"
         android:textColor="@color/White"
         android:textSize="30dp" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

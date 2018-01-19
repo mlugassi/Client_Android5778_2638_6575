@@ -3,18 +3,17 @@ package lugassi.wallach.client_android5778_2638_6575.controller;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-
-import java.lang.Thread;
+import android.util.Log;
 
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DBManagerFactory;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DB_manager;
 
-public class DetectsCarReleasedService extends Service {
+public class MyService extends Service {
 
     private DB_manager db_manager;
     boolean isRun;
 
-    public DetectsCarReleasedService() {
+    public MyService() {
     }
 
     @Override
@@ -25,7 +24,7 @@ public class DetectsCarReleasedService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(final Intent intent, int flags, int startId) {
 
         isRun = true;
 
@@ -39,12 +38,11 @@ public class DetectsCarReleasedService extends Service {
                             Intent intent = new Intent();
                             intent.setAction("lugassi.wallach.RESERVATIONS_CHANGED");
                             sendBroadcast(intent);
-                        }
-                        else
+                        } else
                             isRun = true;
 
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    } catch (Exception e) {
+                        Log.w("MyService", e.getMessage());
                     }
                 }
             }

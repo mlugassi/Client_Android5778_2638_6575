@@ -13,6 +13,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import lugassi.wallach.client_android5778_2638_6575.R;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DBManagerFactory;
@@ -33,19 +34,19 @@ public class Login extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);
-        db_manager = DBManagerFactory.getManager();
-        checkSharedPreferences();
-        findViews();
+        try {
+            db_manager = DBManagerFactory.getManager();
+            checkSharedPreferences();
+            findViews();
+        } catch (Exception e) {
+            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void checkSharedPreferences() {
-        // SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        //sharedPref.getString(getString(R.string.saved_username), "");
         final String username = getDefaults(CarRentConst.UserConst.USER_NAME, this);
         if (!username.equals("")) {
-
             String password = getDefaults(CarRentConst.UserConst.PASSWORD, this);
-            //sharedPref.getString(getString(R.string.saved_password), "");
             new AsyncTask<String, Object, String>() {
                 @Override
                 protected void onPostExecute(String result) {
@@ -62,19 +63,16 @@ public class Login extends Activity implements View.OnClickListener {
 
                 @Override
                 protected String doInBackground(String... params) {
-                    String result = db_manager.checkUser(params[0], params[1]);
+                    String result = null;
+                    try {
+                        result = db_manager.checkUser(params[0], params[1]);
+                    } catch (Exception e) {
+                        return e.getMessage();
+                    }
                     return result;
                 }
             }.execute(username, password);
         }
-    }
-
-    private void saveSharedPreferences(String username, String password) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(getString(R.string.saved_username), username);
-        editor.putString(getString(R.string.saved_password), password);
-        editor.commit();
     }
 
     private void findViews() {
@@ -129,7 +127,12 @@ public class Login extends Activity implements View.OnClickListener {
 
             @Override
             protected String doInBackground(String... params) {
-                String result = db_manager.checkUser(params[0], params[1]);
+                String result = null;
+                try {
+                    result = db_manager.checkUser(params[0], params[1]);
+                } catch (Exception e) {
+                    result = e.getMessage();
+                }
                 return result;
             }
         }.execute(userNameEditText.getText().toString(), passwordEditText.getText().toString());
@@ -143,9 +146,13 @@ public class Login extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (v == loginButton)
-            login();
-        else
+        if (v == loginButton) {
+            try {
+                login();
+            } catch (Exception e) {
+                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        } else
             signup();
 
     }

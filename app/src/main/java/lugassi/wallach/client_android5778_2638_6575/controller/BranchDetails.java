@@ -2,11 +2,12 @@ package lugassi.wallach.client_android5778_2638_6575.controller;
 
 
 import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.app.DialogFragment;
-import android.app.Fragment;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,13 @@ public class BranchDetails extends DialogFragment {
 
                 @Override
                 protected Branch doInBackground(Object... params) {
-                    return branch = db_manager.getBranch(getArguments().getInt(CarRentConst.BranchConst.BRANCH_ID));
+                    try {
+                        return branch = db_manager.getBranch(getArguments().getInt(CarRentConst.BranchConst.BRANCH_ID));
+                    } catch (Exception e) {
+                        Snackbar.make(getView(), e.getMessage(), Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                        return null;
+                    }
                 }
             }.execute().get();
         } catch (InterruptedException e) {
@@ -60,8 +67,8 @@ public class BranchDetails extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (branch == null) return null;
         View view = inflater.inflate(R.layout.dialog_branch_details, container, false);
         ((TextView) view.findViewById(R.id.branchIdTextView)).setText(((Integer) branch.getBranchID()).toString());
         ((TextView) view.findViewById(R.id.nameTextView)).setText(branch.getBranchName());

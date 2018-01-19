@@ -95,7 +95,12 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
 
             @Override
             protected ArrayList<Branch> doInBackground(Object... params) {
-                return db_manager.getBranches();
+                try {
+                    return db_manager.getBranches();
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    return new ArrayList<Branch>();
+                }
             }
         }.execute();
 
@@ -112,7 +117,13 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                 new AsyncTask<Object, Object, ArrayList<Car>>() {
                     @Override
                     protected ArrayList<Car> doInBackground(Object... params) {
-                        return db_manager.getFreeCarsByBranchID(branch.getBranchID());
+                        try {
+                            return db_manager.getFreeCarsByBranchID(branch.getBranchID());
+                        } catch (Exception e) {
+                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            return new ArrayList<Car>();
+
+                        }
                     }
 
                     @Override
@@ -136,18 +147,25 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                                     new AsyncTask<Integer, Object, String>() {
                                         @Override
                                         protected void onPostExecute(String branchName) {
-                                            branchNameEditText.setText(branchName);
+                                            if (branchName != null)
+                                                branchNameEditText.setText(branchName);
                                         }
 
                                         @Override
                                         protected String doInBackground(Integer... params) {
-                                            return db_manager.getBranch(params[0]).getBranchName();
+                                            try {
+                                                return db_manager.getBranch(params[0]).getBranchName();
+                                            } catch (Exception e) {
+                                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                                return null;
+                                            }
                                         }
                                     }.execute(car.getBranchID());
 
                                     new AsyncTask<Integer, Object, CarModel>() {
                                         @Override
                                         protected void onPostExecute(final CarModel carModel) {
+                                            if (carModel == null) return;
                                             modelNameAndCompanyEditText.setText(carModel.getModelName() + ", " + carModel.getCompany().name());
                                             favoriteImageButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
@@ -166,7 +184,12 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
 
                                         @Override
                                         protected CarModel doInBackground(Integer... params) {
-                                            return db_manager.getCarModel(params[0]);
+                                            try {
+                                                return db_manager.getCarModel(params[0]);
+                                            } catch (Exception e) {
+                                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                                return null;
+                                            }
                                         }
                                     }.execute(car.getModelCode());
                                     if (isModelFavorite(car.getModelCode()))
@@ -231,7 +254,12 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                 new AsyncTask<Object, Object, Integer>() {
                     @Override
                     protected Integer doInBackground(Object... params) {
-                        return db_manager.addReservation(CarRentConst.reservationToContentValues(reservation));
+                        try {
+                            return db_manager.addReservation(CarRentConst.reservationToContentValues(reservation));
+                        } catch (Exception e) {
+                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            return -1;
+                        }
                     }
 
                     @Override
@@ -245,7 +273,12 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                         new AsyncTask<Object, Object, ArrayList<Car>>() {
                             @Override
                             protected ArrayList<Car> doInBackground(Object... params) {
-                                return db_manager.getFreeCarsByBranchID(car.getBranchID());
+                                try {
+                                    return db_manager.getFreeCarsByBranchID(car.getBranchID());
+                                } catch (Exception e) {
+                                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                    return new ArrayList<Car>();
+                                }
                             }
 
                             @Override
@@ -265,14 +298,22 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
 
                                             Car car = (Car) carsListView.getItemAtPosition(position);
                                             String branchName = "", modelName = "", companyName = "";
-                                            for (Branch branch : db_manager.getBranches())
-                                                if (branch.getBranchID() == car.getBranchID())
-                                                    branchName = branch.getBranchName();
-                                            for (CarModel carModel : db_manager.getCarModels())
-                                                if (carModel.getModelCode() == car.getModelCode()) {
-                                                    modelName = carModel.getModelName();
-                                                    companyName = carModel.getCompany().name();
-                                                }
+                                            try {
+                                                for (Branch branch : db_manager.getBranches())
+                                                    if (branch.getBranchID() == car.getBranchID())
+                                                        branchName = branch.getBranchName();
+                                            } catch (Exception e) {
+                                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                            }
+                                            try {
+                                                for (CarModel carModel : db_manager.getCarModels())
+                                                    if (carModel.getModelCode() == car.getModelCode()) {
+                                                        modelName = carModel.getModelName();
+                                                        companyName = carModel.getCompany().name();
+                                                    }
+                                            } catch (Exception e) {
+                                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                            }
 
                                             carIdEditText.setText(((Integer) car.getCarID()).toString());
                                             modelNameAndCompanyEditText.setText(modelName + ", " + companyName);
