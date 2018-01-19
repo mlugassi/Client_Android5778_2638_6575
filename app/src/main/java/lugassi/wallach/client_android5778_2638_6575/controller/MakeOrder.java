@@ -3,8 +3,10 @@ package lugassi.wallach.client_android5778_2638_6575.controller;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -15,9 +17,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -28,6 +32,9 @@ import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentCons
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Branch;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Car;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.CarModel;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.CarType;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Company;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.EngineCapacity;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Reservation;
 
 public class MakeOrder extends Fragment implements SearchView.OnQueryTextListener, AdapterView.OnItemClickListener {
@@ -40,6 +47,8 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
     private DB_manager db_manager;
     private MyListAdapter branchesAdapter;
     private MyListAdapter carsAdapter;
+    private ArrayList<CarModel> favoriteModels;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +57,8 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
         customerID = getArguments().getInt(CarRentConst.CustomerConst.CUSTOMER_ID);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.title_make_order_fragment));
+        uploadCarModels();
+
     }
 
     @Override
@@ -73,7 +84,7 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                         TextView addressTextView = (TextView) convertView.findViewById(R.id.addressEditText);
 
                         Branch branch = (Branch) branchesListView.getItemAtPosition(position);
-                        nameAnIdTextView.setText(((Integer) branch.getBranchID()).toString() + " " + branch.getBranchName());
+                        nameAnIdTextView.setText(branch.getBranchName());
                         addressTextView.setText(branch.getAddress());
 
                         return convertView;
@@ -117,6 +128,7 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                                     TextView carIdEditText = (TextView) convertView.findViewById(R.id.carIdEditText);
                                     final TextView modelNameAndCompanyEditText = (TextView) convertView.findViewById(R.id.modelNameAndCompanyEditText);
                                     final TextView branchNameEditText = (TextView) convertView.findViewById(R.id.branchNameEditText);
+                                    final ImageButton favoriteImageButton = (ImageButton) convertView.findViewById(R.id.favoriteButton);
 
 
                                     final Car car = (Car) carsListView.getItemAtPosition(position);
@@ -133,19 +145,32 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                                         }
                                     }.execute(car.getBranchID());
 
-                                    new AsyncTask<Integer, Object, String>() {
+                                    new AsyncTask<Integer, Object, CarModel>() {
                                         @Override
-                                        protected void onPostExecute(String modelNameAndCompany) {
-                                            modelNameAndCompanyEditText.setText(modelNameAndCompany);
+                                        protected void onPostExecute(final CarModel carModel) {
+                                            modelNameAndCompanyEditText.setText(carModel.getModelName() + ", " + carModel.getCompany().name());
+                                            favoriteImageButton.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    if (isModelFavorite(carModel.getModelCode())) {
+                                                        removeModelFromFavorite(carModel);
+                                                        favoriteImageButton.setBackgroundResource(R.drawable.favorite_empty);
+                                                    } else {
+                                                        addModelToFavorite(carModel);
+                                                        favoriteImageButton.setBackgroundResource(R.drawable.favorite_full);
+                                                    }
+
+                                                }
+                                            });
                                         }
 
                                         @Override
-                                        protected String doInBackground(Integer... params) {
-
-                                            CarModel carModel = db_manager.getCarModel(params[0]);
-                                            return carModel.getModelName() + ", " + carModel.getCompany().name();
+                                        protected CarModel doInBackground(Integer... params) {
+                                            return db_manager.getCarModel(params[0]);
                                         }
                                     }.execute(car.getModelCode());
+                                    if (isModelFavorite(car.getModelCode()))
+                                        favoriteImageButton.setBackgroundResource(R.drawable.favorite_full);
 
                                     return convertView;
                                 }
@@ -271,6 +296,74 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
             }
         });
         builder.show();
+    }
+
+    void uploadCarModels() {
+        favoriteModels = new ArrayList<CarModel>();
+        String[] projection = new String[]{CarRentConst.DataBaseConstants.MODEL_CODE, CarRentConst.DataBaseConstants.MODEL_NAME,
+                CarRentConst.DataBaseConstants.COMPANY, CarRentConst.DataBaseConstants.ENGINE_CAPACITY,
+                CarRentConst.DataBaseConstants.SEATS, CarRentConst.DataBaseConstants.CAR_TYPE,
+                CarRentConst.DataBaseConstants.MAX_GAS_TANK};
+        Cursor cursor = getActivity().getContentResolver().query(CarRentConst.ContentProviderConstants.CONTENT_URI,
+                projection, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                CarModel carModel = new CarModel(cursor.getInt(cursor.getColumnIndex(CarRentConst.DataBaseConstants.MODEL_CODE)));
+                carModel.setModelName(cursor.getString(cursor.getColumnIndex(CarRentConst.DataBaseConstants.MODEL_NAME)));
+                carModel.setCompany(Company.valueOf(cursor.getString(cursor.getColumnIndex(CarRentConst.DataBaseConstants.COMPANY))));
+                carModel.setEngineCapacity(EngineCapacity.valueOf(cursor.getString(cursor.getColumnIndex(CarRentConst.DataBaseConstants.ENGINE_CAPACITY))));
+                carModel.setSeats(cursor.getInt(cursor.getColumnIndex(CarRentConst.DataBaseConstants.SEATS)));
+                carModel.setCarType(CarType.valueOf(cursor.getString(cursor.getColumnIndex(CarRentConst.DataBaseConstants.CAR_TYPE))));
+                carModel.setMaxGasTank(cursor.getInt(cursor.getColumnIndex(CarRentConst.DataBaseConstants.MAX_GAS_TANK)));
+                favoriteModels.add(carModel);
+            } while (cursor.moveToNext());
+        }
+
+    }
+
+    boolean isModelFavorite(int modelCode) {
+
+        for (CarModel carModel : favoriteModels)
+            if (carModel.getModelCode() == modelCode)
+                return true;
+        return false;
+    }
+
+    void addModelToFavorite(CarModel carModel) {
+        try {
+            Uri uri = getActivity().getContentResolver().insert(CarRentConst.ContentProviderConstants.CONTENT_URI, CarRentConst.carModelToContentValues(carModel));
+            favoriteModels.add(carModel);
+            carsAdapter.notifyDataSetChanged();
+            Toast.makeText(getActivity(), getString(R.string.textAddModelFavorite) + " " + carModel.getModelCode(), Toast.LENGTH_LONG)
+                    .show();
+
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG)
+                    .show();
+
+        }
+    }
+
+    void removeModelFromFavorite(CarModel carModel) {
+        try {
+            int uri = getActivity().getContentResolver().delete(CarRentConst.ContentProviderConstants.CONTENT_URI,
+                    CarRentConst.DataBaseConstants.MODEL_CODE + "=?", new String[]{new String(((Integer) carModel.getModelCode()).toString())});
+            if (uri == 0) return;
+            for (CarModel temp : favoriteModels)
+                if (carModel.getModelCode() == temp.getModelCode()) {
+                    favoriteModels.remove(temp);
+                    break;
+                }
+            carsAdapter.notifyDataSetChanged();
+            Toast.makeText(getActivity(), getString(R.string.textRemoveModelFavorite) + " " + carModel.getModelCode(), Toast.LENGTH_LONG)
+                    .show();
+
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG)
+                    .show();
+
+        }
     }
 
 }

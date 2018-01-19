@@ -1,15 +1,19 @@
 package lugassi.wallach.client_android5778_2638_6575.controller;
 
 
+import android.app.Fragment;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -33,6 +37,8 @@ public class FavoriteModels extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         carModels = new ArrayList<>();
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle(getString(R.string.title_favorite_models_fragment));
         uploadCarModels();
         carModelsAdapter = new MyListAdapter(getActivity(), carModels) {
             @Override
@@ -43,15 +49,40 @@ public class FavoriteModels extends Fragment {
 
                 TextView carModelTextView = (TextView) convertView.findViewById(R.id.modelCodeEditText);
                 TextView nameAndCompanyEditText = (TextView) convertView.findViewById(R.id.nameAndCompanyEditText);
+                final ImageButton favoriteImageButton = (ImageButton) convertView.findViewById(R.id.favoriteButton);
 
-                CarModel carModel = (CarModel) favoriteCarModelListView.getItemAtPosition(position);
+                final CarModel carModel = (CarModel) favoriteCarModelListView.getItemAtPosition(position);
                 carModelTextView.setText(((Integer) carModel.getModelCode()).toString());
                 nameAndCompanyEditText.setText(carModel.getModelName() + ", " + carModel.getCompany().name());
+                if (isModelFavorite(carModel.getModelCode()))
+                    favoriteImageButton.setBackgroundResource(R.drawable.favorite_full);
+                favoriteImageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (isModelFavorite(carModel.getModelCode())) {
+                            removeModelFromFavorite(carModel);
+                            favoriteImageButton.setBackgroundResource(R.drawable.favorite_empty);
+                        } else {
+                            addModelToFavorite(carModel);
+                            favoriteImageButton.setBackgroundResource(R.drawable.favorite_full);
+                        }
 
+                    }
+                });
                 return convertView;
             }
         };
 
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_favorite_models, container, false);
+        favoriteCarModelListView = (ListView) view.findViewById(R.id.favoriteCarModelListView);
+        favoriteCarModelListView.setAdapter(carModelsAdapter);
+        return view;
     }
 
     void uploadCarModels() {
@@ -77,13 +108,47 @@ public class FavoriteModels extends Fragment {
 
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_favorite_models, container, false);
-        favoriteCarModelListView = (ListView) view.findViewById(R.id.favoriteCarModelListView);
-        favoriteCarModelListView.setAdapter(carModelsAdapter);
-        return view;
+    boolean isModelFavorite(int modelCode) {
+
+        for (CarModel carModel : carModels)
+            if (carModel.getModelCode() == modelCode)
+                return true;
+        return false;
     }
 
+    void addModelToFavorite(CarModel carModel) {
+        try {
+            Uri uri = getActivity().getContentResolver().insert(CarRentConst.ContentProviderConstants.CONTENT_URI, CarRentConst.carModelToContentValues(carModel));
+            carModels.add(carModel);
+            carModelsAdapter.notifyDataSetChanged();
+            Toast.makeText(getActivity(), getString(R.string.textAddModelFavorite) + " " + carModel.getModelCode(), Toast.LENGTH_LONG)
+                    .show();
+
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG)
+                    .show();
+
+        }
+    }
+
+    void removeModelFromFavorite(CarModel carModel) {
+        try {
+            int uri = getActivity().getContentResolver().delete(CarRentConst.ContentProviderConstants.CONTENT_URI,
+                    CarRentConst.DataBaseConstants.MODEL_CODE + "=?", new String[]{new String(((Integer) carModel.getModelCode()).toString())});
+            if (uri == 0) return;
+            for (CarModel temp : carModels)
+                if (carModel.getModelCode() == temp.getModelCode()) {
+                    carModels.remove(temp);
+                    break;
+                }
+            carModelsAdapter.notifyDataSetChanged();
+            Toast.makeText(getActivity(), getString(R.string.textRemoveModelFavorite) + " " + carModel.getModelCode(), Toast.LENGTH_LONG)
+                    .show();
+
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG)
+                    .show();
+
+        }
+    }
 }

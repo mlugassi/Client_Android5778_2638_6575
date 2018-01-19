@@ -17,6 +17,7 @@ import lugassi.wallach.client_android5778_2638_6575.model.backend.CarModelsDataB
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst;
 
 import static lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst.ContentProviderConstants.uriMatcher;
+import static lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst.DataBaseConstants.MODEL_CODE;
 import static lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst.DataBaseConstants.TABLE_NAME;
 
 public class MyContentProvider extends ContentProvider {
@@ -99,6 +100,14 @@ public class MyContentProvider extends ContentProvider {
         Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, null);
         c.setNotificationUri(getContext().getContentResolver(), uri);
         return c;
+    }
+
+    public boolean Exists(String _id) {
+        Cursor cursor = db.rawQuery("select " + MODEL_CODE + " from " + TABLE_NAME + " where " + MODEL_CODE + "_id=%s",
+                new String[]{_id});
+        boolean exists = (cursor.getCount() > 0);
+        cursor.close();
+        return exists;
     }
 
     @Override

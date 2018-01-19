@@ -69,7 +69,7 @@ public class MyListAdapter<T> extends BaseAdapter implements Filterable {
 
                     for (T data : mData) {
                         Branch branch = (Branch) data;
-                        if (branch.getAddress().toLowerCase().startsWith(constraint.toString().toLowerCase())) {
+                        if (branch.getCity().toLowerCase().startsWith(constraint.toString().toLowerCase())) {
                             filterResultsData.add(data);
                         }
                     }

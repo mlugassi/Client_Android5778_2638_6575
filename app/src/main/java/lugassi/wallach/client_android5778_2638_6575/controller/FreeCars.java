@@ -5,9 +5,11 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +31,9 @@ import lugassi.wallach.client_android5778_2638_6575.model.backend.DB_manager;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Car;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.CarModel;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.CarType;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Company;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.EngineCapacity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +44,8 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
     private ListView freeCarsListView;
     private AutoCompleteTextView carModelsAutoCompleteTextView;
     private Integer modelCode;
+    private MyListAdapter<Car> carsAdapter;
+    private ArrayList<CarModel> favoriteModels;
     private MyReceiver carChangedReceiver = new MyReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -171,6 +179,9 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
         super.onCreate(savedInstanceState);
         db_manager = DBManagerFactory.getManager();
         modelCode = -1;
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle(getString(R.string.title_free_cars_fragment));
+        uploadCarModels();
         getActivity().registerReceiver(carChangedReceiver, new IntentFilter(CarRentConst.MyIntentFilter.RESERVATIONS_CHANGED));
     }
 
@@ -211,7 +222,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
         new AsyncTask<Integer, Object, ArrayList<Car>>() {
             @Override
             protected void onPostExecute(ArrayList<Car> cars) {
-                ArrayAdapter<Car> carsAdapter = new ArrayAdapter<Car>(getActivity(), R.layout.car_list_view, cars) {
+                carsAdapter = new MyListAdapter<Car>(getActivity(), cars) {
                     @Override
                     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -221,6 +232,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                         TextView carIdEditText = (TextView) convertView.findViewById(R.id.carIdEditText);
                         final TextView modelNameAndCompanyEditText = (TextView) convertView.findViewById(R.id.modelNameAndCompanyEditText);
                         final TextView branchNameEditText = (TextView) convertView.findViewById(R.id.branchNameEditText);
+                        final ImageButton favoriteImageButton = (ImageButton) convertView.findViewById(R.id.favoriteButton);
 
 
                         final Car car = (Car) freeCarsListView.getItemAtPosition(position);
@@ -251,6 +263,21 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                             }
                         }.execute(car.getModelCode());
 
+                        if (isModelFavorite(car.getModelCode()))
+                            favoriteImageButton.setBackgroundResource(R.drawable.favorite_full);
+                        favoriteImageButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (isModelFavorite(car.getModelCode())) {
+                                    removeModelFromFavorite(car.getModelCode());
+                                    favoriteImageButton.setBackgroundResource(R.drawable.favorite_empty);
+                                } else {
+                                    addModelToFavorite(car.getModelCode());
+                                    favoriteImageButton.setBackgroundResource(R.drawable.favorite_full);
+                                }
+
+                            }
+                        });
                         return convertView;
                     }
                 };
@@ -259,25 +286,11 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-                        Car car = (Car) freeCarsListView.getItemAtPosition(position);
-                        new AsyncTask<Integer, Object, CarModel>() {
-                            @Override
-                            protected void onPostExecute(CarModel carModel) {
-                                Uri uri = getActivity().getContentResolver().insert(CarRentConst.ContentProviderConstants.CONTENT_URI, CarRentConst.carModelToContentValues(carModel));
-                                Toast.makeText(getActivity(), "New record inserted", Toast.LENGTH_LONG)
-                                        .show();
-                            }
-
-                            @Override
-                            protected CarModel doInBackground(Integer... params) {
-                                return db_manager.getCarModel(params[0]);
-                            }
-                        }.execute(car.getModelCode());
-//                        Bundle args = new Bundle();
-//                        args.putInt(CarRentConst.CarConst.CAR_ID, ((Car) freeCarsListView.getItemAtPosition(position)).getCarID());
-//                        CarDetails myDialogFragment = new CarDetails();
-//                        myDialogFragment.setArguments(args);
-//                        myDialogFragment.show(getActivity().getFragmentManager(), "Car Details");
+                        Bundle args = new Bundle();
+                        args.putInt(CarRentConst.CarConst.CAR_ID, ((Car) freeCarsListView.getItemAtPosition(position)).getCarID());
+                        CarDetails myDialogFragment = new CarDetails();
+                        myDialogFragment.setArguments(args);
+                        myDialogFragment.show(getActivity().getFragmentManager(), "Car Details");
                         return false;
                     }
                 });
@@ -310,6 +323,92 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
         return view;
     }
 
+    void uploadCarModels() {
+        favoriteModels = new ArrayList<CarModel>();
+        String[] projection = new String[]{CarRentConst.DataBaseConstants.MODEL_CODE, CarRentConst.DataBaseConstants.MODEL_NAME,
+                CarRentConst.DataBaseConstants.COMPANY, CarRentConst.DataBaseConstants.ENGINE_CAPACITY,
+                CarRentConst.DataBaseConstants.SEATS, CarRentConst.DataBaseConstants.CAR_TYPE,
+                CarRentConst.DataBaseConstants.MAX_GAS_TANK};
+        Cursor cursor = getActivity().getContentResolver().query(CarRentConst.ContentProviderConstants.CONTENT_URI,
+                projection, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                CarModel carModel = new CarModel(cursor.getInt(cursor.getColumnIndex(CarRentConst.DataBaseConstants.MODEL_CODE)));
+                carModel.setModelName(cursor.getString(cursor.getColumnIndex(CarRentConst.DataBaseConstants.MODEL_NAME)));
+                carModel.setCompany(Company.valueOf(cursor.getString(cursor.getColumnIndex(CarRentConst.DataBaseConstants.COMPANY))));
+                carModel.setEngineCapacity(EngineCapacity.valueOf(cursor.getString(cursor.getColumnIndex(CarRentConst.DataBaseConstants.ENGINE_CAPACITY))));
+                carModel.setSeats(cursor.getInt(cursor.getColumnIndex(CarRentConst.DataBaseConstants.SEATS)));
+                carModel.setCarType(CarType.valueOf(cursor.getString(cursor.getColumnIndex(CarRentConst.DataBaseConstants.CAR_TYPE))));
+                carModel.setMaxGasTank(cursor.getInt(cursor.getColumnIndex(CarRentConst.DataBaseConstants.MAX_GAS_TANK)));
+                favoriteModels.add(carModel);
+            } while (cursor.moveToNext());
+        }
+
+    }
+
+    boolean isModelFavorite(int modelCode) {
+
+        for (CarModel carModel : favoriteModels)
+            if (carModel.getModelCode() == modelCode)
+                return true;
+        return false;
+    }
+
+    void addModelToFavorite(final int modelCode) {
+        try {
+            new AsyncTask<Integer, Object, CarModel>() {
+                @Override
+                protected void onPostExecute(CarModel carModel) {
+                    Uri uri = getActivity().getContentResolver().insert(CarRentConst.ContentProviderConstants.CONTENT_URI, CarRentConst.carModelToContentValues(carModel));
+                    favoriteModels.add(carModel);
+                    carsAdapter.notifyDataSetChanged();
+                    Toast.makeText(getActivity(), getString(R.string.textAddModelFavorite) + " " + modelCode, Toast.LENGTH_LONG)
+                            .show();
+                }
+
+                @Override
+                protected CarModel doInBackground(Integer... params) {
+                    return db_manager.getCarModel(params[0]);
+                }
+            }.execute(modelCode);
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG)
+                    .show();
+
+        }
+    }
+
+    void removeModelFromFavorite(final int modelCode) {
+        try {
+            new AsyncTask<Integer, Object, CarModel>() {
+                @Override
+                protected void onPostExecute(CarModel carModel) {
+                    int uri = getActivity().getContentResolver().delete(CarRentConst.ContentProviderConstants.CONTENT_URI,
+                            CarRentConst.DataBaseConstants.MODEL_CODE + "=?", new String[]{new String(((Integer) carModel.getModelCode()).toString())});
+                    if (uri == 0) return;
+                    for (CarModel temp : favoriteModels)
+                        if (carModel.getModelCode() == temp.getModelCode()) {
+                            favoriteModels.remove(temp);
+                            break;
+                        }
+                    carsAdapter.notifyDataSetChanged();
+                    Toast.makeText(getActivity(), getString(R.string.textRemoveModelFavorite) + " " + modelCode, Toast.LENGTH_LONG)
+                            .show();
+                }
+
+                @Override
+                protected CarModel doInBackground(Integer... params) {
+                    return db_manager.getCarModel(params[0]);
+                }
+            }.execute(modelCode);
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG)
+                    .show();
+
+        }
+    }
+
     Integer getModelCode(String line) {
         return Integer.parseInt(line.substring(line.indexOf(":") + 2));
     }
@@ -324,7 +423,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
         new AsyncTask<Integer, Object, ArrayList<Car>>() {
             @Override
             protected void onPostExecute(ArrayList<Car> cars) {
-                ArrayAdapter<Car> carsAdapter = new ArrayAdapter<Car>(getActivity(), R.layout.car_list_view, cars) {
+                carsAdapter = new MyListAdapter<Car>(getActivity(), cars) {
                     @Override
                     public View getView(int position, View convertView, ViewGroup parent) {
 

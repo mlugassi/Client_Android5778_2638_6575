@@ -6,6 +6,8 @@
     <string name="title_activity_add_customer">AddCustomer</string>
     <string name="title_activity_main_title">Orange - Rental Cars</string>
     <string name="title_make_order_fragment">Orange - Make Order</string>
+    <string name="title_favorite_models_fragment">Orange - Your Favorite Models</string>
+    <string name="title_free_cars_fragment">Orange - Free Cars</string>
     <string name="title_reservation_fragment">Orange - Reservation</string>
 
     <!--menu-->
@@ -42,6 +44,8 @@
 
     <!-- Strings Texts -->
 
+    <string name="textAddModelFavorite">successfully added model:</string>
+    <string name="textRemoveModelFavorite">successfully removed model:</string>
     <string name="textCarType">Type</string>
     <string name="textEngineCapacity">Engine</string>
     <string name="textCompany">Company</string>
