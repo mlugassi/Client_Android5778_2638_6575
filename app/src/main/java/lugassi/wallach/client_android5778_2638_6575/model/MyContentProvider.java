@@ -1,4 +1,4 @@
-package lugassi.wallach.client_android5778_2638_6575.controller;
+package lugassi.wallach.client_android5778_2638_6575.model;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;

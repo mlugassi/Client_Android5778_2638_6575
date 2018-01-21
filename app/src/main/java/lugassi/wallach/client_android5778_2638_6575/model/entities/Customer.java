@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.Gender;
+
 public class Customer {
     private String firstName;
     private String familyName;
@@ -14,6 +16,10 @@ public class Customer {
     private Gender gender;
     private int numAccidents;
     private Calendar birthDay;
+
+    public Customer() {
+        numAccidents = 0;
+    }
 
     public String getFirstName() {
         return firstName;

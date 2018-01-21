@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst.BranchConst;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst.CarConst;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst.CarModelConst;
@@ -33,11 +34,11 @@ import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentCons
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Branch;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Car;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.CarModel;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.CarType;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.Company;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.CarType;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.Company;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Customer;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.EngineCapacity;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.Gender;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.EngineCapacity;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.Gender;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Promotion;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Reservation;
 
@@ -150,12 +151,12 @@ public class DB_SQL implements DB_manager {
         String results = POST(url + "Promotion/GetPromotion.php", data);
         if (results.startsWith("0"))
             throw new Exception("Record dosn't exist");
-        JSONArray array = new JSONObject().getJSONArray("promotion");
+        JSONArray array = new JSONObject(results).getJSONArray("promotion");
         JSONObject jsonObject = array.getJSONObject(0);
         Promotion promotion = new Promotion();
         promotion.setCustomerID(jsonObject.getInt(PromotionConst.CUSTOMER_ID));
         promotion.setTotalRentDays(jsonObject.getInt(PromotionConst.TOTAL_RENT_DAYS));
-        promotion.setUsed(jsonObject.getBoolean(PromotionConst.IS_USED));
+        promotion.setUsed(jsonObject.getInt(PromotionConst.IS_USED) != 0);
 
         return promotion;
     }
@@ -231,7 +232,7 @@ public class DB_SQL implements DB_manager {
     }
 
     /// car models
-
+    @Override
     public CarModel getCarModel(int modelCode) throws Exception {
         Map<String, Object> data = new LinkedHashMap<>();
 
@@ -460,7 +461,7 @@ public class DB_SQL implements DB_manager {
     public Customer getCustomer(int customerID) throws Exception {
         Map<String, Object> data = new LinkedHashMap<>();
 
-        data.put(PromotionConst.CUSTOMER_ID, customerID);
+        data.put(CustomerConst.CUSTOMER_ID, customerID);
         String results = POST(url + "Customer/GetCustomer.php", data);
         if (results.startsWith("0"))
             throw new Exception("Record dosn't exist");
@@ -489,6 +490,7 @@ public class DB_SQL implements DB_manager {
 
         Map<String, Object> data = new LinkedHashMap<>();
 
+        Car car = getCar(contentValues.getAsInteger(ReservationConst.CAR_ID));
         data.put(ReservationConst.RESERVATION_ID, contentValues.getAsInteger(ReservationConst.RESERVATION_ID));
         data.put(ReservationConst.CUSTOMER_ID, contentValues.getAsInteger(ReservationConst.CUSTOMER_ID));
         data.put(ReservationConst.CAR_ID, contentValues.getAsInteger(ReservationConst.CAR_ID));
@@ -500,6 +502,8 @@ public class DB_SQL implements DB_manager {
         if (!results.startsWith("New")) {
             throw new Exception("An error occurred on the server's side");
         }
+        car.setReservations(car.getReservations() + 1);
+        updateCar(CarRentConst.carToContentValues(car));
         return contentValues.getAsInteger(ReservationConst.RESERVATION_ID);
     }
 
@@ -564,12 +568,27 @@ public class DB_SQL implements DB_manager {
     }
 
     @Override
-    public Float closeReservation(ContentValues contentValues) {
+    public Integer getCustomerTotalReservations(int customerID) throws Exception {
+
+        Map<String, Object> data = new LinkedHashMap<>();
+
+        data.put(ReservationConst.CUSTOMER_ID, customerID);
+        String results = POST(url + "Reservation/GetCustomerTotalReservations.php", data);
+        results = results.substring(0, results.length() - 1);
+
+        if (tryParseInt(results))
+            return Integer.parseInt(results);
+        else return 0;
+    }
+
+    @Override
+    public long closeReservation(ContentValues contentValues) {
         try {
             Map<String, Object> data = new LinkedHashMap<>();
-            Float cost = calculateReservationCost(contentValues.getAsString(ReservationConst.START_DATE),
+            long cost = calculateReservationCost(contentValues.getAsString(ReservationConst.START_DATE),
                     contentValues.getAsString(ReservationConst.END_DATE), contentValues.getAsInteger(ReservationConst.GAS_FILLED),
-                    contentValues.getAsLong(ReservationConst.FINISH_MILEAGE) - contentValues.getAsLong(ReservationConst.BEGIN_MILEAGE));
+                    contentValues.getAsLong(ReservationConst.FINISH_MILEAGE) - contentValues.getAsLong(ReservationConst.BEGIN_MILEAGE),
+                    contentValues.getAsInteger(ReservationConst.CUSTOMER_ID));
             data.put(ReservationConst.RESERVATION_ID, contentValues.getAsInteger(ReservationConst.RESERVATION_ID));
             data.put(ReservationConst.IS_OPEN, 0);
             data.put(ReservationConst.END_DATE, contentValues.getAsString(ReservationConst.END_DATE));
@@ -585,10 +604,9 @@ public class DB_SQL implements DB_manager {
             if (results.substring(0, 5).equalsIgnoreCase("error")) {
                 throw new Exception(results.substring(5));
             }
-
             return cost;
         } catch (Exception e) {
-            return Float.valueOf(-1);
+            return -1;
         }
     }
 
@@ -679,14 +697,42 @@ public class DB_SQL implements DB_manager {
     }
 
     // help function
-    Float calculateReservationCost(String start, String end, int gasCost, long mileage) throws ParseException {
+    long calculateReservationCost(String start, String end, int gasCost, long mileage, int customerID) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        Date startDate = sdf.parse(start);
-        Date endDate = sdf.parse(end);
+        Promotion promotion = getPromotion(customerID);
+        Customer customer = getCustomer(customerID);
+        int totalDays = getCountOfDays(start, end);
+        promotion.setTotalRentDays(promotion.getTotalRentDays() + totalDays);
+        updatePromotion(CarRentConst.promotionToContentValues(promotion));
 
-        Float cost = Float.valueOf((float) ((((endDate.getTime() - startDate.getTime()) / 1000) * 0.003) - gasCost + (mileage * 100)));
-        return cost;
+        int discount = gasCost;
+        if (totalDays > 5)
+            discount += (totalDays - 5) * 60;
+
+        return ((totalDays * 250) + (customer.getNumAccidents() * 25) - discount + (mileage * 10));
     }
 
+    int getCountOfDays(String start, String end) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date startDate = sdf.parse(start);
+            Date endDate = sdf.parse(end);
+
+            float dayCount = ((float) (endDate.getTime() - startDate.getTime())) / (24 * 60 * 60 * 1000);
+            return (int) dayCount;
+
+        } catch (ParseException e) {
+            return 0;
+        }
+    }
+
+    boolean tryParseInt(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 }

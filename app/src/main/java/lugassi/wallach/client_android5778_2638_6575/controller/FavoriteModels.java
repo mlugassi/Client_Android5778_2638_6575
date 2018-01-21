@@ -18,11 +18,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import lugassi.wallach.client_android5778_2638_6575.R;
+import lugassi.wallach.client_android5778_2638_6575.model.MyListAdapter;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.CarModel;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.CarType;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.Company;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.EngineCapacity;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.CarType;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.Company;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.EngineCapacity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,6 +57,8 @@ public class FavoriteModels extends Fragment {
                 nameAndCompanyEditText.setText(carModel.getModelName() + ", " + carModel.getCompany().name());
                 if (isModelFavorite(carModel.getModelCode()))
                     favoriteImageButton.setBackgroundResource(R.drawable.favorite_full);
+                else
+                    favoriteImageButton.setBackgroundResource(R.drawable.favorite_empty);
                 favoriteImageButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

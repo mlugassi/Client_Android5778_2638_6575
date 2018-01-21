@@ -5,6 +5,10 @@ import android.content.UriMatcher;
 import android.net.Uri;
 
 import lugassi.wallach.client_android5778_2638_6575.model.entities.*;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.CarType;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.Company;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.EngineCapacity;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.Gender;
 
 /**
  * Created by Michael on 13/11/2017.
@@ -15,8 +19,8 @@ public class CarRentConst {
     public static final String POSITION = "position";
 
     public static class MyIntentFilter {
-        public static final String RESERVATIONS_CHANGED = "lugassi.wallach.RESERVATIONS_CHANGED";
-
+        public static final String CARS_CHANGED = "lugassi.wallach.CARS_CHANGED";
+        public static final String BRANCHES_CHANGED = "lugassi.wallach.BRANCHES_CHANGED";
     }
 
     public static class DataBaseConstants {

@@ -63,9 +63,9 @@ public interface DB_manager {
 
     public ArrayList<Reservation> getReservationsOnGoing(int customerID) throws Exception;
 
+    Integer getCustomerTotalReservations(int customerID) throws Exception;
 
-    public Float closeReservation(ContentValues contentValues);
-
+    public long closeReservation(ContentValues contentValues);
 
     public boolean detectCarsChanges() throws Exception;
 }

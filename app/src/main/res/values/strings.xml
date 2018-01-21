@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Client_Android5778_2638_6575</string>
+    <string name="app_name">Orange Rent Cars</string>
     <string name="title_activity_test">TestActivity</string>
     <!--<string name="registerTextView"><a href="http://www.google.com/">register</a></string>-->
     <string name="title_activity_login">Sign in</string>
@@ -45,6 +45,12 @@
     <string name="dataCarModels">CarModels</string>
 
     <!-- Strings Texts -->
+    <string name="textHello">Hello,</string>
+    <string name="textTotalReservations">Total Reservations:</string>
+    <string name="textTotalRentDays">Total Rent Days:</string>
+    <string name="textTotalAccidents">Total Accidents:</string>
+
+    Report an accident
 
     <string name="textAddModelFavorite">successfully added model:</string>
     <string name="textRemoveModelFavorite">successfully removed model:</string>
@@ -136,6 +142,8 @@
     <string name="buttonSettings">Settings</string>
     <string name="buttonFinish">Finish Order</string>
     <string name="buttonLogin">Login</string>
+    <string name="ButtonReportAccident">Report an accident</string>
+
     <!-- Checks boxes -->
     <string name="checkBoxGasFill">Is Gas Fill</string>
 

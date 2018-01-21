@@ -7,9 +7,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -30,25 +30,22 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service
-            android:name=".controller.MyService"
+            android:name=".model.MyService"
             android:enabled="true"
             android:exported="false" />
 
         <receiver
-            android:name=".controller.MyReceiver"
+            android:name=".model.MyReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="lugassi.wallach.FREE_CARS_CHANGED" />
-                <action android:name="lugassi.wallach.ADD_CARS" />
-                <action android:name="lugassi.wallach.REMOVE_CARS" />
-                <action android:name="lugassi.wallach.RESERVATIONS_CHANGED" />
+                <action android:name="lugassi.wallach.CARS_CHANGED" />
                 <action android:name="lugassi.wallach.BRANCHES_CHANGED" />
             </intent-filter>
         </receiver>
 
         <provider
-            android:name=".controller.MyContentProvider"
+            android:name=".model.MyContentProvider"
             android:authorities="lugassi.wallach.MyContentProvider"
             android:enabled="true"
             android:exported="true"></provider>

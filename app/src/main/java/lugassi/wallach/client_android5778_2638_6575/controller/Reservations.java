@@ -17,6 +17,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import lugassi.wallach.client_android5778_2638_6575.R;
+import lugassi.wallach.client_android5778_2638_6575.model.MyListAdapter;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DBManagerFactory;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DB_manager;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst;
@@ -31,6 +32,7 @@ import lugassi.wallach.client_android5778_2638_6575.model.entities.Reservation;
 public class Reservations extends Fragment {
 
     private ListView reservationsListView;
+    MyListAdapter<Reservation> reservationAdapter;
     DB_manager db_manager;
     int customerID;
 
@@ -51,7 +53,7 @@ public class Reservations extends Fragment {
         new AsyncTask<Object, Object, ArrayList<Reservation>>() {
             @Override
             protected void onPostExecute(ArrayList<Reservation> reservations) {
-                MyListAdapter<Reservation> reservationAdapter = new MyListAdapter<Reservation>(getActivity(), reservations) {
+                reservationAdapter = new MyListAdapter<Reservation>(getActivity(), reservations) {
                     public View getView(int position, View convertView, ViewGroup parent) {
 
                         if (convertView == null)
@@ -122,7 +124,6 @@ public class Reservations extends Fragment {
                                 DialogFinishOrder myDialogFragment = new DialogFinishOrder();
                                 myDialogFragment.setArguments(args);
                                 myDialogFragment.show(getActivity().getFragmentManager(), "Finish Order");
-
                             }
                         });
 

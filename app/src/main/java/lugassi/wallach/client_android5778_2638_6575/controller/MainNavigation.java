@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import lugassi.wallach.client_android5778_2638_6575.R;
+import lugassi.wallach.client_android5778_2638_6575.model.MyService;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst;
 
 public class MainNavigation extends AppCompatActivity
@@ -118,17 +119,9 @@ public class MainNavigation extends AppCompatActivity
             fragment = new FavoriteModels();
 
         } else if (id == R.id.nav_exit) {
-            if (showEnsureDialog(R.id.nav_exit))
-                this.finishAffinity();
+            showEnsureDialog(R.id.nav_exit);
         } else if (id == R.id.nav_logout) {
-            if (showEnsureDialog(R.id.nav_logout)) {
-                Login.setDefaults(CarRentConst.UserConst.USER_NAME, "", this);
-                Login.setDefaults(CarRentConst.UserConst.PASSWORD, "", this);
-
-                Intent intent = new Intent(this, Login.class);
-                this.startActivity(intent);
-                finish();
-            }
+            showEnsureDialog(R.id.nav_logout);
         }
         args.putInt(CarRentConst.CustomerConst.CUSTOMER_ID, customerID);
         fragment.setArguments(args);
@@ -140,7 +133,7 @@ public class MainNavigation extends AppCompatActivity
     }
 
     void setHomeFragment() {
-        Reservations fragment = new Reservations();
+        Home fragment = new Home();
         Bundle args = new Bundle();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         args.putInt(CarRentConst.CustomerConst.CUSTOMER_ID, customerID);
@@ -149,10 +142,8 @@ public class MainNavigation extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
-    boolean showEnsureDialog(int action) {
-        final boolean[] answer = {false};
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
+    void showEnsureDialog(final int action) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         if (action == R.id.nav_logout)
             builder.setMessage(getString(R.string.textDialogMessageLogout));
         else if (action == R.id.nav_exit)
@@ -161,7 +152,15 @@ public class MainNavigation extends AppCompatActivity
         builder.setPositiveButton(getString(R.string.buttonYes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                answer[0] = true;
+                if (action == R.id.nav_logout) {
+                    Login.setDefaults(CarRentConst.UserConst.USER_NAME, "", MainNavigation.this);
+                    Login.setDefaults(CarRentConst.UserConst.PASSWORD, "", MainNavigation.this);
+
+                    Intent intent = new Intent(MainNavigation.this, Login.class);
+                    startActivity(intent);
+                    finish();
+                } else if (action == R.id.nav_exit)
+                    finishAffinity();
             }
         });
         builder.setNegativeButton(getString(R.string.buttonNo), new DialogInterface.OnClickListener() {
@@ -170,6 +169,5 @@ public class MainNavigation extends AppCompatActivity
             }
         });
         builder.show();
-        return answer[0];
     }
 }

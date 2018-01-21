@@ -1,5 +1,9 @@
 package lugassi.wallach.client_android5778_2638_6575.model.entities;
 
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.CarType;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.Company;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.EngineCapacity;
+
 public class CarModel {
     private static int modelCodeSerializer = 1;
     private int modelCode;

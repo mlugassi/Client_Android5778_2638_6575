@@ -1,4 +1,4 @@
-package lugassi.wallach.client_android5778_2638_6575.controller;
+package lugassi.wallach.client_android5778_2638_6575.model;
 
 import android.content.Context;
 import android.view.View;
@@ -29,7 +29,8 @@ public class MyListAdapter<T> extends BaseAdapter implements Filterable {
     }
 
     public void setData(ArrayList<T> mData) {
-        this.mData = mData;
+        this.mData.clear();
+        this.mData.addAll(mData);
     }
 
     @Override

@@ -24,7 +24,7 @@ import lugassi.wallach.client_android5778_2638_6575.model.backend.DBManagerFacto
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DB_manager;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Customer;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.Gender;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.Gender;
 
 public class AddCustomer extends Activity implements View.OnClickListener {
 
@@ -274,6 +274,4 @@ public class AddCustomer extends Activity implements View.OnClickListener {
                     myCalendar.get(Calendar.DAY_OF_MONTH)).show();
         }
     }
-
-
 }

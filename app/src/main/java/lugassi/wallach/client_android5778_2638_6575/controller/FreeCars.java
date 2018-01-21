@@ -26,19 +26,21 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import lugassi.wallach.client_android5778_2638_6575.R;
+import lugassi.wallach.client_android5778_2638_6575.model.MyListAdapter;
+import lugassi.wallach.client_android5778_2638_6575.model.MyReceiver;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DBManagerFactory;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DB_manager;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.Car;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.CarModel;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.CarType;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.Company;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.EngineCapacity;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.CarType;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.Company;
+import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.EngineCapacity;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FreeCars extends Fragment implements AdapterView.OnItemClickListener {
+public class FreeCars extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener, AdapterView.OnItemLongClickListener {
 
     private DB_manager db_manager;
     private ListView freeCarsListView;
@@ -46,69 +48,16 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
     private Integer modelCode;
     private MyListAdapter<Car> carsAdapter;
     private ArrayList<CarModel> favoriteModels;
+
     private MyReceiver carChangedReceiver = new MyReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (!carModelsAutoCompleteTextView.getText().toString().equals(""))
+                // updte cars list and refresh listview
                 new AsyncTask<Integer, Object, ArrayList<Car>>() {
                     @Override
                     protected void onPostExecute(ArrayList<Car> cars) {
-                        ArrayAdapter<Car> carsAdapter = new ArrayAdapter<Car>(getActivity(), R.layout.car_list_view, cars) {
-                            @Override
-                            public View getView(int position, View convertView, ViewGroup parent) {
-
-                                if (convertView == null)
-                                    convertView = View.inflate(getActivity(), R.layout.car_list_view, null);
-
-                                TextView carIdEditText = (TextView) convertView.findViewById(R.id.carIdEditText);
-                                final TextView modelNameAndCompanyEditText = (TextView) convertView.findViewById(R.id.modelNameAndCompanyEditText);
-                                final TextView branchNameEditText = (TextView) convertView.findViewById(R.id.branchNameEditText);
-
-
-                                final Car car = (Car) freeCarsListView.getItemAtPosition(position);
-                                carIdEditText.setText(((Integer) car.getCarID()).toString());
-                                new AsyncTask<Integer, Object, String>() {
-                                    @Override
-                                    protected void onPostExecute(String branchName) {
-                                        if (branchName != null)
-                                            branchNameEditText.setText(branchName);
-                                    }
-
-                                    @Override
-                                    protected String doInBackground(Integer... params) {
-                                        try {
-                                            return db_manager.getBranch(params[0]).getBranchName();
-                                        } catch (Exception e) {
-                                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                            return null;
-                                        }
-                                    }
-                                }.execute(car.getBranchID());
-
-                                new AsyncTask<Integer, Object, String>() {
-                                    @Override
-                                    protected void onPostExecute(String modelNameAndCompany) {
-                                        if (modelNameAndCompany != null)
-                                            modelNameAndCompanyEditText.setText(modelNameAndCompany);
-                                    }
-
-                                    @Override
-                                    protected String doInBackground(Integer... params) {
-
-                                        CarModel carModel = null;
-                                        try {
-                                            carModel = db_manager.getCarModel(params[0]);
-                                        } catch (Exception e) {
-                                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                            return null;
-                                        }
-                                        return carModel.getModelName() + ", " + carModel.getCompany().name();
-                                    }
-                                }.execute(car.getModelCode());
-
-                                return convertView;
-                            }
-                        };
+                        carsAdapter = getCarsAdapter(cars);
                         freeCarsListView.setAdapter(carsAdapter);
                     }
 
@@ -122,78 +71,12 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                         }
                     }
                 }.execute(modelCode);
-            else
+            else // if filter is empty get all free cars
                 new AsyncTask<Integer, Object, ArrayList<Car>>() {
                     @Override
-                    protected void onPostExecute(ArrayList<Car> cars) {
-                        ArrayAdapter<Car> carsAdapter = new ArrayAdapter<Car>(getActivity(), R.layout.car_list_view, cars) {
-                            @Override
-                            public View getView(int position, View convertView, ViewGroup parent) {
-
-                                if (convertView == null)
-                                    convertView = View.inflate(getActivity(), R.layout.car_list_view, null);
-
-                                TextView carIdEditText = (TextView) convertView.findViewById(R.id.carIdEditText);
-                                final TextView modelNameAndCompanyEditText = (TextView) convertView.findViewById(R.id.modelNameAndCompanyEditText);
-                                final TextView branchNameEditText = (TextView) convertView.findViewById(R.id.branchNameEditText);
-
-
-                                final Car car = (Car) freeCarsListView.getItemAtPosition(position);
-                                carIdEditText.setText(((Integer) car.getCarID()).toString());
-                                new AsyncTask<Integer, Object, String>() {
-                                    @Override
-                                    protected void onPostExecute(String branchName) {
-                                        if (branchName != null)
-                                            branchNameEditText.setText(branchName);
-                                    }
-
-                                    @Override
-                                    protected String doInBackground(Integer... params) {
-                                        try {
-                                            return db_manager.getBranch(params[0]).getBranchName();
-                                        } catch (Exception e) {
-                                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                            return null;
-                                        }
-                                    }
-                                }.execute(car.getBranchID());
-
-                                new AsyncTask<Integer, Object, String>() {
-                                    @Override
-                                    protected void onPostExecute(String modelNameAndCompany) {
-                                        if (modelNameAndCompany != null)
-                                            modelNameAndCompanyEditText.setText(modelNameAndCompany);
-                                    }
-
-                                    @Override
-                                    protected String doInBackground(Integer... params) {
-
-                                        CarModel carModel = null;
-                                        try {
-                                            carModel = db_manager.getCarModel(params[0]);
-                                        } catch (Exception e) {
-                                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                            return null;
-                                        }
-                                        return carModel.getModelName() + ", " + carModel.getCompany().name();
-                                    }
-                                }.execute(car.getModelCode());
-
-                                return convertView;
-                            }
-                        };
+                    protected void onPostExecute(ArrayList<Car> result) {
+                        carsAdapter = getCarsAdapter(result);
                         freeCarsListView.setAdapter(carsAdapter);
-                        freeCarsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                            @Override
-                            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                                Bundle args = new Bundle();
-                                args.putInt(CarRentConst.CarConst.CAR_ID, ((Car) freeCarsListView.getItemAtPosition(position)).getCarID());
-                                CarDetails myDialogFragment = new CarDetails();
-                                myDialogFragment.setArguments(args);
-                                myDialogFragment.show(getActivity().getFragmentManager(), "Car Details");
-                                return false;
-                            }
-                        });
                     }
 
                     @Override
@@ -217,10 +100,8 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
         modelCode = -1;
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.title_free_cars_fragment));
-        uploadCarModels();
-        getActivity().registerReceiver(carChangedReceiver, new IntentFilter(CarRentConst.MyIntentFilter.RESERVATIONS_CHANGED));
+        getActivity().registerReceiver(carChangedReceiver, new IntentFilter(CarRentConst.MyIntentFilter.CARS_CHANGED));
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -228,57 +109,37 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
         View view = inflater.inflate(R.layout.fragment_free_cars, container, false);
         freeCarsListView = (ListView) view.findViewById(R.id.freeCarListView);
         carModelsAutoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.carModelsAutoCompleteTextView);
-
-        new AsyncTask<Integer, Object, ArrayList<String>>() {
+        getFavoriteCarModels();
+        /// download car models list and create model list for filtering
+        new AsyncTask<Object, Object, ArrayList<String>>() {
             @Override
-            protected void onPostExecute(ArrayList<String> carModels) {
-                ArrayAdapter<String> carModelsAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_singlechoice, carModels);
-                carModelsAutoCompleteTextView.setAdapter(carModelsAdapter);
-                carModelsAutoCompleteTextView.setThreshold(1);
-                carModelsAutoCompleteTextView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (!carModelsAutoCompleteTextView.isPopupShowing())
-                            carModelsAutoCompleteTextView.showDropDown();
-                        else
-                            carModelsAutoCompleteTextView.dismissDropDown();
-                    }
-                });
+            protected ArrayList<String> doInBackground(Object... params) {
+                try {
+                    ArrayList<String> carModelsStrings = new ArrayList<String>();
+                    ArrayList<CarModel> carModels = db_manager.getCarModels();
+                    for (CarModel carModel : carModels)
+                        carModelsStrings.add(carModel.getCompany().name() + ", " + carModel.getModelName() + "\n" + getString(R.string.textModelCode) + ": " + carModel.getModelCode());
+                    return carModelsStrings;
+
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    return new ArrayList<String>();
+                }
             }
 
             @Override
-            protected ArrayList<String> doInBackground(Integer... params) {
-                ArrayList<String> carModels = new ArrayList<String>();
-                try {
-                    for (CarModel carModel : db_manager.getCarModels())
-                        carModels.add(carModel.getCompany().name() + ", " + carModel.getModelName() + "\n" + getString(R.string.textModelCode) + ": " + carModel.getModelCode());
-                } catch (Exception e) {
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    carModels.add("No Models exist");
-                    return carModels;
-
-                }
-                return carModels;
+            protected void onPostExecute(ArrayList<String> strings) {
+                carModelsAutoCompleteTextView.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_expandable_list_item_1, strings));
+                carModelsAutoCompleteTextView.setThreshold(1);
             }
         }.execute();
 
+        // get free cars
         new AsyncTask<Integer, Object, ArrayList<Car>>() {
             @Override
-            protected void onPostExecute(ArrayList<Car> cars) {
-                carsAdapter = getCarsAdapter(cars);
+            protected void onPostExecute(ArrayList<Car> result) {
+                carsAdapter = getCarsAdapter(result);
                 freeCarsListView.setAdapter(carsAdapter);
-                freeCarsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-                        Bundle args = new Bundle();
-                        args.putInt(CarRentConst.CarConst.CAR_ID, ((Car) freeCarsListView.getItemAtPosition(position)).getCarID());
-                        CarDetails myDialogFragment = new CarDetails();
-                        myDialogFragment.setArguments(args);
-                        myDialogFragment.show(getActivity().getFragmentManager(), "Car Details");
-                        return false;
-                    }
-                });
             }
 
             @Override
@@ -293,6 +154,8 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
             }
         }.execute();
 
+        carModelsAutoCompleteTextView.setOnClickListener(this);
+        freeCarsListView.setOnItemLongClickListener(this);
         carModelsAutoCompleteTextView.setOnItemClickListener(this);
         carModelsAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -302,19 +165,42 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                modelCode = -1;
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                /// returns to all free cars
+                if (carModelsAutoCompleteTextView.getText().toString().equals("")) {
+                    modelCode = -1;
+                    // get all free cars
+                    new AsyncTask<Integer, Object, ArrayList<Car>>() {
+                        @Override
+                        protected void onPostExecute(ArrayList<Car> result) {
+                            carsAdapter = getCarsAdapter(result);
+                            freeCarsListView.setAdapter(carsAdapter);
+                        }
 
+                        @Override
+                        protected ArrayList<Car> doInBackground(Integer... params) {
+                            try {
+                                return db_manager.getFreeCars();
+                            } catch (Exception e) {
+                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                return new ArrayList<Car>();
+
+                            }
+                        }
+                    }.execute();
+
+                }
             }
         });
 
         return view;
     }
 
-    void uploadCarModels() {
+    /// get from content provider the favorite models
+    void getFavoriteCarModels() {
         favoriteModels = new ArrayList<CarModel>();
         String[] projection = new String[]{CarRentConst.DataBaseConstants.MODEL_CODE, CarRentConst.DataBaseConstants.MODEL_NAME,
                 CarRentConst.DataBaseConstants.COMPANY, CarRentConst.DataBaseConstants.ENGINE_CAPACITY,
@@ -338,6 +224,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
 
     }
 
+    // check if model is favorite
     boolean isModelFavorite(int modelCode) {
 
         for (CarModel carModel : favoriteModels)
@@ -346,8 +233,11 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
         return false;
     }
 
+    // add model to favorite and update view
     void addModelToFavorite(final int modelCode) {
         try {
+
+            /// download car model details and add to content provider
             new AsyncTask<Integer, Object, CarModel>() {
                 @Override
                 protected void onPostExecute(CarModel carModel) {
@@ -377,15 +267,18 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
         }
     }
 
+    // remove model from favorite and update view
     void removeModelFromFavorite(final int modelCode) {
         try {
+
+            /// downlaod car model details
             new AsyncTask<Integer, Object, CarModel>() {
                 @Override
                 protected void onPostExecute(CarModel carModel) {
                     if (carModel == null) return;
                     int uri = getActivity().getContentResolver().delete(CarRentConst.ContentProviderConstants.CONTENT_URI,
                             CarRentConst.DataBaseConstants.MODEL_CODE + "=?", new String[]{new String(((Integer) carModel.getModelCode()).toString())});
-                    if (uri == 0) return;
+                    if (uri < 0) return;
                     for (CarModel temp : favoriteModels)
                         if (carModel.getModelCode() == temp.getModelCode()) {
                             favoriteModels.remove(temp);
@@ -413,10 +306,12 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
         }
     }
 
+    // returns model code from line of the auto complete
     Integer getModelCode(String line) {
         return Integer.parseInt(line.substring(line.indexOf(":") + 2));
     }
 
+    /// create cars adapter
     MyListAdapter<Car> getCarsAdapter(ArrayList<Car> cars) {
         return new MyListAdapter<Car>(getActivity(), cars) {
             @Override
@@ -433,6 +328,8 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
 
                 final Car car = (Car) freeCarsListView.getItemAtPosition(position);
                 carIdEditText.setText(((Integer) car.getCarID()).toString());
+
+//                 get branch of car details
                 new AsyncTask<Integer, Object, String>() {
                     @Override
                     protected void onPostExecute(String branchName) {
@@ -450,7 +347,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                         }
                     }
                 }.execute(car.getBranchID());
-
+//                 get model of car details
                 new AsyncTask<Integer, Object, String>() {
                     @Override
                     protected void onPostExecute(String modelNameAndCompany) {
@@ -474,6 +371,9 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
 
                 if (isModelFavorite(car.getModelCode()))
                     favoriteImageButton.setBackgroundResource(R.drawable.favorite_full);
+                else
+                    favoriteImageButton.setBackgroundResource(R.drawable.favorite_empty);
+
                 favoriteImageButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -492,18 +392,18 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
         };
     }
 
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-
         String[] modelDetails = carModelsAutoCompleteTextView.getText().toString().split("\n");
         carModelsAutoCompleteTextView.setText(modelDetails[0]);
-        Integer modelCode = getModelCode(modelDetails[1]);
+        modelCode = getModelCode(modelDetails[1]);
+
+        // filter  cars list by model code
         new AsyncTask<Integer, Object, ArrayList<Car>>() {
             @Override
-            protected void onPostExecute(ArrayList<Car> cars) {
-                carsAdapter = getCarsAdapter(cars);
+            protected void onPostExecute(ArrayList<Car> result) {
+                carsAdapter = getCarsAdapter(result);
                 freeCarsListView.setAdapter(carsAdapter);
             }
 
@@ -519,5 +419,51 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
         }.execute(modelCode);
     }
 
+    @Override
+    public void onClick(View v) {
 
+        /// open all models in first tap
+        if (v == carModelsAutoCompleteTextView) {
+            if (!carModelsAutoCompleteTextView.isPopupShowing())
+                carModelsAutoCompleteTextView.showDropDown();
+            else
+                carModelsAutoCompleteTextView.dismissDropDown();
+        }
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+        /// open car details dialog
+        Bundle args = new Bundle();
+        args.putInt(CarRentConst.CarConst.CAR_ID, ((Car) freeCarsListView.getItemAtPosition(position)).getCarID());
+        CarDetails myDialogFragment = new CarDetails();
+        myDialogFragment.setArguments(args);
+        myDialogFragment.show(getActivity().getFragmentManager(), "Car Details");
+        return false;
+    }
 }
+/*
+ //    /// return the model name for the car row
+//    String getModelName(int modelCode) {
+//        for (CarModel carModel : carModels)
+//            if (carModel.getModelCode() == modelCode)
+//                return carModel.getModelName() + ", " + carModel.getCompany().name();
+//        return "No Details";
+//    }
+//
+//    /// return the branch name for the car row
+//    String getBranchName(int branchID) {
+//        for (Branch branch : branches)
+//            if (branch.getBranchID() == branchID)
+//                return branch.getBranchName();
+//        return "No Details";
+//    }
+//
+    /// gets the models list for the auto complete filter
+//    ArrayList<String> getModelsStrings() {
+//        ArrayList<String> carModelsStrings = new ArrayList<String>();
+//        for (CarModel carModel : this.carModels)
+//            carModelsStrings.add(carModel.getCompany().name() + ", " + carModel.getModelName() + "\n" + getString(R.string.textModelCode) + ": " + carModel.getModelCode());
+//        return carModelsStrings;
+//    }*/
