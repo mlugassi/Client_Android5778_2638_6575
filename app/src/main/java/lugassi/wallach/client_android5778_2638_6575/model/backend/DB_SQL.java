@@ -49,6 +49,7 @@ import lugassi.wallach.client_android5778_2638_6575.model.entities.Reservation;
 public class DB_SQL implements DB_manager {
 
     private String url = "http://mlugassi.vlab.jct.ac.il/JAVA-Project/";
+    private float gasCostPerLiter = (float) 5.6;
 
     public DB_SQL() {
         try {
@@ -582,32 +583,27 @@ public class DB_SQL implements DB_manager {
     }
 
     @Override
-    public long closeReservation(ContentValues contentValues) {
-        try {
-            Map<String, Object> data = new LinkedHashMap<>();
-            long cost = calculateReservationCost(contentValues.getAsString(ReservationConst.START_DATE),
-                    contentValues.getAsString(ReservationConst.END_DATE), contentValues.getAsInteger(ReservationConst.GAS_FILLED),
-                    contentValues.getAsLong(ReservationConst.FINISH_MILEAGE) - contentValues.getAsLong(ReservationConst.BEGIN_MILEAGE),
-                    contentValues.getAsInteger(ReservationConst.CUSTOMER_ID));
-            data.put(ReservationConst.RESERVATION_ID, contentValues.getAsInteger(ReservationConst.RESERVATION_ID));
-            data.put(ReservationConst.IS_OPEN, 0);
-            data.put(ReservationConst.END_DATE, contentValues.getAsString(ReservationConst.END_DATE));
-            data.put(ReservationConst.FINISH_MILEAGE, contentValues.getAsLong(ReservationConst.FINISH_MILEAGE));
-            data.put(ReservationConst.IS_GAS_FULL, contentValues.getAsBoolean(ReservationConst.IS_GAS_FULL));
-            data.put(ReservationConst.GAS_FILLED, contentValues.getAsInteger(ReservationConst.GAS_FILLED));
-            data.put(ReservationConst.RESERVATION_COST, cost);
+    public double closeReservation(ContentValues contentValues) throws Exception {
+        Map<String, Object> data = new LinkedHashMap<>();
+        double cost = calculateReservationCost(contentValues.getAsString(ReservationConst.START_DATE),
+                contentValues.getAsString(ReservationConst.END_DATE),
+                calculateGasCost(contentValues.getAsInteger(ReservationConst.CAR_ID), contentValues.getAsInteger(ReservationConst.GAS_FILLED)),
+                contentValues.getAsLong(ReservationConst.FINISH_MILEAGE) - contentValues.getAsLong(ReservationConst.BEGIN_MILEAGE),
+                contentValues.getAsInteger(ReservationConst.CUSTOMER_ID));
+        data.put(ReservationConst.RESERVATION_ID, contentValues.getAsInteger(ReservationConst.RESERVATION_ID));
+        data.put(ReservationConst.IS_OPEN, 0);
+        data.put(ReservationConst.END_DATE, contentValues.getAsString(ReservationConst.END_DATE));
+        data.put(ReservationConst.FINISH_MILEAGE, contentValues.getAsLong(ReservationConst.FINISH_MILEAGE));
+        data.put(ReservationConst.IS_GAS_FULL, contentValues.getAsBoolean(ReservationConst.IS_GAS_FULL));
+        data.put(ReservationConst.GAS_FILLED, contentValues.getAsInteger(ReservationConst.GAS_FILLED));
+        data.put(ReservationConst.RESERVATION_COST, cost);
 
-            String results = POST(url + "Reservation/CloseReservation.php", data);
-            if (results.equals("")) {
-                throw new Exception("An error occurred on the server's side");
-            }
-            if (results.substring(0, 5).equalsIgnoreCase("error")) {
-                throw new Exception(results.substring(5));
-            }
-            return cost;
-        } catch (Exception e) {
-            return -1;
+        String results = POST(url + "Reservation/CloseReservation.php", data);
+        if (!results.startsWith("New")) {
+            throw new Exception("An error occurred on the server's side");
         }
+
+        return cost;
     }
 
     @Override
@@ -696,8 +692,18 @@ public class DB_SQL implements DB_manager {
         } else return "";
     }
 
+    float calculateGasCost(int gasFilled, int carID) throws Exception {
+        CarModel carModel = getCarModel(getCar(carID).getModelCode());
+        if (gasFilled > carModel.getMaxGasTank())
+            throw new Exception("Your Max Gas Model is" + carModel.getMaxGasTank());
+
+        int gasToPay = carModel.getMaxGasTank() - gasFilled;
+        return gasToPay * gasToPay;
+
+    }
+
     // help function
-    long calculateReservationCost(String start, String end, int gasCost, long mileage, int customerID) throws Exception {
+    double calculateReservationCost(String start, String end, float gasCost, long mileage, int customerID) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         Promotion promotion = getPromotion(customerID);
@@ -706,7 +712,7 @@ public class DB_SQL implements DB_manager {
         promotion.setTotalRentDays(promotion.getTotalRentDays() + totalDays);
         updatePromotion(CarRentConst.promotionToContentValues(promotion));
 
-        int discount = gasCost;
+        float discount = gasCost;
         if (totalDays > 5)
             discount += (totalDays - 5) * 60;
 

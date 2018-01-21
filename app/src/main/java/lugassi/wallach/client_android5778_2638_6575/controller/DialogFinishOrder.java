@@ -36,11 +36,13 @@ public class DialogFinishOrder extends DialogFragment implements View.OnClickLis
     private EditText gasEditText;
     private Button cancelButton;
     private Button okButton;
+    String errorMassage;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db_manager = DBManagerFactory.getManager();
+        errorMassage = null;
     }
 
     @Override
@@ -108,27 +110,33 @@ public class DialogFinishOrder extends DialogFragment implements View.OnClickLis
             if (gasFilledCheckBox.isChecked())
                 gasCost = Integer.parseInt(gasEditText.getText().toString());
 
-            new AsyncTask<Integer, Object, Long>() {
+            new AsyncTask<Integer, Object, Double>() {
                 @Override
-                protected void onPostExecute(Long o) {
+                protected void onPostExecute(Double o) {
                     if (o >= 0)
                         Snackbar.make(getActivity().getWindow().getDecorView(), getString(R.string.textCloseReservation) + " " + o, Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     else
                         Snackbar.make(getActivity().getWindow().getDecorView(), getString(R.string.exceptionFailedRequest), Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
-                    dismiss();
+//                    dismiss();
                 }
 
 
                 @Override
-                protected Long doInBackground(Integer... params) {
-                    reservation.setEndDate(Calendar.getInstance());
-                    reservation.setOpen(false);
-                    reservation.setFinishMileage(reservation.getBeginMileage() + params[0]);
-                    reservation.setGasFilled(params[1]);
-                    reservation.setGasFull(params[1] > 0);
-                    return db_manager.closeReservation(CarRentConst.reservationToContentValues(reservation));
+                protected Double doInBackground(Integer... params) {
+                    try {
+                        reservation.setEndDate(Calendar.getInstance());
+                        reservation.setOpen(false);
+                        reservation.setFinishMileage(reservation.getBeginMileage() + params[0]);
+                        reservation.setGasFilled(params[1]);
+                        reservation.setGasFull(params[1] > 0);
+
+                        return db_manager.closeReservation(CarRentConst.reservationToContentValues(reservation));
+                    } catch (Exception e) {
+                        Snackbar.make(getView(), e.getMessage(), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                        return Double.valueOf(-1);
+                    }
                 }
             }.execute(mileage, gasCost);
         }

@@ -65,7 +65,7 @@ public interface DB_manager {
 
     Integer getCustomerTotalReservations(int customerID) throws Exception;
 
-    public long closeReservation(ContentValues contentValues);
+    public double closeReservation(ContentValues contentValues) throws Exception;
 
     public boolean detectCarsChanges() throws Exception;
 }
