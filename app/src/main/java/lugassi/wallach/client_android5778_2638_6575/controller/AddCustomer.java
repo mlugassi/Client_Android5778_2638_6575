@@ -148,6 +148,10 @@ public class AddCustomer extends Activity implements View.OnClickListener {
             customerIDEditText.setError(getString(R.string.exceptionEmptyFileds));
             return false;
         }
+        if (!tryParseInt(customerIDEditText.getText().toString())) {
+            customerIDEditText.setError(getString(R.string.exceptionNumberFileds));
+            return false;
+        }
         if (TextUtils.isEmpty(phoneEditText.getText().toString())) {
             phoneEditText.setError(getString(R.string.exceptionEmptyFileds));
             return false;
@@ -158,6 +162,10 @@ public class AddCustomer extends Activity implements View.OnClickListener {
         }
         if (TextUtils.isEmpty(creditCardEditText.getText().toString())) {
             creditCardEditText.setError(getString(R.string.exceptionEmptyFileds));
+            return false;
+        }
+        if (!tryParseLong(customerIDEditText.getText().toString())) {
+            customerIDEditText.setError(getString(R.string.exceptionNumberFileds));
             return false;
         }
         if (TextUtils.isEmpty(birthDayEditText.getText().toString())) {
@@ -186,23 +194,21 @@ public class AddCustomer extends Activity implements View.OnClickListener {
             customer.setGender((Gender) genderSpinner.getSelectedItem());
             customer.setBirthDay(birthDayEditText.getText().toString());
 
-            new AsyncTask<Object, Object, Boolean>() {
+            new AsyncTask<Object, Object, String>() {
                 @Override
-                protected void onPostExecute(Boolean idResult) {
-                    super.onPostExecute(idResult);
-                    if (idResult)
+                protected void onPostExecute(String idResult) {
+                    if (tryParseInt(idResult) && Integer.parseInt(idResult) > 0)
                         Toast.makeText(getBaseContext(), getString(R.string.textSuccessUpdateCustomerMessage), Toast.LENGTH_SHORT).show();
                     else
-                        Toast.makeText(getBaseContext(), getString(R.string.textFailedUpdateMessage), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getBaseContext(), getString(R.string.textFailedUpdateMessage) + "\n" + idResult, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
-                protected Boolean doInBackground(Object... params) {
+                protected String doInBackground(Object... params) {
                     try {
                         return db_manager.updateCustomer(CarRentConst.customerToContentValues(customer));
                     } catch (Exception e) {
-                        Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        return false;
+                        return e.getMessage();
 
                     }
                 }
@@ -231,35 +237,51 @@ public class AddCustomer extends Activity implements View.OnClickListener {
             customer.setGender((Gender) genderSpinner.getSelectedItem());
             customer.setBirthDay(birthDayEditText.getText().toString());
 
-            new AsyncTask<Object, Object, Integer>() {
+            new AsyncTask<Object, Object, String>() {
                 @Override
-                protected void onPostExecute(Integer idResult) {
-                    if (idResult < 0)
-                        Toast.makeText(getBaseContext(), getString(R.string.textFiledCreateMessage), Toast.LENGTH_SHORT).show();
+                protected void onPostExecute(String idResult) {
+                    if (tryParseInt(idResult) && Integer.parseInt(idResult) > 0) {
+                        Toast.makeText(getBaseContext(), getString(R.string.textSuccessCreateCustomerMessage) + idResult, Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(AddCustomer.this, AddUser.class);
+                        intent.putExtra(CarRentConst.UserConst.USER_ID, idResult);
+                        finish();
+                        startActivity(intent);
+                    } else
+                        Toast.makeText(getBaseContext(), getString(R.string.textFiledCreateMessage) + "\n" + idResult, Toast.LENGTH_SHORT).show();
 
-                    Toast.makeText(getBaseContext(), getString(R.string.textSuccessCreateCustomerMessage) + idResult, Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AddCustomer.this, AddUser.class);
-                    intent.putExtra(CarRentConst.UserConst.USER_ID, idResult);
-                    finish();
-                    startActivity(intent);
                 }
 
                 @Override
-                protected Integer doInBackground(Object... params) {
-                    int id = 0;
+                protected String doInBackground(Object... params) {
                     try {
-                        id = db_manager.addCustomer(CarRentConst.customerToContentValues(customer));
+                        return db_manager.addCustomer(CarRentConst.customerToContentValues(customer));
                     } catch (Exception e) {
-                        Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        return -1;
+                        return e.getMessage();
                     }
-                    return id;
 
                 }
             }.execute();
 
         } catch (Exception e) {
             Toast.makeText(getBaseContext(), getString(R.string.textFiledCreateMessage) + "\n" + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    boolean tryParseInt(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    boolean tryParseLong(String value) {
+        try {
+            Long.parseLong(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 

@@ -9,12 +9,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import lugassi.wallach.client_android5778_2638_6575.R;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DBManagerFactory;
@@ -29,6 +29,7 @@ public class BranchDetails extends DialogFragment {
 
     DB_manager db_manager;
     Branch branch;
+    private String errorMassage = null;
 
     @NonNull
     @Override
@@ -50,6 +51,11 @@ public class BranchDetails extends DialogFragment {
         new AsyncTask<Object, Object, Branch>() {
             @Override
             protected void onPostExecute(Branch result) {
+                if (errorMassage != null) {
+                    Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                    errorMassage = null;
+                    return;
+                }
                 branch = result;
                 ((TextView) view.findViewById(R.id.branchIdTextView)).setText(((Integer) branch.getBranchID()).toString());
                 ((TextView) view.findViewById(R.id.nameTextView)).setText(branch.getBranchName());
@@ -72,10 +78,9 @@ public class BranchDetails extends DialogFragment {
             @Override
             protected Branch doInBackground(Object... params) {
                 try {
-                    return branch = db_manager.getBranch(getArguments().getInt(CarRentConst.BranchConst.BRANCH_ID));
+                    return db_manager.getBranch(getArguments().getInt(CarRentConst.BranchConst.BRANCH_ID));
                 } catch (Exception e) {
-                    Snackbar.make(getView(), e.getMessage(), Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                    errorMassage = e.getMessage();
                     return null;
                 }
             }

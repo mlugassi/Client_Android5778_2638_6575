@@ -26,6 +26,7 @@ public class Home extends Fragment implements View.OnClickListener {
 
     private TextView nameTextView;
     private TextView totalReservationsTextView;
+    private TextView totalMileageTextView;
     private TextView totalRentDaysTextView;
     private TextView accidentsTextView;
     private Button button;
@@ -33,6 +34,8 @@ public class Home extends Fragment implements View.OnClickListener {
     DB_manager db_manager;
     int customerID;
     Customer customer;
+    private String errorMassage = null;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +50,7 @@ public class Home extends Fragment implements View.OnClickListener {
         nameTextView = (TextView) view.findViewById(R.id.nameTextView);
         totalReservationsTextView = (TextView) view.findViewById(R.id.totalReservationsTextView);
         totalRentDaysTextView = (TextView) view.findViewById(R.id.totalRentDaysTextView);
+        totalMileageTextView = (TextView) view.findViewById(R.id.totalMileageTextView);
         accidentsTextView = (TextView) view.findViewById(R.id.accidentsTextView);
         button = (Button) view.findViewById(R.id.button);
 
@@ -54,6 +58,10 @@ public class Home extends Fragment implements View.OnClickListener {
         new AsyncTask<Object, Object, Customer>() {
             @Override
             protected void onPostExecute(Customer result) {
+                if (errorMassage != null) {
+                    Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                    errorMassage = null;
+                }
                 customer = result;
                 nameTextView.setText(result.getFirstName());
                 accidentsTextView.setText(((Integer) result.getNumAccidents()).toString());
@@ -64,7 +72,7 @@ public class Home extends Fragment implements View.OnClickListener {
                 try {
                     return db_manager.getCustomer(customerID);
                 } catch (Exception e) {
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    errorMassage = e.getMessage();
                     return null;
                 }
             }
@@ -74,6 +82,10 @@ public class Home extends Fragment implements View.OnClickListener {
         new AsyncTask<Object, Object, Promotion>() {
             @Override
             protected void onPostExecute(Promotion promotion) {
+                if (errorMassage != null) {
+                    Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                    errorMassage = null;
+                }
                 totalRentDaysTextView.setText(((Integer) promotion.getTotalRentDays()).toString());
             }
 
@@ -82,24 +94,49 @@ public class Home extends Fragment implements View.OnClickListener {
                 try {
                     return db_manager.getPromotion(customerID);
                 } catch (Exception e) {
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    errorMassage = e.getMessage();
                     return null;
                 }
             }
         }.execute();
 
-        new AsyncTask<Object, Object, Integer>() {
+        new AsyncTask<Object, Object, String>() {
             @Override
-            protected void onPostExecute(Integer integer) {
-                totalReservationsTextView.setText(integer.toString());
+            protected void onPostExecute(String integer) {
+                if (errorMassage != null) {
+                    Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                    errorMassage = null;
+                }
+                totalReservationsTextView.setText(integer);
             }
 
             @Override
-            protected Integer doInBackground(Object... params) {
+            protected String doInBackground(Object... params) {
                 try {
                     return db_manager.getCustomerTotalReservations(customerID);
                 } catch (Exception e) {
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    errorMassage = e.getMessage();
+                    return null;
+                }
+            }
+        }.execute();
+
+        new AsyncTask<Object, Object, String>() {
+            @Override
+            protected void onPostExecute(String integer) {
+                if (errorMassage != null) {
+                    Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                    errorMassage = null;
+                }
+                totalMileageTextView.setText(integer);
+            }
+
+            @Override
+            protected String doInBackground(Object... params) {
+                try {
+                    return db_manager.getCustomerTotalMileage(customerID);
+                } catch (Exception e) {
+                    errorMassage = e.getMessage();
                     return null;
                 }
             }
@@ -110,15 +147,27 @@ public class Home extends Fragment implements View.OnClickListener {
         return view;
     }
 
+    boolean tryParseInt(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     @Override
     public void onClick(View v) {
         if (v == button) {
-            new AsyncTask<Object, Object, Boolean>() {
+            new AsyncTask<Object, Object, String>() {
                 @Override
-                protected void onPostExecute(Boolean result) {
-                    if (result) {
-                        accidentsTextView.setText(((Integer) customer.getNumAccidents()).toString());
+                protected void onPostExecute(String result) {
+                    if (errorMassage != null) {
+                        Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                        errorMassage = null;
                     }
+                    if (tryParseInt(result) && Integer.parseInt(result) > 0)
+                        accidentsTextView.setText(((Integer) customer.getNumAccidents()).toString());
                 }
 
                 @Override
@@ -127,11 +176,11 @@ public class Home extends Fragment implements View.OnClickListener {
                 }
 
                 @Override
-                protected Boolean doInBackground(Object... params) {
+                protected String doInBackground(Object... params) {
                     try {
                         return db_manager.updateCustomer(CarRentConst.customerToContentValues(customer));
                     } catch (Exception e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        errorMassage = e.getMessage();
                         return null;
                     }
                 }

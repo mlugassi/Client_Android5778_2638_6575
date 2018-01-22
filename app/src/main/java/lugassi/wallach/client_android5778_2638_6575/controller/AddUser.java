@@ -50,6 +50,10 @@ public class AddUser extends Activity implements View.OnClickListener {
             userNameEditText.setError(getString(R.string.exceptionEmptyFileds));
             return false;
         }
+        if (passwordEditText.getText().toString().length() < 6) {
+            passwordEditText.setError(getString(R.string.exceptionLongLessFileds));
+            return false;
+        }
         if (TextUtils.isEmpty(passwordEditText.getText().toString())) {
             passwordEditText.setError(getString(R.string.exceptionEmptyFileds));
             return false;
@@ -71,34 +75,40 @@ public class AddUser extends Activity implements View.OnClickListener {
                 return;
             final String userName = userNameEditText.getText().toString();
             final String password = passwordEditText.getText().toString();
-            new AsyncTask<Object, Object, Boolean>() {
+            new AsyncTask<Object, Object, String>() {
                 @Override
-                protected void onPostExecute(Boolean aBoolean) {
-                    super.onPostExecute(aBoolean);
-                    if (aBoolean) {
+                protected void onPostExecute(String idResult) {
+                    if (tryParseInt(idResult) && Integer.parseInt(idResult) > 0) {
                         Intent intent = new Intent(AddUser.this, MainNavigation.class);
                         finish();
                         AddUser.this.startActivity(intent);
                     } else
-                        Toast.makeText(getBaseContext(), getString(R.string.textFiledAddMessage), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getBaseContext(), getString(R.string.textFiledAddMessage) + "\n" + idResult, Toast.LENGTH_SHORT).show();
 
                 }
 
                 @Override
-                protected Boolean doInBackground(Object... params) {
-                    boolean pRes = false;
+                protected String doInBackground(Object... params) {
                     try {
-                        pRes = db_manager.createUser(userName, password, customerID);
-                        return db_manager.addPromotion(CarRentConst.promotionToContentValues(new Promotion(customerID))) && pRes;
+                        db_manager.createUser(userName, password, customerID);
+                        return db_manager.addPromotion(CarRentConst.promotionToContentValues(new Promotion(customerID)));
                     } catch (Exception e) {
-                        Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        return false;
+                        return e.getMessage();
                     }
                 }
             }.execute();
 
         } catch (Exception e) {
             Toast.makeText(getBaseContext(), getString(R.string.textFiledAddMessage) + "\n" + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    boolean tryParseInt(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 

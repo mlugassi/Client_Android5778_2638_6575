@@ -50,6 +50,8 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
     private MyListAdapter branchesAdapter;
     private MyListAdapter carsAdapter;
     private ArrayList<CarModel> favoriteModels;
+    private String errorMassage = null;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +76,10 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
         new AsyncTask<Object, Object, ArrayList<Branch>>() {
             @Override
             protected void onPostExecute(ArrayList<Branch> branches) {
+                if (errorMassage != null) {
+                    Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                    errorMassage = null;
+                }
                 branchesAdapter = new MyListAdapter(getActivity(), branches) {
                     @Override
                     public View getView(int position, View convertView, ViewGroup parent) {
@@ -99,7 +105,7 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                 try {
                     return db_manager.getBranches();
                 } catch (Exception e) {
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    errorMassage = e.getMessage();
                     return new ArrayList<Branch>();
                 }
             }
@@ -112,6 +118,87 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
         branchesListView.setOnItemLongClickListener(this);
 
         return view;
+    }
+
+    boolean tryParseInt(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    /// get from content provider the favorite models
+    void getFavoriteCarModels() {
+        favoriteModels = new ArrayList<CarModel>();
+        String[] projection = new String[]{CarRentConst.DataBaseConstants.MODEL_CODE, CarRentConst.DataBaseConstants.MODEL_NAME,
+                CarRentConst.DataBaseConstants.COMPANY, CarRentConst.DataBaseConstants.ENGINE_CAPACITY,
+                CarRentConst.DataBaseConstants.SEATS, CarRentConst.DataBaseConstants.CAR_TYPE,
+                CarRentConst.DataBaseConstants.MAX_GAS_TANK};
+        Cursor cursor = getActivity().getContentResolver().query(CarRentConst.ContentProviderConstants.CONTENT_URI,
+                projection, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                CarModel carModel = new CarModel(cursor.getInt(cursor.getColumnIndex(CarRentConst.DataBaseConstants.MODEL_CODE)));
+                carModel.setModelName(cursor.getString(cursor.getColumnIndex(CarRentConst.DataBaseConstants.MODEL_NAME)));
+                carModel.setCompany(Company.valueOf(cursor.getString(cursor.getColumnIndex(CarRentConst.DataBaseConstants.COMPANY))));
+                carModel.setEngineCapacity(EngineCapacity.valueOf(cursor.getString(cursor.getColumnIndex(CarRentConst.DataBaseConstants.ENGINE_CAPACITY))));
+                carModel.setSeats(cursor.getInt(cursor.getColumnIndex(CarRentConst.DataBaseConstants.SEATS)));
+                carModel.setCarType(CarType.valueOf(cursor.getString(cursor.getColumnIndex(CarRentConst.DataBaseConstants.CAR_TYPE))));
+                carModel.setMaxGasTank(cursor.getInt(cursor.getColumnIndex(CarRentConst.DataBaseConstants.MAX_GAS_TANK)));
+                favoriteModels.add(carModel);
+            } while (cursor.moveToNext());
+        }
+
+    }
+
+    // check if model is favorite
+    boolean isModelFavorite(int modelCode) {
+
+        for (CarModel carModel : favoriteModels)
+            if (carModel.getModelCode() == modelCode)
+                return true;
+        return false;
+    }
+
+    // add model to favorite and update view
+    void addModelToFavorite(CarModel carModel) {
+        try {
+            Uri uri = getActivity().getContentResolver().insert(CarRentConst.ContentProviderConstants.CONTENT_URI, CarRentConst.carModelToContentValues(carModel));
+            favoriteModels.add(carModel);
+            carsAdapter.notifyDataSetChanged();
+            Toast.makeText(getActivity(), getString(R.string.textAddModelFavorite) + " " + carModel.getModelCode(), Toast.LENGTH_LONG)
+                    .show();
+
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG)
+                    .show();
+
+        }
+    }
+
+    // remove model from favorite and update view
+    void removeModelFromFavorite(CarModel carModel) {
+        try {
+            int uri = getActivity().getContentResolver().delete(CarRentConst.ContentProviderConstants.CONTENT_URI,
+                    CarRentConst.DataBaseConstants.MODEL_CODE + "=?", new String[]{new String(((Integer) carModel.getModelCode()).toString())});
+            if (uri == 0) return;
+            for (CarModel temp : favoriteModels)
+                if (carModel.getModelCode() == temp.getModelCode()) {
+                    favoriteModels.remove(temp);
+                    break;
+                }
+            carsAdapter.notifyDataSetChanged();
+            Toast.makeText(getActivity(), getString(R.string.textRemoveModelFavorite) + " " + carModel.getModelCode(), Toast.LENGTH_LONG)
+                    .show();
+
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG)
+                    .show();
+
+        }
     }
 
     @Override
@@ -143,25 +230,19 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                     reservation.setBeginMileage(car.getMileage());
                     reservation.setStartDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
 
-                    new AsyncTask<Object, Object, Integer>() {
+                    new AsyncTask<Object, Object, String>() {
                         @Override
-                        protected Integer doInBackground(Object... params) {
-                            try {
-
-                                return db_manager.addReservation(CarRentConst.reservationToContentValues(reservation));
-                            } catch (Exception e) {
-                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                return -1;
-                            }
+                        protected String doInBackground(Object... params) {
+                            return db_manager.addReservation(CarRentConst.reservationToContentValues(reservation));
                         }
 
                         @Override
-                        protected void onPostExecute(Integer integer) {
-                            if (integer > 0)
+                        protected void onPostExecute(String integer) {
+                            if (tryParseInt(integer) && Integer.parseInt(integer) > 0)
                                 Snackbar.make(getView(), getString(R.string.textSuccessAddReservationMessage) + integer, Snackbar.LENGTH_LONG)
                                         .setAction("Action", null).show();
                             else
-                                Snackbar.make(getView(), getString(R.string.textFiledCreateMessage), Snackbar.LENGTH_LONG)
+                                Snackbar.make(getView(), getString(R.string.textFiledCreateMessage) + "\n" + integer, Snackbar.LENGTH_LONG)
                                         .setAction("Action", null).show();
                             new AsyncTask<Object, Object, ArrayList<Car>>() {
                                 @Override
@@ -169,13 +250,17 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                                     try {
                                         return db_manager.getFreeCarsByBranchID(car.getBranchID());
                                     } catch (Exception e) {
-                                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                        errorMassage = e.getMessage();
                                         return new ArrayList<Car>();
                                     }
                                 }
 
                                 @Override
                                 protected void onPostExecute(ArrayList<Car> freeCars) {
+                                    if (errorMassage != null) {
+                                        Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                                        errorMassage = null;
+                                    }
                                     if (freeCars != null)
                                         carsAdapter = new MyListAdapter<Car>(getActivity(), freeCars) {
                                             @Override
@@ -245,7 +330,7 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                     try {
                         return db_manager.getFreeCarsByBranchID(branch.getBranchID());
                     } catch (Exception e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        errorMassage = e.getMessage();
                         return new ArrayList<Car>();
 
                     }
@@ -253,6 +338,10 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
 
                 @Override
                 protected void onPostExecute(ArrayList<Car> freeCars) {
+                    if (errorMassage != null) {
+                        Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                        errorMassage = null;
+                    }
                     carsAdapter = new MyListAdapter<Car>(getActivity(), freeCars) {
                         @Override
                         public View getView(int position, View convertView, ViewGroup parent) {
@@ -328,78 +417,6 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                     carsListView.setAdapter(carsAdapter);
                 }
             }.execute();
-        }
-    }
-
-    /// get from content provider the favorite models
-    void getFavoriteCarModels() {
-        favoriteModels = new ArrayList<CarModel>();
-        String[] projection = new String[]{CarRentConst.DataBaseConstants.MODEL_CODE, CarRentConst.DataBaseConstants.MODEL_NAME,
-                CarRentConst.DataBaseConstants.COMPANY, CarRentConst.DataBaseConstants.ENGINE_CAPACITY,
-                CarRentConst.DataBaseConstants.SEATS, CarRentConst.DataBaseConstants.CAR_TYPE,
-                CarRentConst.DataBaseConstants.MAX_GAS_TANK};
-        Cursor cursor = getActivity().getContentResolver().query(CarRentConst.ContentProviderConstants.CONTENT_URI,
-                projection, null, null, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                CarModel carModel = new CarModel(cursor.getInt(cursor.getColumnIndex(CarRentConst.DataBaseConstants.MODEL_CODE)));
-                carModel.setModelName(cursor.getString(cursor.getColumnIndex(CarRentConst.DataBaseConstants.MODEL_NAME)));
-                carModel.setCompany(Company.valueOf(cursor.getString(cursor.getColumnIndex(CarRentConst.DataBaseConstants.COMPANY))));
-                carModel.setEngineCapacity(EngineCapacity.valueOf(cursor.getString(cursor.getColumnIndex(CarRentConst.DataBaseConstants.ENGINE_CAPACITY))));
-                carModel.setSeats(cursor.getInt(cursor.getColumnIndex(CarRentConst.DataBaseConstants.SEATS)));
-                carModel.setCarType(CarType.valueOf(cursor.getString(cursor.getColumnIndex(CarRentConst.DataBaseConstants.CAR_TYPE))));
-                carModel.setMaxGasTank(cursor.getInt(cursor.getColumnIndex(CarRentConst.DataBaseConstants.MAX_GAS_TANK)));
-                favoriteModels.add(carModel);
-            } while (cursor.moveToNext());
-        }
-
-    }
-
-    // check if model is favorite
-    boolean isModelFavorite(int modelCode) {
-
-        for (CarModel carModel : favoriteModels)
-            if (carModel.getModelCode() == modelCode)
-                return true;
-        return false;
-    }
-
-    // add model to favorite and update view
-    void addModelToFavorite(CarModel carModel) {
-        try {
-            Uri uri = getActivity().getContentResolver().insert(CarRentConst.ContentProviderConstants.CONTENT_URI, CarRentConst.carModelToContentValues(carModel));
-            favoriteModels.add(carModel);
-            carsAdapter.notifyDataSetChanged();
-            Toast.makeText(getActivity(), getString(R.string.textAddModelFavorite) + " " + carModel.getModelCode(), Toast.LENGTH_LONG)
-                    .show();
-
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG)
-                    .show();
-
-        }
-    }
-
-    // remove model from favorite and update view
-    void removeModelFromFavorite(CarModel carModel) {
-        try {
-            int uri = getActivity().getContentResolver().delete(CarRentConst.ContentProviderConstants.CONTENT_URI,
-                    CarRentConst.DataBaseConstants.MODEL_CODE + "=?", new String[]{new String(((Integer) carModel.getModelCode()).toString())});
-            if (uri == 0) return;
-            for (CarModel temp : favoriteModels)
-                if (carModel.getModelCode() == temp.getModelCode()) {
-                    favoriteModels.remove(temp);
-                    break;
-                }
-            carsAdapter.notifyDataSetChanged();
-            Toast.makeText(getActivity(), getString(R.string.textRemoveModelFavorite) + " " + carModel.getModelCode(), Toast.LENGTH_LONG)
-                    .show();
-
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG)
-                    .show();
-
         }
     }
 

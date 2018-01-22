@@ -84,64 +84,80 @@ public class DB_SQL implements DB_manager {
 
     /// users
     @Override
-    public String checkUser(final String userName, final String password) throws Exception {
+    public String checkUser(final String userName, final String password) {
+        try {
+            Map<String, Object> map = new LinkedHashMap<>();
 
-        Map<String, Object> map = new LinkedHashMap<>();
+            map.put(UserConst.USER_NAME, userName);
+            map.put(UserConst.PASSWORD, password);
 
-        map.put(UserConst.USER_NAME, userName);
-        map.put(UserConst.PASSWORD, password);
-
-        String results = POST(url + "Login/CheckUser.php", map);
-        if (!(results.startsWith("Worng") || results.startsWith("User") || results.startsWith("Success"))) {
-            throw new Exception("An error occurred on the server's side");
+            String results = POST(url + "Login/CheckUser.php", map);
+            if (!(results.startsWith("Worng") || results.startsWith("User") || results.startsWith("Success"))) {
+                throw new Exception("An error occurred on the server's side");
+            }
+            return results;
+        } catch (Exception e) {
+            return e.getMessage();
         }
-        return results;
     }
 
     @Override
-    public boolean createUser(String userName, String password, int userID) throws Exception {
-        Map<String, Object> params = new LinkedHashMap<>();
+    public String createUser(String userName, String password, int userID) {
+        try {
+            Map<String, Object> params = new LinkedHashMap<>();
 
-        params.put(UserConst.USER_NAME, userName);
-        params.put(UserConst.PASSWORD, password);
-        params.put(UserConst.USER_ID, userID);
+            params.put(UserConst.USER_NAME, userName);
+            params.put(UserConst.PASSWORD, password);
+            params.put(UserConst.USER_ID, userID);
 
-        String results = POST(url + "Login/CreateUser.php", params);
-        if (!results.startsWith("New")) {
-            throw new Exception("An error occurred on the server's side");
+            String results = POST(url + "Login/CreateUser.php", params);
+            if (!results.startsWith("New")) {
+                throw new Exception("An error occurred on the server's side");
+            }
+            return ((Integer) userID).toString();
+        } catch (Exception e) {
+            return e.getMessage();
         }
-        return true;
+
     }
 
     @Override
-    public boolean addPromotion(ContentValues contentValues) throws Exception {
+    public String addPromotion(ContentValues contentValues) {
+        try {
+            Map<String, Object> data = new LinkedHashMap<>();
 
-        Map<String, Object> data = new LinkedHashMap<>();
+            data.put(PromotionConst.CUSTOMER_ID, contentValues.getAsInteger(PromotionConst.CUSTOMER_ID));
+            data.put(PromotionConst.TOTAL_RENT_DAYS, contentValues.getAsInteger(PromotionConst.TOTAL_RENT_DAYS));
+            data.put(PromotionConst.IS_USED, contentValues.getAsBoolean(PromotionConst.IS_USED));
 
-        data.put(PromotionConst.CUSTOMER_ID, contentValues.getAsInteger(PromotionConst.CUSTOMER_ID));
-        data.put(PromotionConst.TOTAL_RENT_DAYS, contentValues.getAsInteger(PromotionConst.TOTAL_RENT_DAYS));
-        data.put(PromotionConst.IS_USED, contentValues.getAsBoolean(PromotionConst.IS_USED));
-
-        String results = POST(url + "Promotion/AddPromotion.php", data);
-        if (!results.startsWith("New")) {
-            throw new Exception("An error occurred on the server's side");
+            String results = POST(url + "Promotion/AddPromotion.php", data);
+            if (!results.startsWith("New")) {
+                throw new Exception("An error occurred on the server's side");
+            }
+            return ((Integer) contentValues.getAsInteger(PromotionConst.CUSTOMER_ID)).toString();
+        } catch (Exception e) {
+            return e.getMessage();
         }
-        return true;
+
     }
 
     @Override
-    public boolean updatePromotion(ContentValues contentValues) throws Exception {
-        Map<String, Object> data = new LinkedHashMap<>();
+    public String updatePromotion(ContentValues contentValues) {
+        try {
+            Map<String, Object> data = new LinkedHashMap<>();
 
-        data.put(PromotionConst.CUSTOMER_ID, contentValues.getAsInteger(PromotionConst.CUSTOMER_ID));
-        data.put(PromotionConst.TOTAL_RENT_DAYS, contentValues.getAsInteger(PromotionConst.TOTAL_RENT_DAYS));
-        data.put(PromotionConst.IS_USED, contentValues.getAsBoolean(PromotionConst.IS_USED));
+            data.put(PromotionConst.CUSTOMER_ID, contentValues.getAsInteger(PromotionConst.CUSTOMER_ID));
+            data.put(PromotionConst.TOTAL_RENT_DAYS, contentValues.getAsInteger(PromotionConst.TOTAL_RENT_DAYS));
+            data.put(PromotionConst.IS_USED, contentValues.getAsBoolean(PromotionConst.IS_USED));
 
-        String results = POST(url + "Promotion/UpdatePromotion.php", data);
-        if (!results.startsWith("New")) {
-            throw new Exception("An error occurred on the server's side");
+            String results = POST(url + "Promotion/UpdatePromotion.php", data);
+            if (!results.startsWith("New")) {
+                throw new Exception("An error occurred on the server's side");
+            }
+            return ((Integer) contentValues.getAsInteger(PromotionConst.CUSTOMER_ID)).toString();
+        } catch (Exception e) {
+            return e.getMessage();
         }
-        return true;
     }
 
     @Override
@@ -281,20 +297,24 @@ public class DB_SQL implements DB_manager {
     /// cars
 
     @Override
-    public boolean updateCar(ContentValues contentValues) throws Exception {
-        Map<String, Object> params = new LinkedHashMap<>();
+    public String updateCar(ContentValues contentValues) {
+        try {
+            Map<String, Object> params = new LinkedHashMap<>();
 
-        params.put(CarConst.CAR_ID, contentValues.getAsInteger(CarConst.CAR_ID));
-        params.put(CarConst.MODEL_CODE, contentValues.getAsInteger(CarConst.MODEL_CODE));
-        params.put(CarConst.BRANCH_ID, contentValues.getAsInteger(CarConst.BRANCH_ID));
-        params.put(CarConst.RESERVATIONS, contentValues.getAsInteger(CarConst.RESERVATIONS));
-        params.put(CarConst.MILEAGE, contentValues.getAsInteger(CarConst.MILEAGE));
+            params.put(CarConst.CAR_ID, contentValues.getAsInteger(CarConst.CAR_ID));
+            params.put(CarConst.MODEL_CODE, contentValues.getAsInteger(CarConst.MODEL_CODE));
+            params.put(CarConst.BRANCH_ID, contentValues.getAsInteger(CarConst.BRANCH_ID));
+            params.put(CarConst.RESERVATIONS, contentValues.getAsInteger(CarConst.RESERVATIONS));
+            params.put(CarConst.MILEAGE, contentValues.getAsInteger(CarConst.MILEAGE));
 
-        String results = POST(url + "Car/UpdateCar.php", params);
-        if (!results.startsWith("New")) {
-            throw new Exception("An error occurred on the server's side");
+            String results = POST(url + "Car/UpdateCar.php", params);
+            if (!results.startsWith("New")) {
+                throw new Exception("An error occurred on the server's side");
+            }
+            return ((Integer) contentValues.getAsInteger(CarConst.CAR_ID)).toString();
+        } catch (Exception e) {
+            return e.getMessage();
         }
-        return true;
     }
 
     @Override
@@ -391,45 +411,54 @@ public class DB_SQL implements DB_manager {
 
 
     @Override
-    public int addCustomer(ContentValues contentValues) throws Exception {
-        Map<String, Object> params = new LinkedHashMap<>();
+    public String addCustomer(ContentValues contentValues) {
+        try {
+            Map<String, Object> params = new LinkedHashMap<>();
 
-        params.put(CustomerConst.FIRST_NAME, contentValues.getAsString(CustomerConst.FIRST_NAME));
-        params.put(CustomerConst.FAMILY_NAME, contentValues.getAsString(CustomerConst.FAMILY_NAME));
-        params.put(CustomerConst.CUSTOMER_ID, contentValues.getAsInteger(CustomerConst.CUSTOMER_ID));
-        params.put(CustomerConst.PHONE, contentValues.getAsInteger(CustomerConst.PHONE));
-        params.put(CustomerConst.EMAIL, contentValues.getAsString(CustomerConst.EMAIL));
-        params.put(CustomerConst.CREDIT_CARD, contentValues.getAsLong(CustomerConst.CREDIT_CARD));
-        params.put(CustomerConst.GENDER, contentValues.getAsString(CustomerConst.GENDER));
-        params.put(CustomerConst.NUM_ACCIDENTS, 0);
-        params.put(CustomerConst.BIRTH_DAY, contentValues.getAsString(CustomerConst.BIRTH_DAY));
+            params.put(CustomerConst.FIRST_NAME, contentValues.getAsString(CustomerConst.FIRST_NAME));
+            params.put(CustomerConst.FAMILY_NAME, contentValues.getAsString(CustomerConst.FAMILY_NAME));
+            params.put(CustomerConst.CUSTOMER_ID, contentValues.getAsInteger(CustomerConst.CUSTOMER_ID));
+            params.put(CustomerConst.PHONE, contentValues.getAsInteger(CustomerConst.PHONE));
+            params.put(CustomerConst.EMAIL, contentValues.getAsString(CustomerConst.EMAIL));
+            params.put(CustomerConst.CREDIT_CARD, contentValues.getAsLong(CustomerConst.CREDIT_CARD));
+            params.put(CustomerConst.GENDER, contentValues.getAsString(CustomerConst.GENDER));
+            params.put(CustomerConst.NUM_ACCIDENTS, 0);
+            params.put(CustomerConst.BIRTH_DAY, contentValues.getAsString(CustomerConst.BIRTH_DAY));
 
-        String results = POST(url + "Customer/AddCustomer.php", params);
-        if (!results.startsWith("New")) {
-            throw new Exception("An error occurred on the server's side");
+            String results = POST(url + "Customer/AddCustomer.php", params);
+            if (!results.startsWith("New")) {
+                throw new Exception("An error occurred on the server's side");
+            }
+            return ((Integer) contentValues.getAsInteger(CustomerConst.CUSTOMER_ID)).toString();
+        } catch (Exception e) {
+            return e.getMessage();
         }
-        return contentValues.getAsInteger(CustomerConst.CUSTOMER_ID);
     }
 
     @Override
-    public boolean updateCustomer(ContentValues contentValues) throws Exception {
-        Map<String, Object> params = new LinkedHashMap<>();
+    public String updateCustomer(ContentValues contentValues) {
+        try {
+            Map<String, Object> params = new LinkedHashMap<>();
 
-        params.put(CustomerConst.FIRST_NAME, contentValues.getAsString(CustomerConst.FIRST_NAME));
-        params.put(CustomerConst.FAMILY_NAME, contentValues.getAsString(CustomerConst.FAMILY_NAME));
-        params.put(CustomerConst.CUSTOMER_ID, contentValues.getAsInteger(CustomerConst.CUSTOMER_ID));
-        params.put(CustomerConst.PHONE, contentValues.getAsInteger(CustomerConst.PHONE));
-        params.put(CustomerConst.EMAIL, contentValues.getAsString(CustomerConst.EMAIL));
-        params.put(CustomerConst.CREDIT_CARD, contentValues.getAsLong(CustomerConst.CREDIT_CARD));
-        params.put(CustomerConst.GENDER, contentValues.getAsString(CustomerConst.GENDER));
-        params.put(CustomerConst.NUM_ACCIDENTS, contentValues.getAsInteger(CustomerConst.NUM_ACCIDENTS));
-        params.put(CustomerConst.BIRTH_DAY, contentValues.getAsString(CustomerConst.BIRTH_DAY));
+            params.put(CustomerConst.FIRST_NAME, contentValues.getAsString(CustomerConst.FIRST_NAME));
+            params.put(CustomerConst.FAMILY_NAME, contentValues.getAsString(CustomerConst.FAMILY_NAME));
+            params.put(CustomerConst.CUSTOMER_ID, contentValues.getAsInteger(CustomerConst.CUSTOMER_ID));
+            params.put(CustomerConst.PHONE, contentValues.getAsInteger(CustomerConst.PHONE));
+            params.put(CustomerConst.EMAIL, contentValues.getAsString(CustomerConst.EMAIL));
+            params.put(CustomerConst.CREDIT_CARD, contentValues.getAsLong(CustomerConst.CREDIT_CARD));
+            params.put(CustomerConst.GENDER, contentValues.getAsString(CustomerConst.GENDER));
+            params.put(CustomerConst.NUM_ACCIDENTS, contentValues.getAsInteger(CustomerConst.NUM_ACCIDENTS));
+            params.put(CustomerConst.BIRTH_DAY, contentValues.getAsString(CustomerConst.BIRTH_DAY));
 
-        String results = POST(url + "Customer/UpdateCustomer.php", params);
-        if (!results.startsWith("New")) {
-            throw new Exception("An error occurred on the server's side");
+            String results = POST(url + "Customer/UpdateCustomer.php", params);
+            if (!results.startsWith("New")) {
+                throw new Exception("An error occurred on the server's side");
+            }
+            return ((Integer) contentValues.getAsInteger(CustomerConst.CUSTOMER_ID)).toString();
+        } catch (Exception e) {
+            return e.getMessage();
         }
-        return true;
+
     }
 
     @Override
@@ -487,25 +516,28 @@ public class DB_SQL implements DB_manager {
 /// reservations
 
     @Override
-    public int addReservation(ContentValues contentValues) throws Exception {
+    public String addReservation(ContentValues contentValues) {
+        try {
+            Map<String, Object> data = new LinkedHashMap<>();
 
-        Map<String, Object> data = new LinkedHashMap<>();
+            Car car = getCar(contentValues.getAsInteger(ReservationConst.CAR_ID));
+            data.put(ReservationConst.RESERVATION_ID, contentValues.getAsInteger(ReservationConst.RESERVATION_ID));
+            data.put(ReservationConst.CUSTOMER_ID, contentValues.getAsInteger(ReservationConst.CUSTOMER_ID));
+            data.put(ReservationConst.CAR_ID, contentValues.getAsInteger(ReservationConst.CAR_ID));
+            data.put(ReservationConst.IS_OPEN, 1);
+            data.put(ReservationConst.START_DATE, contentValues.getAsString(ReservationConst.START_DATE));
+            data.put(ReservationConst.BEGIN_MILEAGE, contentValues.getAsLong(ReservationConst.BEGIN_MILEAGE));
 
-        Car car = getCar(contentValues.getAsInteger(ReservationConst.CAR_ID));
-        data.put(ReservationConst.RESERVATION_ID, contentValues.getAsInteger(ReservationConst.RESERVATION_ID));
-        data.put(ReservationConst.CUSTOMER_ID, contentValues.getAsInteger(ReservationConst.CUSTOMER_ID));
-        data.put(ReservationConst.CAR_ID, contentValues.getAsInteger(ReservationConst.CAR_ID));
-        data.put(ReservationConst.IS_OPEN, 1);
-        data.put(ReservationConst.START_DATE, contentValues.getAsString(ReservationConst.START_DATE));
-        data.put(ReservationConst.BEGIN_MILEAGE, contentValues.getAsLong(ReservationConst.BEGIN_MILEAGE));
-
-        String results = POST(url + "Reservation/AddReservation.php", data);
-        if (!results.startsWith("New")) {
-            throw new Exception("An error occurred on the server's side");
+            String results = POST(url + "Reservation/AddReservation.php", data);
+            if (!results.startsWith("New")) {
+                throw new Exception("An error occurred on the server's side");
+            }
+            car.setReservations(car.getReservations() + 1);
+            updateCar(CarRentConst.carToContentValues(car));
+            return ((Integer) contentValues.getAsInteger(ReservationConst.RESERVATION_ID)).toString();
+        } catch (Exception e) {
+            return e.getMessage();
         }
-        car.setReservations(car.getReservations() + 1);
-        updateCar(CarRentConst.carToContentValues(car));
-        return contentValues.getAsInteger(ReservationConst.RESERVATION_ID);
     }
 
     @Override
@@ -569,41 +601,69 @@ public class DB_SQL implements DB_manager {
     }
 
     @Override
-    public Integer getCustomerTotalReservations(int customerID) throws Exception {
+    public String getCustomerTotalReservations(int customerID) {
+        try {
+            Map<String, Object> data = new LinkedHashMap<>();
 
-        Map<String, Object> data = new LinkedHashMap<>();
+            data.put(ReservationConst.CUSTOMER_ID, customerID);
+            String results = POST(url + "Reservation/GetCustomerTotalReservations.php", data);
+            results = results.substring(0, results.length() - 1);
 
-        data.put(ReservationConst.CUSTOMER_ID, customerID);
-        String results = POST(url + "Reservation/GetCustomerTotalReservations.php", data);
-        results = results.substring(0, results.length() - 1);
-
-        if (tryParseInt(results))
-            return Integer.parseInt(results);
-        else return 0;
+            if (tryParseInt(results))
+                return results;
+            else return "0";
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 
     @Override
-    public double closeReservation(ContentValues contentValues) throws Exception {
-        Map<String, Object> data = new LinkedHashMap<>();
-        double cost = calculateReservationCost(contentValues.getAsString(ReservationConst.START_DATE),
-                contentValues.getAsString(ReservationConst.END_DATE),
-                calculateGasCost(contentValues.getAsInteger(ReservationConst.CAR_ID), contentValues.getAsInteger(ReservationConst.GAS_FILLED)),
-                contentValues.getAsLong(ReservationConst.FINISH_MILEAGE) - contentValues.getAsLong(ReservationConst.BEGIN_MILEAGE),
-                contentValues.getAsInteger(ReservationConst.CUSTOMER_ID));
-        data.put(ReservationConst.RESERVATION_ID, contentValues.getAsInteger(ReservationConst.RESERVATION_ID));
-        data.put(ReservationConst.IS_OPEN, 0);
-        data.put(ReservationConst.END_DATE, contentValues.getAsString(ReservationConst.END_DATE));
-        data.put(ReservationConst.FINISH_MILEAGE, contentValues.getAsLong(ReservationConst.FINISH_MILEAGE));
-        data.put(ReservationConst.IS_GAS_FULL, contentValues.getAsBoolean(ReservationConst.IS_GAS_FULL));
-        data.put(ReservationConst.GAS_FILLED, contentValues.getAsInteger(ReservationConst.GAS_FILLED));
-        data.put(ReservationConst.RESERVATION_COST, cost);
+    public String getCustomerTotalMileage(int customerID) {
+        try {
+            Map<String, Object> data = new LinkedHashMap<>();
 
-        String results = POST(url + "Reservation/CloseReservation.php", data);
-        if (!results.startsWith("New")) {
-            throw new Exception("An error occurred on the server's side");
+            data.put(ReservationConst.CUSTOMER_ID, customerID);
+            String results = POST(url + "Reservation/GetCustomerTotalMileage.php", data);
+            results = results.substring(0, results.length() - 1);
+
+            if (tryParseInt(results))
+                return results;
+            else return "0";
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    @Override
+    public String closeReservation(ContentValues contentValues) {
+        try {
+            Map<String, Object> data = new LinkedHashMap<>();
+            Car car = getCar(contentValues.getAsInteger(ReservationConst.CAR_ID));
+
+            Double cost = calculateReservationCost(contentValues.getAsString(ReservationConst.START_DATE),
+                    contentValues.getAsString(ReservationConst.END_DATE),
+                    calculateGasCost(car.getModelCode(), contentValues.getAsInteger(ReservationConst.GAS_FILLED)),
+                    contentValues.getAsLong(ReservationConst.FINISH_MILEAGE) - contentValues.getAsLong(ReservationConst.BEGIN_MILEAGE),
+                    contentValues.getAsInteger(ReservationConst.CUSTOMER_ID));
+            data.put(ReservationConst.RESERVATION_ID, contentValues.getAsInteger(ReservationConst.RESERVATION_ID));
+            data.put(ReservationConst.IS_OPEN, 0);
+            data.put(ReservationConst.END_DATE, contentValues.getAsString(ReservationConst.END_DATE));
+            data.put(ReservationConst.FINISH_MILEAGE, contentValues.getAsLong(ReservationConst.FINISH_MILEAGE));
+            data.put(ReservationConst.IS_GAS_FULL, contentValues.getAsBoolean(ReservationConst.IS_GAS_FULL));
+            data.put(ReservationConst.GAS_FILLED, contentValues.getAsInteger(ReservationConst.GAS_FILLED));
+            data.put(ReservationConst.RESERVATION_COST, cost);
+
+            String results = POST(url + "Reservation/CloseReservation.php", data);
+            if (!results.startsWith("New")) {
+                throw new Exception("An error occurred on the server's side");
+            }
+            car.setMileage(contentValues.getAsLong(ReservationConst.FINISH_MILEAGE));
+            updateCar(CarRentConst.carToContentValues(car));
+            return cost.toString();
+        } catch (Exception e) {
+            return e.getMessage();
         }
 
-        return cost;
     }
 
     @Override
@@ -692,18 +752,18 @@ public class DB_SQL implements DB_manager {
         } else return "";
     }
 
-    float calculateGasCost(int gasFilled, int carID) throws Exception {
-        CarModel carModel = getCarModel(getCar(carID).getModelCode());
+    private float calculateGasCost(int modelCode, int gasFilled) throws Exception {
+        CarModel carModel = getCarModel(modelCode);
         if (gasFilled > carModel.getMaxGasTank())
             throw new Exception("Your Max Gas Model is" + carModel.getMaxGasTank());
 
         int gasToPay = carModel.getMaxGasTank() - gasFilled;
-        return gasToPay * gasToPay;
+        return gasToPay * gasCostPerLiter;
 
     }
 
     // help function
-    double calculateReservationCost(String start, String end, float gasCost, long mileage, int customerID) throws Exception {
+    private Double calculateReservationCost(String start, String end, float gasCost, long mileage, int customerID) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         Promotion promotion = getPromotion(customerID);
@@ -712,14 +772,14 @@ public class DB_SQL implements DB_manager {
         promotion.setTotalRentDays(promotion.getTotalRentDays() + totalDays);
         updatePromotion(CarRentConst.promotionToContentValues(promotion));
 
-        float discount = gasCost;
+        int discount = 0;
         if (totalDays > 5)
             discount += (totalDays - 5) * 60;
 
-        return ((totalDays * 250) + (customer.getNumAccidents() * 25) - discount + (mileage * 10));
+        return ((totalDays * 250) + (customer.getNumAccidents() * 10) - discount + gasCost + (mileage * 0.5));
     }
 
-    int getCountOfDays(String start, String end) {
+    private int getCountOfDays(String start, String end) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date startDate = sdf.parse(start);
@@ -733,7 +793,7 @@ public class DB_SQL implements DB_manager {
         }
     }
 
-    boolean tryParseInt(String value) {
+    private boolean tryParseInt(String value) {
         try {
             Integer.parseInt(value);
             return true;

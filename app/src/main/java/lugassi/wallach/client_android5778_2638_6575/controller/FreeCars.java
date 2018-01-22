@@ -48,6 +48,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
     private Integer modelCode;
     private MyListAdapter<Car> carsAdapter;
     private ArrayList<CarModel> favoriteModels;
+    private String errorMassage = null;
 
     private MyReceiver carChangedReceiver = new MyReceiver() {
         @Override
@@ -57,6 +58,10 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                 new AsyncTask<Integer, Object, ArrayList<Car>>() {
                     @Override
                     protected void onPostExecute(ArrayList<Car> cars) {
+                        if (errorMassage != null) {
+                            Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                            errorMassage = null;
+                        }
                         carsAdapter = getCarsAdapter(cars);
                         freeCarsListView.setAdapter(carsAdapter);
                     }
@@ -66,7 +71,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                         try {
                             return db_manager.getFreeCars(params[0]);
                         } catch (Exception e) {
-                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            errorMassage = e.getMessage();
                             return new ArrayList<Car>();
                         }
                     }
@@ -75,6 +80,10 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                 new AsyncTask<Integer, Object, ArrayList<Car>>() {
                     @Override
                     protected void onPostExecute(ArrayList<Car> result) {
+                        if (errorMassage != null) {
+                            Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                            errorMassage = null;
+                        }
                         carsAdapter = getCarsAdapter(result);
                         freeCarsListView.setAdapter(carsAdapter);
                     }
@@ -84,7 +93,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                         try {
                             return db_manager.getFreeCars();
                         } catch (Exception e) {
-                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            errorMassage = e.getMessage();
                             return new ArrayList<Car>();
                         }
                     }
@@ -122,13 +131,17 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                     return carModelsStrings;
 
                 } catch (Exception e) {
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    errorMassage = e.getMessage();
                     return new ArrayList<String>();
                 }
             }
 
             @Override
             protected void onPostExecute(ArrayList<String> strings) {
+                if (errorMassage != null) {
+                    Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                    errorMassage = null;
+                }
                 carModelsAutoCompleteTextView.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_expandable_list_item_1, strings));
                 carModelsAutoCompleteTextView.setThreshold(1);
             }
@@ -138,6 +151,10 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
         new AsyncTask<Integer, Object, ArrayList<Car>>() {
             @Override
             protected void onPostExecute(ArrayList<Car> result) {
+                if (errorMassage != null) {
+                    Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                    errorMassage = null;
+                }
                 carsAdapter = getCarsAdapter(result);
                 freeCarsListView.setAdapter(carsAdapter);
             }
@@ -147,7 +164,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                 try {
                     return db_manager.getFreeCars();
                 } catch (Exception e) {
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    errorMassage = e.getMessage();
                     return new ArrayList<Car>();
 
                 }
@@ -236,11 +253,14 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
     // add model to favorite and update view
     void addModelToFavorite(final int modelCode) {
         try {
-
             /// download car model details and add to content provider
             new AsyncTask<Integer, Object, CarModel>() {
                 @Override
                 protected void onPostExecute(CarModel carModel) {
+                    if (errorMassage != null) {
+                        Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                        errorMassage = null;
+                    }
                     if (carModel == null) return;
                     Uri uri = getActivity().getContentResolver().insert(CarRentConst.ContentProviderConstants.CONTENT_URI, CarRentConst.carModelToContentValues(carModel));
                     favoriteModels.add(carModel);
@@ -254,7 +274,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                     try {
                         return db_manager.getCarModel(params[0]);
                     } catch (Exception e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        errorMassage = e.getMessage();
                         return null;
 
                     }
@@ -275,6 +295,10 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
             new AsyncTask<Integer, Object, CarModel>() {
                 @Override
                 protected void onPostExecute(CarModel carModel) {
+                    if (errorMassage != null) {
+                        Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                        errorMassage = null;
+                    }
                     if (carModel == null) return;
                     int uri = getActivity().getContentResolver().delete(CarRentConst.ContentProviderConstants.CONTENT_URI,
                             CarRentConst.DataBaseConstants.MODEL_CODE + "=?", new String[]{new String(((Integer) carModel.getModelCode()).toString())});
@@ -294,7 +318,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                     try {
                         return db_manager.getCarModel(params[0]);
                     } catch (Exception e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        errorMassage = e.getMessage();
                         return null;
                     }
                 }
@@ -333,6 +357,10 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                 new AsyncTask<Integer, Object, String>() {
                     @Override
                     protected void onPostExecute(String branchName) {
+                        if (errorMassage != null) {
+                            Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                            errorMassage = null;
+                        }
                         if (branchName != null)
                             branchNameEditText.setText(branchName);
                     }
@@ -342,7 +370,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                         try {
                             return db_manager.getBranch(params[0]).getBranchName();
                         } catch (Exception e) {
-                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            errorMassage = e.getMessage();
                             return null;
                         }
                     }
@@ -351,6 +379,10 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                 new AsyncTask<Integer, Object, String>() {
                     @Override
                     protected void onPostExecute(String modelNameAndCompany) {
+                        if (errorMassage != null) {
+                            Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                            errorMassage = null;
+                        }
                         if (modelNameAndCompany != null)
                             modelNameAndCompanyEditText.setText(modelNameAndCompany);
                     }
@@ -362,7 +394,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                         try {
                             carModel = db_manager.getCarModel(params[0]);
                         } catch (Exception e) {
-                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            errorMassage = e.getMessage();
                             return null;
                         }
                         return carModel.getModelName() + ", " + carModel.getCompany().name();
@@ -403,6 +435,10 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
         new AsyncTask<Integer, Object, ArrayList<Car>>() {
             @Override
             protected void onPostExecute(ArrayList<Car> result) {
+                if (errorMassage != null) {
+                    Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                    errorMassage = null;
+                }
                 carsAdapter = getCarsAdapter(result);
                 freeCarsListView.setAdapter(carsAdapter);
             }
@@ -412,7 +448,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                 try {
                     return db_manager.getFreeCars(params[0]);
                 } catch (Exception e) {
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    errorMassage = e.getMessage();
                     return new ArrayList<Car>();
                 }
             }

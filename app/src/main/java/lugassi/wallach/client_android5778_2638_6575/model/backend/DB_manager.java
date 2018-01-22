@@ -4,13 +4,7 @@ import android.content.ContentValues;
 
 import java.util.ArrayList;
 
-import lugassi.wallach.client_android5778_2638_6575.model.entities.Branch;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.Car;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.CarModel;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.Customer;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.Promotion;
-import lugassi.wallach.client_android5778_2638_6575.model.entities.Reservation;
-
+import lugassi.wallach.client_android5778_2638_6575.model.entities.*;
 
 /**
  * Created by Michael on 21/11/2017.
@@ -18,22 +12,22 @@ import lugassi.wallach.client_android5778_2638_6575.model.entities.Reservation;
 
 public interface DB_manager {
 
-    public String checkUser(String userName, String password) throws Exception;
+    public String checkUser(String userName, String password);
 
-    public boolean createUser(String userName, String password, int userID) throws Exception;
+    public String createUser(String userName, String password, int userID);
 
-    public int addCustomer(ContentValues contentValues) throws Exception;
+    public String addCustomer(ContentValues contentValues);
 
-    public int addReservation(ContentValues contentValues) throws Exception;
+    public String addReservation(ContentValues contentValues);
 
-    public boolean addPromotion(ContentValues contentValues) throws Exception;
+    public String addPromotion(ContentValues contentValues);
 
 
-    public boolean updateCar(ContentValues contentValues) throws Exception;
+    public String updateCar(ContentValues contentValues);
 
-    public boolean updateCustomer(ContentValues contentValues) throws Exception;
+    public String updateCustomer(ContentValues contentValues);
 
-    public boolean updatePromotion(ContentValues contentValues) throws Exception;
+    public String updatePromotion(ContentValues contentValues);
 
     public ArrayList<Branch> getBranches() throws Exception;
 
@@ -63,9 +57,12 @@ public interface DB_manager {
 
     public ArrayList<Reservation> getReservationsOnGoing(int customerID) throws Exception;
 
-    Integer getCustomerTotalReservations(int customerID) throws Exception;
+    public String getCustomerTotalReservations(int customerID);
 
-    public double closeReservation(ContentValues contentValues) throws Exception;
+    public String getCustomerTotalMileage(int customerID);
+
+
+    public String closeReservation(ContentValues contentValues);
 
     public boolean detectCarsChanges() throws Exception;
 }

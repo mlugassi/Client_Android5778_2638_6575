@@ -48,6 +48,7 @@
     <string name="textHello">Hello,</string>
     <string name="textTotalReservations">Total Reservations:</string>
     <string name="textTotalRentDays">Total Rent Days:</string>
+    <string name="textTotalMileage">Total Mileage:</string>
     <string name="textTotalAccidents">Total Accidents:</string>
 
     Report an accident
@@ -149,6 +150,11 @@
 
 
     <!-- Strings Exceptions -->
+    <string name="exceptionLongLessFileds">Can\'t Be more than 6 digits</string>
+    <string name="exceptionMoreFileds">Can\'t Be more than</string>
+    <string name="exceptionLessFileds">Can\'t Be less than</string>
+    <string name="exceptionZeroOrLessFileds">Can\'t Be only 0 or less</string>
+    <string name="exceptionNumberFileds">Can\'t Be only numbers</string>
     <string name="exceptionEmptyFileds">Can\'t Be Empty</string>
     <string name="exceptionInvalidValue">Invalid Value</string>
     <string name="exceptionUserName">User Name Must Be Less Than 25 Characters</string>

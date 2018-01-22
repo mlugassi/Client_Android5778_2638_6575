@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -36,7 +37,7 @@ public class DialogFinishOrder extends DialogFragment implements View.OnClickLis
     private EditText gasEditText;
     private Button cancelButton;
     private Button okButton;
-    String errorMassage;
+    private String errorMassage = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +53,11 @@ public class DialogFinishOrder extends DialogFragment implements View.OnClickLis
         new AsyncTask<Integer, Object, Reservation>() {
             @Override
             protected void onPostExecute(Reservation result) {
+
+                if (errorMassage != null) {
+                    Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                    errorMassage = null;
+                }
                 reservation = result;
             }
 
@@ -60,7 +66,7 @@ public class DialogFinishOrder extends DialogFragment implements View.OnClickLis
                 try {
                     return db_manager.getReservation(params[0]);
                 } catch (Exception e) {
-                    Snackbar.make(getView(), e.getMessage(), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    errorMassage = e.getMessage();
                     return null;
                 }
             }
@@ -99,6 +105,15 @@ public class DialogFinishOrder extends DialogFragment implements View.OnClickLis
         return true;
     }
 
+    boolean tryParseDouble(String value) {
+        try {
+            Double.parseDouble(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     @Override
     public void onClick(View v) {
         if (v == cancelButton) {
@@ -110,33 +125,27 @@ public class DialogFinishOrder extends DialogFragment implements View.OnClickLis
             if (gasFilledCheckBox.isChecked())
                 gasCost = Integer.parseInt(gasEditText.getText().toString());
 
-            new AsyncTask<Integer, Object, Double>() {
+            new AsyncTask<Integer, Object, String>() {
                 @Override
-                protected void onPostExecute(Double o) {
-                    if (o >= 0)
-                        Snackbar.make(getActivity().getWindow().getDecorView(), getString(R.string.textCloseReservation) + " " + o, Snackbar.LENGTH_LONG)
+                protected void onPostExecute(String result) {
+                    if (tryParseDouble(result) && Double.parseDouble(result) >= 0)
+                        Snackbar.make(getActivity().getWindow().getDecorView(), getString(R.string.textCloseReservation) + " " + result, Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     else
-                        Snackbar.make(getActivity().getWindow().getDecorView(), getString(R.string.exceptionFailedRequest), Snackbar.LENGTH_LONG)
+                        Snackbar.make(getActivity().getWindow().getDecorView(), getString(R.string.exceptionFailedRequest) + "\n" + result, Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
-//                    dismiss();
+                    dismiss();
                 }
 
 
                 @Override
-                protected Double doInBackground(Integer... params) {
-                    try {
-                        reservation.setEndDate(Calendar.getInstance());
-                        reservation.setOpen(false);
-                        reservation.setFinishMileage(reservation.getBeginMileage() + params[0]);
-                        reservation.setGasFilled(params[1]);
-                        reservation.setGasFull(params[1] > 0);
-
-                        return db_manager.closeReservation(CarRentConst.reservationToContentValues(reservation));
-                    } catch (Exception e) {
-                        Snackbar.make(getView(), e.getMessage(), Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                        return Double.valueOf(-1);
-                    }
+                protected String doInBackground(Integer... params) {
+                    reservation.setEndDate(Calendar.getInstance());
+                    reservation.setOpen(false);
+                    reservation.setFinishMileage(reservation.getBeginMileage() + params[0]);
+                    reservation.setGasFilled(params[1]);
+                    reservation.setGasFull(params[1] > 0);
+                    return db_manager.closeReservation(CarRentConst.reservationToContentValues(reservation));
                 }
             }.execute(mileage, gasCost);
         }

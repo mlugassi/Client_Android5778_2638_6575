@@ -35,6 +35,8 @@ public class Reservations extends Fragment {
     MyListAdapter<Reservation> reservationAdapter;
     DB_manager db_manager;
     int customerID;
+    private String errorMassage = null;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +55,10 @@ public class Reservations extends Fragment {
         new AsyncTask<Object, Object, ArrayList<Reservation>>() {
             @Override
             protected void onPostExecute(ArrayList<Reservation> reservations) {
+                if (errorMassage != null) {
+                    Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                    errorMassage = null;
+                }
                 reservationAdapter = new MyListAdapter<Reservation>(getActivity(), reservations) {
                     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -74,6 +80,10 @@ public class Reservations extends Fragment {
                         new AsyncTask<Integer, Object, String>() {
                             @Override
                             protected void onPostExecute(String s) {
+                                if (errorMassage != null) {
+                                    Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                                    errorMassage = null;
+                                }
                                 if (s != null)
                                     branchNameEditText.setText(s);
                             }
@@ -86,7 +96,7 @@ public class Reservations extends Fragment {
                                     branch = db_manager.getBranch(car.getBranchID());
 
                                 } catch (Exception e) {
-                                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                    errorMassage = e.getMessage();
                                     return null;
 
                                 }
@@ -96,6 +106,10 @@ public class Reservations extends Fragment {
                         new AsyncTask<Integer, Object, String>() {
                             @Override
                             protected void onPostExecute(String s) {
+                                if (errorMassage != null) {
+                                    Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                                    errorMassage = null;
+                                }
                                 if (s != null)
                                     modelNameAndCompanyEditText.setText(s);
                             }
@@ -107,7 +121,7 @@ public class Reservations extends Fragment {
                                     Car car = db_manager.getCar(params[0]);
                                     carModel = db_manager.getCarModel(car.getModelCode());
                                 } catch (Exception e) {
-                                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                    errorMassage = e.getMessage();
                                     return null;
                                 }
                                 return carModel.getModelName() + ", " + carModel.getCompany().name();
@@ -139,7 +153,7 @@ public class Reservations extends Fragment {
                 try {
                     return db_manager.getReservationsOnGoing(customerID);
                 } catch (Exception e) {
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    errorMassage = e.getMessage();
                     return new ArrayList<Reservation>();
                 }
             }

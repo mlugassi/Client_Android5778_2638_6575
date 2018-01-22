@@ -7,11 +7,11 @@ import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import lugassi.wallach.client_android5778_2638_6575.R;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DBManagerFactory;
@@ -22,11 +22,12 @@ import lugassi.wallach.client_android5778_2638_6575.model.entities.Car;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CarDetails extends DialogFragment implements View.OnClickListener {
+public class CarDetails extends DialogFragment {
 
 
     DB_manager db_manager;
     Car car;
+    private String errorMassage = null;
 
     @NonNull
     @Override
@@ -48,10 +49,19 @@ public class CarDetails extends DialogFragment implements View.OnClickListener {
         new AsyncTask<Integer, Object, Car>() {
             @Override
             protected void onPostExecute(Car result) {
+                if (errorMassage != null) {
+                    Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                    errorMassage = null;
+                    return;
+                }
                 car = result;
                 new AsyncTask<Object, Object, String>() {
                     @Override
                     protected void onPostExecute(String branchName) {
+                        if (errorMassage != null) {
+                            Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                            errorMassage = null;
+                        }
                         if (branchName == null) return;
                         ((TextView) view.findViewById(R.id.branchNameTextView)).setText(branchName);
                         ((TextView) view.findViewById(R.id.branchNameTextView)).setOnClickListener(new View.OnClickListener() {
@@ -71,7 +81,7 @@ public class CarDetails extends DialogFragment implements View.OnClickListener {
                         try {
                             return db_manager.getBranch(car.getBranchID()).getBranchName();
                         } catch (Exception e) {
-                            Snackbar.make(getView(), e.getMessage(), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            errorMassage = e.getMessage();
                             return null;
                         }
                     }
@@ -79,6 +89,10 @@ public class CarDetails extends DialogFragment implements View.OnClickListener {
                 new AsyncTask<Object, Object, String>() {
                     @Override
                     protected void onPostExecute(String modelName) {
+                        if (errorMassage != null) {
+                            Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                            errorMassage = null;
+                        }
                         if (modelName != null)
                             ((TextView) view.findViewById(R.id.modelNameTextView)).setText(modelName);
                     }
@@ -88,7 +102,7 @@ public class CarDetails extends DialogFragment implements View.OnClickListener {
                         try {
                             return db_manager.getCarModel(car.getModelCode()).getModelName();
                         } catch (Exception e) {
-                            Snackbar.make(getView(), e.getMessage(), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            errorMassage = e.getMessage();
                             return null;
                         }
                     }
@@ -104,7 +118,7 @@ public class CarDetails extends DialogFragment implements View.OnClickListener {
                 try {
                     return db_manager.getCar(params[0]);
                 } catch (Exception e) {
-                    Snackbar.make(getView(), e.getMessage(), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    errorMassage = e.getMessage();
                     return null;
                 }
             }
@@ -113,8 +127,4 @@ public class CarDetails extends DialogFragment implements View.OnClickListener {
         return view;
     }
 
-    @Override
-    public void onClick(View v) {
-
-    }
 }
