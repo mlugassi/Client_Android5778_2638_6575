@@ -22,6 +22,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import lugassi.wallach.client_android5778_2638_6575.R;
+import lugassi.wallach.client_android5778_2638_6575.controller.fragments.AboutUs;
+import lugassi.wallach.client_android5778_2638_6575.controller.fragments.FavoriteModels;
+import lugassi.wallach.client_android5778_2638_6575.controller.fragments.FreeCars;
+import lugassi.wallach.client_android5778_2638_6575.controller.fragments.Home;
+import lugassi.wallach.client_android5778_2638_6575.controller.fragments.MakeOrder;
+import lugassi.wallach.client_android5778_2638_6575.controller.fragments.Reservations;
 import lugassi.wallach.client_android5778_2638_6575.model.MyService;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst;
 

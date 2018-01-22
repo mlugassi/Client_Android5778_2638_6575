@@ -1,17 +1,18 @@
-package lugassi.wallach.client_android5778_2638_6575.controller;
+package lugassi.wallach.client_android5778_2638_6575.controller.fragments;
 
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import lugassi.wallach.client_android5778_2638_6575.R;
+import lugassi.wallach.client_android5778_2638_6575.controller.dialogs.ReservationDetails;
 import lugassi.wallach.client_android5778_2638_6575.model.MyListAdapter;
 import lugassi.wallach.client_android5778_2638_6575.model.MyReceiver;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DBManagerFactory;
@@ -32,7 +34,7 @@ import lugassi.wallach.client_android5778_2638_6575.model.entities.Reservation;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OldReservations extends Fragment {
+public class OldReservations extends Fragment implements AdapterView.OnItemLongClickListener {
 
     private ListView reservationsListView;
     MyListAdapter<Reservation> reservationAdapter;
@@ -175,7 +177,19 @@ public class OldReservations extends Fragment {
             }
         }.execute();
 
+        reservationsListView.setOnItemLongClickListener(this);
         return view;
     }
 
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        // open reservation dialog details
+        Bundle args = new Bundle();
+        args.putInt(CarRentConst.ReservationConst.RESERVATION_ID, ((Reservation) reservationsListView.getItemAtPosition(position)).getReservationID());
+        ReservationDetails myDialogFragment = new ReservationDetails();
+        myDialogFragment.setArguments(args);
+        myDialogFragment.show(getActivity().getFragmentManager(), "Reservation Details");
+
+        return false;
+    }
 }

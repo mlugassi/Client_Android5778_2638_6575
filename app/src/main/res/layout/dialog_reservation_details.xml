@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="lugassi.wallach.client_android5778_2638_6575.controller.dialogs.CarDetails">
+    tools:context="lugassi.wallach.client_android5778_2638_6575.controller.dialogs.BranchDetails">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,11 +15,10 @@
             android:layout_height="wrap_content"
             android:background="@color/OrangeRed"
             android:padding="15dp"
-            android:text="@string/textCarDetails"
+            android:text="@string/textReservationDetails"
             android:textAlignment="center"
             android:textColor="@color/White"
             android:textSize="30dp" />
-
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -38,7 +38,7 @@
 
 
             <TextView
-                android:id="@+id/carIdTextView"
+                android:id="@+id/reservationIDTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -58,14 +58,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/textBranchName"
-                android:linksClickable="true"
+                android:text="@string/textCarId"
                 android:textColor="@color/Black"
                 android:textSize="15dp" />
 
 
             <TextView
-                android:id="@+id/branchNameTextView"
+                android:id="@+id/carIDTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -85,13 +84,40 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/textModelName"
+                android:text="@string/textStartDay"
                 android:textColor="@color/Black"
                 android:textSize="15dp" />
 
 
             <TextView
-                android:id="@+id/modelNameTextView"
+                android:id="@+id/startDayTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/Gray"
+                android:textSize="15dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/textEndDay"
+                android:textColor="@color/Black"
+                android:textSize="15dp" />
+
+
+            <TextView
+                android:id="@+id/endDayTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -111,13 +137,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/textMileage"
+                android:text="@string/textBeginMileage"
                 android:textColor="@color/Black"
                 android:textSize="15dp" />
 
 
             <TextView
-                android:id="@+id/mileageTextView"
+                android:id="@+id/beginMileageTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -137,20 +163,75 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/textReservations"
+                android:text="@string/textFinishMileage"
                 android:textColor="@color/Black"
-                android:textSize="15dp" />
+                android:textSize="15dp"
+                android:visibility="gone" />
 
 
             <TextView
-                android:id="@+id/reservationsTextView"
+                android:id="@+id/finishMileageTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:textColor="@color/Gray"
                 android:textSize="15dp" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/textGasFilled"
+                android:textColor="@color/Black"
+                android:textSize="15dp" />
+
+
+            <TextView
+                android:id="@+id/gasFilledTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/Gray"
+                android:textSize="15dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/textReservationCost"
+                android:textColor="@color/Black"
+                android:textSize="15dp" />
+
+
+            <TextView
+                android:id="@+id/reservationCostTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/Gray"
+                android:textSize="15dp" />
+        </LinearLayout>
+
 
     </LinearLayout>
-
 </FrameLayout>

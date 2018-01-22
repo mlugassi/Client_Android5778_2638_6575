@@ -1,4 +1,4 @@
-package lugassi.wallach.client_android5778_2638_6575.controller;
+package lugassi.wallach.client_android5778_2638_6575.controller.fragments;
 
 
 import android.app.Fragment;
@@ -26,6 +26,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import lugassi.wallach.client_android5778_2638_6575.R;
+import lugassi.wallach.client_android5778_2638_6575.controller.dialogs.CarDetails;
 import lugassi.wallach.client_android5778_2638_6575.model.MyListAdapter;
 import lugassi.wallach.client_android5778_2638_6575.model.MyReceiver;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DBManagerFactory;

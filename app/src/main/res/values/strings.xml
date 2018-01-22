@@ -66,11 +66,13 @@
     <string name="textUserNameAndPassword">Choose User Name And Password For Login</string>
     <string name="textUserName">Create User Name</string>
     <string name="textBranchDetails">Branch Details</string>
+    <string name="textReservationDetails">Reservation Details</string>
     <string name="textFreeCars">Free Cars</string>
     <string name="textCarModelDetails">Car Model Details</string>
     <string name="textCarDetails">Car Details</string>
     <string name="textOrderDetails">Order Details</string>
     <string name="textName">Name: </string>
+    <string name="textCarId">Car ID: </string>
     <string name="textID">ID: </string>
     <string name="textDialogTitle">Make Order</string>
     <string name="textDialogMessage">Do you want to order this car?</string>
@@ -101,6 +103,12 @@
     <string name="textEditCustomer">Customer Details</string>
     <string name="textAddress">Address:</string>
     <string name="textCity">City:</string>
+    <string name="textStartDay">Start Day:</string>
+    <string name="textEndDay">End Day:</string>
+    <string name="textBeginMileage">Begin Mileage:</string>
+    <string name="textFinishMileage">Finish Mileage:</string>
+    <string name="textGasFilled">Gas Filled:</string>
+    <string name="textReservationCost">Reservation Cost:</string>
     <string name="textParkingSpace">Parking Space:</string>
     <string name="textBranchName">Branch Name:</string>
     <string name="textModelName">Model Name:</string>

@@ -16,7 +16,7 @@ public class Reservation {
     private long finishMileage;
     private boolean isGasFull;
     private int gasFilled;
-    private float reservationCost;
+    private double reservationCost;
 
     public Reservation() {
         reservationID = reservationCounter++;
@@ -141,7 +141,7 @@ public class Reservation {
         this.gasFilled = gasFilled;
     }
 
-    public float getReservationCost() {
+    public double getReservationCost() {
         return reservationCost;
     }
 
