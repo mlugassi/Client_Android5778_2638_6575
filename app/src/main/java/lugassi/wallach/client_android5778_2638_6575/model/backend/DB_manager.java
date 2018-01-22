@@ -18,6 +18,8 @@ public interface DB_manager {
 
     public String addCustomer(ContentValues contentValues);
 
+    String removeCustomer(int customerID);
+
     public String addReservation(ContentValues contentValues);
 
     public String addPromotion(ContentValues contentValues);

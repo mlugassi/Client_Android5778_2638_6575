@@ -512,7 +512,21 @@ public class DB_SQL implements DB_manager {
         return customer;
     }
 
+    @Override
+    public String removeCustomer(final int customerID) {
+        try {
+            Map<String, Object> params = new LinkedHashMap<>();
 
+            params.put(CustomerConst.CUSTOMER_ID, customerID);
+            String results = POST(url + "Customer/RemoveCustomer.php", params);
+            if (!results.startsWith("New")) {
+                throw new Exception("An error occurred on the server's side");
+            }
+            return ((Integer) customerID).toString();
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
 /// reservations
 
     @Override

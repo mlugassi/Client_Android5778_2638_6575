@@ -243,7 +243,7 @@ public class AddCustomer extends Activity implements View.OnClickListener {
                     if (tryParseInt(idResult) && Integer.parseInt(idResult) > 0) {
                         Toast.makeText(getBaseContext(), getString(R.string.textSuccessCreateCustomerMessage) + idResult, Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(AddCustomer.this, AddUser.class);
-                        intent.putExtra(CarRentConst.UserConst.USER_ID, idResult);
+                        intent.putExtra(CarRentConst.UserConst.USER_ID, Integer.parseInt(idResult));
                         finish();
                         startActivity(intent);
                     } else
