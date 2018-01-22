@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,17 +22,23 @@ import lugassi.wallach.client_android5778_2638_6575.model.entities.Reservation;
  * A simple {@link Fragment} subclass.
  */
 public class ReservationDetails extends DialogFragment {
-    private TextView reservationIDTextView;
-    private TextView carIDTextView;
-    private TextView startDayTextView;
-    private TextView endDayTextView;
-    private TextView beginMileageTextView;
-    private TextView finishMileageTextView;
-    private TextView gasFilledTextView;
-    private TextView reservationCostTextView;
+
     private String errorMassage = null;
     private DB_manager db_manager;
     private int reservationID;
+
+    private TextView reservationIDTextView;
+    private TextView carIDTextView;
+    private TextView startDayTextView;
+    private LinearLayout endLinearLayout;
+    private TextView endDayTextView;
+    private TextView beginMileageTextView;
+    private LinearLayout finishMileageLinearLayout;
+    private TextView finishMileageTextView;
+    private LinearLayout gasLinearLayout;
+    private TextView gasFilledTextView;
+    private LinearLayout costLinearLayout;
+    private TextView reservationCostTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,10 @@ public class ReservationDetails extends DialogFragment {
         finishMileageTextView = (TextView) view.findViewById(R.id.finishMileageTextView);
         gasFilledTextView = (TextView) view.findViewById(R.id.gasFilledTextView);
         reservationCostTextView = (TextView) view.findViewById(R.id.reservationCostTextView);
+        endLinearLayout = (LinearLayout)view.findViewById( R.id.endLinearLayout );
+        finishMileageLinearLayout = (LinearLayout)view.findViewById( R.id.finishMileageLinearLayout );
+        gasLinearLayout = (LinearLayout)view.findViewById( R.id.gasLinearLayout );
+        costLinearLayout = (LinearLayout)view.findViewById( R.id.costLinearLayout );
 
         new AsyncTask<Object, Object, Reservation>() {
             @Override
@@ -71,10 +82,10 @@ public class ReservationDetails extends DialogFragment {
                     gasFilledTextView.setText(((Integer) reservation.getGasFilled()).toString());
                     reservationCostTextView.setText(((Double) reservation.getReservationCost()).toString());
 
-                    endDayTextView.setVisibility(View.VISIBLE);
-                    finishMileageTextView.setVisibility(View.VISIBLE);
-                    gasFilledTextView.setVisibility(View.VISIBLE);
-                    reservationCostTextView.setVisibility(View.VISIBLE);
+                    endLinearLayout.setVisibility(View.VISIBLE);
+                    finishMileageLinearLayout.setVisibility(View.VISIBLE);
+                    gasLinearLayout.setVisibility(View.VISIBLE);
+                    costLinearLayout.setVisibility(View.VISIBLE);
                 }
             }
 

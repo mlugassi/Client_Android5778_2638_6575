@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import lugassi.wallach.client_android5778_2638_6575.R;
+import lugassi.wallach.client_android5778_2638_6575.controller.dialogs.CarModelDetails;
 import lugassi.wallach.client_android5778_2638_6575.model.MyListAdapter;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst;
 import lugassi.wallach.client_android5778_2638_6575.model.entities.CarModel;
@@ -28,7 +30,7 @@ import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.EngineC
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FavoriteModels extends Fragment {
+public class FavoriteModels extends Fragment implements AdapterView.OnItemLongClickListener {
 
     private ArrayList<CarModel> carModels;
     private MyListAdapter carModelsAdapter;
@@ -80,11 +82,12 @@ public class FavoriteModels extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favorite_models, container, false);
         favoriteCarModelListView = (ListView) view.findViewById(R.id.favoriteCarModelListView);
         favoriteCarModelListView.setAdapter(carModelsAdapter);
+
+        favoriteCarModelListView.setOnItemLongClickListener(this);
         return view;
     }
 
@@ -153,5 +156,17 @@ public class FavoriteModels extends Fragment {
                     .show();
 
         }
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        // open car model dialog details
+        Bundle args = new Bundle();
+        args.putInt(CarRentConst.CarModelConst.MODEL_CODE, ((CarModel) favoriteCarModelListView.getItemAtPosition(position)).getModelCode());
+        CarModelDetails myDialogFragment = new CarModelDetails();
+        myDialogFragment.setArguments(args);
+        myDialogFragment.show(getActivity().getFragmentManager(), "Car Model Details");
+
+        return false;
     }
 }

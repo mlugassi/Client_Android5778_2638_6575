@@ -63,6 +63,7 @@
         android:layout_margin="5dp"
         android:layout_weight="0"
         android:adjustViewBounds="true"
+        android:focusable="false"
         android:background="@drawable/button_shape"
         android:padding="10dp"
         android:scaleType="fitCenter"

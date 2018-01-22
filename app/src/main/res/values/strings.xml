@@ -74,6 +74,8 @@
     <string name="textName">Name: </string>
     <string name="textCarId">Car ID: </string>
     <string name="textID">ID: </string>
+    <string name="textSeats">Seats: </string>
+    <string name="textMaxGasTank">Max Gas Tank: </string>
     <string name="textDialogTitle">Make Order</string>
     <string name="textDialogMessage">Do you want to order this car?</string>
     <string name="textDialogMessageLogout">Do you want logout?</string>
