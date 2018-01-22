@@ -16,10 +16,13 @@ import lugassi.wallach.client_android5778_2638_6575.model.entities.Enums.Gender;
 
 public class CarRentConst {
 
-    public static final String POSITION = "position";
+    public static class MyService {
+        public static final int NEW_BRANCH_ADDED = 123;
+    }
 
     public static class MyIntentFilter {
         public static final String CARS_CHANGED = "lugassi.wallach.CARS_CHANGED";
+        public static final String RESERVATIONS_CHANGED = "lugassi.wallach.RESERVATIONS_CHANGED";
         public static final String BRANCHES_CHANGED = "lugassi.wallach.BRANCHES_CHANGED";
     }
 

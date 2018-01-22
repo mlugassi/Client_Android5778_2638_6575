@@ -9,6 +9,7 @@
     <string name="title_favorite_models_fragment">Orange - Your Favorite Models</string>
     <string name="title_free_cars_fragment">Orange - Free Cars</string>
     <string name="title_reservation_fragment">Orange - Reservation</string>
+    <string name="title_old_reservation_fragment">Orange - Old Reservation</string>
 
     <!--menu-->
     <string name="menu_contact_us">Contact Us</string>
@@ -34,6 +35,10 @@
         completions."
     </string>
 
+    <!--notification-->
+    <string name="notification_newBranch">New Branch Added!</string>
+    <string name="notification_newBranchContent">Take a Look</string>
+
     <!--login-->
     <string name="saved_username">username</string>
     <string name="saved_password">password</string>
@@ -50,9 +55,7 @@
     <string name="textTotalRentDays">Total Rent Days:</string>
     <string name="textTotalMileage">Total Mileage:</string>
     <string name="textTotalAccidents">Total Accidents:</string>
-
-    Report an accident
-
+    <string name="textOldReservation">tap to watch your old reservations</string>
     <string name="textAddModelFavorite">successfully added model:</string>
     <string name="textRemoveModelFavorite">successfully removed model:</string>
     <string name="textCarType">Type</string>

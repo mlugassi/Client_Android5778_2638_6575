@@ -3,9 +3,13 @@ package lugassi.wallach.client_android5778_2638_6575.controller;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -39,6 +43,18 @@ public class MainNavigation extends AppCompatActivity
         View header = nav_view.getHeaderView(0);
         ((TextView) header.findViewById(R.id.userTextView)).setText(userName);
         setHomeFragment();
+
+        bindService(new Intent(this, MyService.class), new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        }, Context.BIND_AUTO_CREATE);
 
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

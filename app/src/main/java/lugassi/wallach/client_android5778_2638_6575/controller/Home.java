@@ -2,6 +2,7 @@ package lugassi.wallach.client_android5778_2638_6575.controller;
 
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -27,6 +28,7 @@ public class Home extends Fragment implements View.OnClickListener {
     private TextView nameTextView;
     private TextView totalReservationsTextView;
     private TextView totalMileageTextView;
+    private TextView oldReservationsTextView;
     private TextView totalRentDaysTextView;
     private TextView accidentsTextView;
     private Button button;
@@ -51,6 +53,7 @@ public class Home extends Fragment implements View.OnClickListener {
         totalReservationsTextView = (TextView) view.findViewById(R.id.totalReservationsTextView);
         totalRentDaysTextView = (TextView) view.findViewById(R.id.totalRentDaysTextView);
         totalMileageTextView = (TextView) view.findViewById(R.id.totalMileageTextView);
+        oldReservationsTextView = (TextView) view.findViewById(R.id.oldReservationsTextView);
         accidentsTextView = (TextView) view.findViewById(R.id.accidentsTextView);
         button = (Button) view.findViewById(R.id.button);
 
@@ -143,6 +146,7 @@ public class Home extends Fragment implements View.OnClickListener {
         }.execute();
 
 
+        oldReservationsTextView.setOnClickListener(this);
         button.setOnClickListener(this);
         return view;
     }
@@ -185,6 +189,14 @@ public class Home extends Fragment implements View.OnClickListener {
                     }
                 }
             }.execute();
+        } else if (v == oldReservationsTextView) {
+            OldReservations fragment = new OldReservations();
+            Bundle args = new Bundle();
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            args.putInt(CarRentConst.CustomerConst.CUSTOMER_ID, customerID);
+            fragment.setArguments(args);
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
+            fragmentTransaction.commit();
         }
     }
 

@@ -3,7 +3,10 @@ package lugassi.wallach.client_android5778_2638_6575.controller;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
@@ -28,6 +31,7 @@ import java.util.ArrayList;
 
 import lugassi.wallach.client_android5778_2638_6575.R;
 import lugassi.wallach.client_android5778_2638_6575.model.MyListAdapter;
+import lugassi.wallach.client_android5778_2638_6575.model.MyReceiver;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DBManagerFactory;
 import lugassi.wallach.client_android5778_2638_6575.model.backend.DB_manager;
 import lugassi.wallach.client_android5778_2638_6575.model.datasource.CarRentConst;
@@ -42,6 +46,7 @@ import lugassi.wallach.client_android5778_2638_6575.model.entities.Reservation;
 public class MakeOrder extends Fragment implements SearchView.OnQueryTextListener, OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     private int customerID;
+    private int branchID;
     private TextView freeCarTextView;
     private SearchView searchBar;
     private ListView branchesListView;
@@ -51,15 +56,69 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
     private MyListAdapter carsAdapter;
     private ArrayList<CarModel> favoriteModels;
     private String errorMassage = null;
+    private MyReceiver carsAndBranchesChangedReceiver = new MyReceiver() {
+        @Override
+        public void onReceive(Context context, final Intent intent) {
+            if (intent.getAction() == CarRentConst.MyIntentFilter.RESERVATIONS_CHANGED || intent.getAction() == CarRentConst.MyIntentFilter.CARS_CHANGED)
+                new AsyncTask<Integer, Object, ArrayList<Car>>() {
+                    @Override
+                    protected void onPostExecute(ArrayList<Car> result) {
+                        if (errorMassage != null) {
+                            Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                            errorMassage = null;
+                        }
+                        carsAdapter.setData(result);
+                        carsAdapter.notifyDataSetChanged();
+                    }
 
+                    @Override
+                    protected ArrayList<Car> doInBackground(Integer... params) {
+                        try {
+                            if (branchID < 0) return new ArrayList<Car>();
+                            return db_manager.getFreeCarsByBranchID(branchID);
+                        } catch (Exception e) {
+                            errorMassage = e.getMessage();
+                            return new ArrayList<Car>();
+                        }
+                    }
+                }.execute();
+            else if (intent.getAction() == CarRentConst.MyIntentFilter.BRANCHES_CHANGED)
+                new AsyncTask<Integer, Object, ArrayList<Branch>>() {
+                    @Override
+                    protected void onPostExecute(ArrayList<Branch> result) {
+                        if (errorMassage != null) {
+                            Toast.makeText(getActivity(), errorMassage, Toast.LENGTH_LONG).show();
+                            errorMassage = null;
+                        }
+                        branchesAdapter.setData(result);
+                        branchesAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    protected ArrayList<Branch> doInBackground(Integer... params) {
+                        try {
+                            return db_manager.getBranches();
+                        } catch (Exception e) {
+                            errorMassage = e.getMessage();
+                            return new ArrayList<Branch>();
+                        }
+                    }
+                }.execute();
+        }
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db_manager = DBManagerFactory.getManager();
         customerID = getArguments().getInt(CarRentConst.CustomerConst.CUSTOMER_ID);
+        branchID = -1;
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.title_make_order_fragment));
+        IntentFilter carChangesFilter = new IntentFilter(CarRentConst.MyIntentFilter.CARS_CHANGED);
+        carChangesFilter.addAction(CarRentConst.MyIntentFilter.RESERVATIONS_CHANGED);
+        carChangesFilter.addAction(CarRentConst.MyIntentFilter.BRANCHES_CHANGED);
+        getActivity().registerReceiver(carsAndBranchesChangedReceiver, carChangesFilter);
     }
 
     @Override
@@ -322,6 +381,7 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                 freeCarTextView.setVisibility(View.VISIBLE);
             }
             final Branch branch = (Branch) branchesListView.getItemAtPosition(position);
+            branchID = branch.getBranchID();
 
             //get cars of the selected branch
             new AsyncTask<Object, Object, ArrayList<Car>>() {

@@ -615,6 +615,38 @@ public class DB_SQL implements DB_manager {
     }
 
     @Override
+    public ArrayList<Reservation> getOldReservations(int customerID) throws Exception {
+        ArrayList<Reservation> reservations = new ArrayList<Reservation>();
+
+        Map<String, Object> data = new LinkedHashMap<>();
+
+        data.put(ReservationConst.CUSTOMER_ID, customerID);
+        String results = POST(url + "Reservation/GetOldReservations.php", data);
+        if (!results.startsWith("0")) {
+            JSONArray array = new JSONObject(results).getJSONArray("reservations");
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject jsonObject = array.getJSONObject(i);
+
+                Reservation reservation = new Reservation();
+                reservation.setReservationID(jsonObject.getInt(ReservationConst.RESERVATION_ID));
+                reservation.setCustomerID(jsonObject.getInt(ReservationConst.CUSTOMER_ID));
+                reservation.setCarID(jsonObject.getInt(ReservationConst.CAR_ID));
+                reservation.setOpen(jsonObject.getInt(ReservationConst.IS_OPEN) != 0);
+                reservation.setStartDate(jsonObject.getString(ReservationConst.START_DATE));
+                reservation.setEndDate(jsonObject.getString(ReservationConst.END_DATE));
+                reservation.setBeginMileage(jsonObject.getLong(ReservationConst.BEGIN_MILEAGE));
+                reservation.setFinishMileage(jsonObject.getLong(ReservationConst.FINISH_MILEAGE));
+                reservation.setGasFull(jsonObject.getInt(ReservationConst.IS_GAS_FULL) != 0);
+                reservation.setGasFilled(jsonObject.getInt(ReservationConst.GAS_FILLED));
+                reservation.setReservationCost(BigDecimal.valueOf(jsonObject.getDouble(ReservationConst.RESERVATION_COST)).floatValue());
+
+                reservations.add(reservation);
+            }
+        }
+        return reservations;
+    }
+
+    @Override
     public String getCustomerTotalReservations(int customerID) {
         try {
             Map<String, Object> data = new LinkedHashMap<>();

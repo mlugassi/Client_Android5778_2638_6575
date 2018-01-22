@@ -59,6 +59,8 @@ public interface DB_manager {
 
     public ArrayList<Reservation> getReservationsOnGoing(int customerID) throws Exception;
 
+    public ArrayList<Reservation> getOldReservations(int customerID) throws Exception;
+
     public String getCustomerTotalReservations(int customerID);
 
     public String getCustomerTotalMileage(int customerID);

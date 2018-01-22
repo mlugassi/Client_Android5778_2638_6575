@@ -39,8 +39,9 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="lugassi.wallach.CARS_CHANGED" />
                 <action android:name="lugassi.wallach.BRANCHES_CHANGED" />
+                <action android:name="lugassi.wallach.CARS_CHANGED" />
+                <action android:name="lugassi.wallach.RESERVATIONS_CHANGED" />
             </intent-filter>
         </receiver>
 

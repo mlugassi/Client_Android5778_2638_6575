@@ -1,18 +1,17 @@
 package lugassi.wallach.client_android5778_2638_6575.controller;
 
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +32,7 @@ import lugassi.wallach.client_android5778_2638_6575.model.entities.Reservation;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Reservations extends Fragment {
+public class OldReservations extends Fragment {
 
     private ListView reservationsListView;
     MyListAdapter<Reservation> reservationAdapter;
@@ -67,20 +66,19 @@ public class Reservations extends Fragment {
         }
     };
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db_manager = DBManagerFactory.getManager();
         customerID = getArguments().getInt(CarRentConst.CustomerConst.CUSTOMER_ID);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.title_reservation_fragment));
+        toolbar.setTitle(getString(R.string.title_old_reservation_fragment));
         getActivity().registerReceiver(reservationsChangedReceiver, new IntentFilter(CarRentConst.MyIntentFilter.RESERVATIONS_CHANGED));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_reservations, container, false);
+        View view = inflater.inflate(R.layout.fragment_old_reservations, container, false);
         reservationsListView = (ListView) view.findViewById(R.id.reservationsListView);
 
         new AsyncTask<Object, Object, ArrayList<Reservation>>() {
@@ -94,19 +92,20 @@ public class Reservations extends Fragment {
                     public View getView(int position, View convertView, ViewGroup parent) {
 
                         if (convertView == null)
-                            convertView = View.inflate(getActivity(), R.layout.reservastion_list_view, null);
+                            convertView = View.inflate(getActivity(), R.layout.old_reservation_list_view, null);
 
                         TextView startDateEditText = (TextView) convertView.findViewById(R.id.startDateEditText);
+                        TextView endDateEditText = (TextView) convertView.findViewById(R.id.endDateEditText);
                         TextView reservationIDEditText = (TextView) convertView.findViewById(R.id.reservationIDTextView);
                         TextView carIdEditText = (TextView) convertView.findViewById(R.id.carIdEditText);
                         final TextView modelNameAndCompanyEditText = (TextView) convertView.findViewById(R.id.modelNameAndCompanyEditText);
                         final TextView branchNameEditText = (TextView) convertView.findViewById(R.id.branchNameEditText);
-                        ImageButton finishOrderButton = (ImageButton) convertView.findViewById(R.id.finishOrderButton);
 
                         Reservation reservation = (Reservation) reservationsListView.getItemAtPosition(position);
                         reservationIDEditText.setText(((Integer) reservation.getReservationID()).toString());
                         carIdEditText.setText(((Integer) reservation.getCarID()).toString());
                         startDateEditText.setText(reservation.getStartDateString());
+                        endDateEditText.setText(reservation.getEndDateString());
 
                         new AsyncTask<Integer, Object, String>() {
                             @Override
@@ -158,20 +157,6 @@ public class Reservations extends Fragment {
                                 return carModel.getModelName() + ", " + carModel.getCompany().name();
                             }
                         }.execute(reservation.getCarID());
-
-                        finishOrderButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                View view = (View) v.getParent();
-
-                                Bundle args = new Bundle();
-                                args.putInt(CarRentConst.ReservationConst.RESERVATION_ID, Integer.parseInt(((TextView) view.findViewById(R.id.reservationIDTextView)).getText().toString()));
-                                DialogFinishOrder myDialogFragment = new DialogFinishOrder();
-                                myDialogFragment.setArguments(args);
-                                myDialogFragment.show(getActivity().getFragmentManager(), "Finish Order");
-                            }
-                        });
-
                         return convertView;
                     }
 
@@ -182,7 +167,7 @@ public class Reservations extends Fragment {
             @Override
             protected ArrayList<Reservation> doInBackground(Object... params) {
                 try {
-                    return db_manager.getReservationsOnGoing(customerID);
+                    return db_manager.getOldReservations(customerID);
                 } catch (Exception e) {
                     errorMassage = e.getMessage();
                     return new ArrayList<Reservation>();
