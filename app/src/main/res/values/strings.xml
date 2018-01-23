@@ -82,12 +82,12 @@
     <string name="textDialogMessageLogout">Do you want logout?</string>
     <string name="textDialogMessageExit">Do you want exit?</string>
     <string name="textSuccessAddBranchMessage">Add Branch Id: </string>
-    <string name="textSuccessUpdateBranchMessage">Update Branch</string>
-    <string name="textSuccessUpdateCustomerMessage">Update Your Details</string>
+    <string name="textSuccessUpdateBranchMessage">Branch Details have been updated</string>
+    <string name="textSuccessUpdateCustomerMessage">Customer Details have been updated</string>
     <string name="textSuccessCreateCarMessage">Create Car Id: </string>
-    <string name="textSuccessUpdateCarMessage">Update Car</string>
+    <string name="textSuccessUpdateCarMessage">Car Details have been updated</string>
     <string name="textSuccessAddReservationMessage">Create New Order\n Id: </string>
-    <string name="textSuccessUpdateCarModelMessage">Update Car Model</string>
+    <string name="textSuccessUpdateCarModelMessage">Car Model Details have been updated</string>
     <string name="textSuccessCreateCustomerMessage">Create Customer Id:</string>
     <string name="textFiledAddMessage">Add failed!</string>
     <string name="textFiledCreateMessage">Create failed!</string>
