@@ -10,6 +10,7 @@
     <string name="title_free_cars_fragment">Orange - Free Cars</string>
     <string name="title_reservation_fragment">Orange - Reservation</string>
     <string name="title_old_reservation_fragment">Orange - Old Reservation</string>
+    <string name="title_about_us_fragment">Orange - Contact Us</string>
 
     <!--menu-->
     <string name="menu_contact_us">Contact Us</string>

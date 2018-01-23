@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,8 @@ public class Home extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         db_manager = DBManagerFactory.getManager();
         customerID = getArguments().getInt(CarRentConst.CustomerConst.CUSTOMER_ID);
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle(getString(R.string.title_activity_main_title));
     }
 
     @Override

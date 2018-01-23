@@ -1,14 +1,12 @@
 package lugassi.wallach.client_android5778_2638_6575.controller.fragments;
 
 
-import android.Manifest;
-import android.content.Context;
+import android.app.Fragment;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.support.v4.app.ActivityCompat;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +21,13 @@ public class AboutUs extends Fragment implements View.OnClickListener {
     TextView phoneTextView;
     TextView mailTextView;
     TextView webTextView;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle(getString(R.string.title_about_us_fragment));
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

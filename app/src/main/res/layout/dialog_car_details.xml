@@ -59,7 +59,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/textBranchName"
-                android:linksClickable="true"
                 android:textColor="@color/Black"
                 android:textSize="15dp" />
 
@@ -69,7 +68,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:textColor="@color/Gray"
+                android:autoLink="all"
+                android:linksClickable="true"
+                android:textColor="@color/Blue"
                 android:textSize="15dp" />
         </LinearLayout>
 
