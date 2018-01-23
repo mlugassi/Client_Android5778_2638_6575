@@ -92,7 +92,7 @@ public class DB_SQL implements DB_manager {
             map.put(UserConst.PASSWORD, password);
 
             String results = POST(url + "Login/CheckUser.php", map);
-            if (!(results.startsWith("Worng") || results.startsWith("User") || results.startsWith("Success"))) {
+            if (!(results.startsWith("Wrong") || results.startsWith("User") || results.startsWith("Success"))) {
                 throw new Exception("An error occurred on the server's side");
             }
             return results;
