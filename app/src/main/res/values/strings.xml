@@ -168,7 +168,7 @@
     <string name="exceptionMoreFileds">Can\'t Be more than</string>
     <string name="exceptionLessFileds">Can\'t Be less than</string>
     <string name="exceptionZeroOrLessFileds">Can\'t Be only 0 or less</string>
-    <string name="exceptionNumberFileds">Can\'t Be only numbers</string>
+    <string name="exceptionNumberFileds">Can Be only numbers</string>
     <string name="exceptionEmptyFileds">Can\'t Be Empty</string>
     <string name="exceptionInvalidValue">Invalid Value</string>
     <string name="exceptionUserName">User Name Must Be Less Than 25 Characters</string>
