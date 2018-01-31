@@ -106,6 +106,8 @@ public class Home extends Fragment implements View.OnClickListener {
             }
         }.execute();
 
+
+        ///get total reservation of customer
         new AsyncTask<Object, Object, String>() {
             @Override
             protected void onPostExecute(String integer) {
@@ -127,6 +129,8 @@ public class Home extends Fragment implements View.OnClickListener {
             }
         }.execute();
 
+
+        ///get total mileage of customer
         new AsyncTask<Object, Object, String>() {
             @Override
             protected void onPostExecute(String integer) {
@@ -166,6 +170,8 @@ public class Home extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v == button) {
+
+            /// add 1 to num of accidents of customer
             new AsyncTask<Object, Object, String>() {
                 @Override
                 protected void onPostExecute(String result) {
@@ -193,6 +199,8 @@ public class Home extends Fragment implements View.OnClickListener {
                 }
             }.execute();
         } else if (v == oldReservationsTextView) {
+
+            /// open ald reservations fragment
             OldReservations fragment = new OldReservations();
             Bundle args = new Bundle();
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();

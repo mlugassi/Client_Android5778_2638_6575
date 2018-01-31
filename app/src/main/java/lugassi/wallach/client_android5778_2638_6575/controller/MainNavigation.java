@@ -48,8 +48,11 @@ public class MainNavigation extends AppCompatActivity
         NavigationView nav_view = (NavigationView) findViewById(R.id.nav_view);
         View header = nav_view.getHeaderView(0);
         ((TextView) header.findViewById(R.id.userTextView)).setText(userName);
+
+        /// open home fragment
         setHomeFragment();
 
+        /// start natifications adding new branch service
         bindService(new Intent(this, MyService.class), new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
@@ -82,6 +85,8 @@ public class MainNavigation extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+
+    /// cant to exit from app by back press
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -99,6 +104,8 @@ public class MainNavigation extends AppCompatActivity
         return true;
     }
 
+
+    /// edit customer details
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -154,6 +161,7 @@ public class MainNavigation extends AppCompatActivity
         return true;
     }
 
+    /// open home fragment
     void setHomeFragment() {
         Home fragment = new Home();
         Bundle args = new Bundle();
@@ -164,6 +172,8 @@ public class MainNavigation extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
+
+    /// show ensure dialog for exit or logout
     void showEnsureDialog(final int action) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         if (action == R.id.nav_logout)
@@ -175,6 +185,8 @@ public class MainNavigation extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (action == R.id.nav_logout) {
+
+                    /// remove stored username and password
                     Login.setDefaults(CarRentConst.UserConst.USER_NAME, "", MainNavigation.this);
                     Login.setDefaults(CarRentConst.UserConst.PASSWORD, "", MainNavigation.this);
 

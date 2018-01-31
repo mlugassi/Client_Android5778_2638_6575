@@ -2,7 +2,7 @@ package lugassi.wallach.client_android5778_2638_6575.model.entities;
 
 public class Car {
     private static int carIDSerializer = 1;
-    private int reservations;
+    private int reservations; // num of reservations of the car
     private int branchID;
     private int modelCode;
     private long mileage;

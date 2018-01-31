@@ -57,10 +57,11 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
     private MyListAdapter carsAdapter;
     private ArrayList<CarModel> favoriteModels;
     private String errorMassage = null;
-    private MyReceiver carsAndBranchesChangedReceiver = new MyReceiver() {
+    private MyReceiver carsAndBranchesChangedReceiver = new MyReceiver() { /// listener of cars and branches changes
         @Override
         public void onReceive(Context context, final Intent intent) {
             if (intent.getAction() == CarRentConst.MyIntentFilter.RESERVATIONS_CHANGED || intent.getAction() == CarRentConst.MyIntentFilter.CARS_CHANGED)
+           /// update cars list of branch
                 new AsyncTask<Integer, Object, ArrayList<Car>>() {
                     @Override
                     protected void onPostExecute(ArrayList<Car> result) {
@@ -84,6 +85,7 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                     }
                 }.execute();
             else if (intent.getAction() == CarRentConst.MyIntentFilter.BRANCHES_CHANGED)
+                /// update branch list
                 new AsyncTask<Integer, Object, ArrayList<Branch>>() {
                     @Override
                     protected void onPostExecute(ArrayList<Branch> result) {
@@ -266,6 +268,12 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
         return false;
     }
 
+
+    /**
+     * filter branches by city
+     * @param newText the text input
+     * @return filtered branches
+     */
     @Override
     public boolean onQueryTextChange(String newText) {
         branchesAdapter.getFilter().filter(newText);
@@ -290,6 +298,7 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                     reservation.setBeginMileage(car.getMileage());
                     reservation.setStartDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
 
+                    /// create new reservation
                     new AsyncTask<Object, Object, String>() {
                         @Override
                         protected String doInBackground(Object... params) {
@@ -304,6 +313,9 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                             else
                                 Snackbar.make(getView(), getString(R.string.textFiledCreateMessage) + "\n" + integer, Snackbar.LENGTH_LONG)
                                         .setAction("Action", null).show();
+
+
+                            /// update free car list
                             new AsyncTask<Object, Object, ArrayList<Car>>() {
                                 @Override
                                 protected ArrayList<Car> doInBackground(Object... params) {
@@ -418,6 +430,9 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
 
                             final Car car = (Car) carsListView.getItemAtPosition(position);
                             carIdEditText.setText(((Integer) car.getCarID()).toString());
+
+
+                            //get branch details
                             new AsyncTask<Integer, Object, String>() {
                                 @Override
                                 protected void onPostExecute(String branchName) {
@@ -436,6 +451,8 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                                 }
                             }.execute(car.getBranchID());
 
+
+                            /// get model details
                             new AsyncTask<Integer, Object, CarModel>() {
                                 @Override
                                 protected void onPostExecute(final CarModel carModel) {
@@ -466,6 +483,9 @@ public class MakeOrder extends Fragment implements SearchView.OnQueryTextListene
                                     }
                                 }
                             }.execute(car.getModelCode());
+
+
+                            /// mats as favorite or not
                             if (isModelFavorite(car.getModelCode()))
                                 favoriteImageButton.setBackgroundResource(R.drawable.favorite_full);
                             else

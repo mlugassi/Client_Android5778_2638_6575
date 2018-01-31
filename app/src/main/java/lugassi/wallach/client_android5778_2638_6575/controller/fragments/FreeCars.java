@@ -55,7 +55,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
         @Override
         public void onReceive(Context context, Intent intent) {
             if (!carModelsAutoCompleteTextView.getText().toString().equals(""))
-                // updte cars list and refresh listview
+                // update cars list and refresh listview
                 new AsyncTask<Integer, Object, ArrayList<Car>>() {
                     @Override
                     protected void onPostExecute(ArrayList<Car> cars) {
@@ -222,11 +222,13 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
                             }
                         }.execute(car.getModelCode());
 
+                        /// mark as favorite or not
                         if (isModelFavorite(car.getModelCode()))
                             favoriteImageButton.setBackgroundResource(R.drawable.favorite_full);
                         else
                             favoriteImageButton.setBackgroundResource(R.drawable.favorite_empty);
 
+                        /// favorite listener
                         favoriteImageButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -271,6 +273,7 @@ public class FreeCars extends Fragment implements AdapterView.OnItemClickListene
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
 
+            /// detect user input and filter
             @Override
             public void afterTextChanged(Editable s) {
                 /// returns to all free cars

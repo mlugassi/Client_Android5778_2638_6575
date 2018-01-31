@@ -83,6 +83,10 @@ public class DB_SQL implements DB_manager {
     }
 
     /// users
+
+
+
+    //// check if user exists
     @Override
     public String checkUser(final String userName, final String password) {
         try {
@@ -101,6 +105,8 @@ public class DB_SQL implements DB_manager {
         }
     }
 
+
+    // create user name and password
     @Override
     public String createUser(String userName, String password, int userID) {
         try {
@@ -121,6 +127,9 @@ public class DB_SQL implements DB_manager {
 
     }
 
+
+
+    /// add user promotion
     @Override
     public String addPromotion(ContentValues contentValues) {
         try {
@@ -140,6 +149,7 @@ public class DB_SQL implements DB_manager {
         }
 
     }
+
 
     @Override
     public String updatePromotion(ContentValues contentValues) {
@@ -336,6 +346,9 @@ public class DB_SQL implements DB_manager {
         return car;
     }
 
+
+
+    // get all free cars
     @Override
     public ArrayList<Car> getFreeCars() throws Exception {
         ArrayList<Car> cars = new ArrayList<Car>();
@@ -357,6 +370,7 @@ public class DB_SQL implements DB_manager {
         return cars;
     }
 
+    /// get all free cars by car model
     @Override
     public ArrayList<Car> getFreeCars(int modelCode) throws Exception {
         ArrayList<Car> cars = new ArrayList<Car>();
@@ -529,6 +543,8 @@ public class DB_SQL implements DB_manager {
     }
 /// reservations
 
+
+    /// create new rent
     @Override
     public String addReservation(ContentValues contentValues) {
         try {
@@ -582,6 +598,8 @@ public class DB_SQL implements DB_manager {
 
     }
 
+
+    // get all open reservations
     @Override
     public ArrayList<Reservation> getReservationsOnGoing(int customerID) throws Exception {
         ArrayList<Reservation> reservations = new ArrayList<Reservation>();
@@ -614,6 +632,8 @@ public class DB_SQL implements DB_manager {
         return reservations;
     }
 
+
+    // history of reservations
     @Override
     public ArrayList<Reservation> getOldReservations(int customerID) throws Exception {
         ArrayList<Reservation> reservations = new ArrayList<Reservation>();
@@ -712,6 +732,8 @@ public class DB_SQL implements DB_manager {
 
     }
 
+
+    /// detect if there are changes in free cars
     @Override
     public boolean detectCarsChanges() throws Exception {
         Calendar calendar = Calendar.getInstance();

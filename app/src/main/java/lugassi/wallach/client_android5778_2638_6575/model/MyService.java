@@ -44,7 +44,7 @@ public class MyService extends Service {
                 while (isRun) {
                     try {
                         Thread.sleep(interval);
-                        if (db_manager.detectCarsChanges()) {
+                        if (db_manager.detectCarsChanges()) { // detect if car resevations change in last 10 sec
                             Intent intent = new Intent();
                             intent.setAction(CarRentConst.MyIntentFilter.RESERVATIONS_CHANGED);
                             sendBroadcast(intent);
@@ -60,6 +60,7 @@ public class MyService extends Service {
             public void run() {
                 int lastSize = 0;
                 try {
+                    // get last count of cars
                     lastSize = db_manager.getFreeCars().size();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -67,9 +68,10 @@ public class MyService extends Service {
                 while (isRun) {
                     try {
                         Thread.sleep(interval);
+                        // get current count of cars
                         int currentSize = db_manager.getFreeCars().size();
-                        if (lastSize != currentSize) {
-                            lastSize = currentSize;
+                        if (lastSize != currentSize) { // if there is change send intent
+                            lastSize = currentSize; // update
                             Intent intent = new Intent();
                             intent.setAction(CarRentConst.MyIntentFilter.CARS_CHANGED);
                             sendBroadcast(intent);
@@ -85,6 +87,7 @@ public class MyService extends Service {
             public void run() {
                 int lastSize = 0;
                 try {
+                    // get last count of branches
                     lastSize = db_manager.getBranches().size();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -92,9 +95,10 @@ public class MyService extends Service {
                 while (isRun) {
                     try {
                         Thread.sleep(interval);
+                        // get current count of branches
                         int currentSize = db_manager.getBranches().size();
-                        if (lastSize != currentSize) {
-                            lastSize = currentSize;
+                        if (lastSize != currentSize) { // if there is change send intent
+                            lastSize = currentSize; // update
                             Intent intent = new Intent();
                             intent.setAction(CarRentConst.MyIntentFilter.BRANCHES_CHANGED);
                             sendBroadcast(intent);
@@ -113,6 +117,8 @@ public class MyService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+
+        /// make notifications when new branch added
         Thread reservationsChange = new Thread() {
             @Override
             public void run() {

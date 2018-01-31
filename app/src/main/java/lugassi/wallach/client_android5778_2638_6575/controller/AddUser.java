@@ -77,10 +77,13 @@ public class AddUser extends Activity implements View.OnClickListener {
                 return;
             final String userName = userNameEditText.getText().toString();
             final String password = passwordEditText.getText().toString();
+
+            /// adding user
             new AsyncTask<Object, Object, String>() {
                 @Override
                 protected void onPostExecute(String idResult) {
                     if (tryParseInt(idResult) && Integer.parseInt(idResult) > 0) {
+                        // if success open manage activity
                         Intent intent = new Intent(AddUser.this, MainNavigation.class);
                         finish();
                         AddUser.this.startActivity(intent);
@@ -123,6 +126,7 @@ public class AddUser extends Activity implements View.OnClickListener {
 
     @Override
     public void onBackPressed() {
+        /// if cancel remove the customer that created before
         new AsyncTask<Object, Object, String>() {
             @Override
             protected String doInBackground(Object... params) {

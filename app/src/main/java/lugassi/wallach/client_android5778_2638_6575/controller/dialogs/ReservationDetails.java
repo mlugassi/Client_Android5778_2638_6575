@@ -64,6 +64,8 @@ public class ReservationDetails extends DialogFragment {
         gasLinearLayout = (LinearLayout)view.findViewById( R.id.gasLinearLayout );
         costLinearLayout = (LinearLayout)view.findViewById( R.id.costLinearLayout );
 
+
+        /// get reservation details
         new AsyncTask<Object, Object, Reservation>() {
             @Override
             protected void onPostExecute(Reservation reservation) {
@@ -72,6 +74,8 @@ public class ReservationDetails extends DialogFragment {
                     errorMassage = null;
                     dismiss();
                 }
+
+                /// uplaod details
                 reservationIDTextView.setText(((Integer) reservation.getReservationID()).toString());
                 carIDTextView.setText(((Integer) reservation.getCarID()).toString());
                 startDayTextView.setText(reservation.getStartDateString());

@@ -48,6 +48,7 @@ public class BranchDetails extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.dialog_branch_details, container, false);
 
+        /// get branch details
         new AsyncTask<Object, Object, Branch>() {
             @Override
             protected void onPostExecute(Branch result) {
@@ -57,10 +58,14 @@ public class BranchDetails extends DialogFragment {
                     return;
                 }
                 branch = result;
+
+                // upload the details
                 ((TextView) view.findViewById(R.id.branchIdTextView)).setText(((Integer) branch.getBranchID()).toString());
                 ((TextView) view.findViewById(R.id.nameTextView)).setText(branch.getBranchName());
                 ((TextView) view.findViewById(R.id.cityTextView)).setText(branch.getCity());
                 ((TextView) view.findViewById(R.id.addressTextView)).setText(branch.getAddress());
+
+                /// navigate to the address
                 ((TextView) view.findViewById(R.id.addressTextView)).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

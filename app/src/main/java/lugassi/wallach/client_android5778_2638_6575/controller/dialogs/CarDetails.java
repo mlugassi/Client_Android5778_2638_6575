@@ -46,6 +46,8 @@ public class CarDetails extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.dialog_car_details, container, false);
 
+
+        // get car details
         new AsyncTask<Integer, Object, Car>() {
             @Override
             protected void onPostExecute(Car result) {
@@ -55,6 +57,8 @@ public class CarDetails extends DialogFragment {
                     return;
                 }
                 car = result;
+
+                // get branch details
                 new AsyncTask<Object, Object, String>() {
                     @Override
                     protected void onPostExecute(String branchName) {
@@ -86,6 +90,8 @@ public class CarDetails extends DialogFragment {
                         }
                     }
                 }.execute();
+
+                // get model details
                 new AsyncTask<Object, Object, String>() {
                     @Override
                     protected void onPostExecute(String modelName) {
@@ -108,6 +114,8 @@ public class CarDetails extends DialogFragment {
                     }
                 }.execute();
 
+
+                /// upload car details
                 ((TextView) view.findViewById(R.id.carIdTextView)).setText(((Integer) car.getCarID()).toString());
                 ((TextView) view.findViewById(R.id.mileageTextView)).setText(((Long) car.getMileage()).toString());
                 ((TextView) view.findViewById(R.id.reservationsTextView)).setText(((Integer) car.getReservations()).toString());

@@ -53,6 +53,8 @@ public class CarModelDetails extends DialogFragment {
         typeTextView = (TextView) view.findViewById(R.id.typeTextView);
         gasTankTextView = (TextView) view.findViewById(R.id.gasTankTextView);
 
+
+        /// get car model details
         new AsyncTask<Object, Object, CarModel>() {
             @Override
             protected void onPostExecute(CarModel carModel) {
@@ -61,6 +63,8 @@ public class CarModelDetails extends DialogFragment {
                     errorMassage = null;
                     return;
                 }
+
+                /// upload model details
                 modelCodeTextView.setText(((Integer) carModel.getModelCode()).toString());
                 nameTextView.setText(carModel.getModelName());
                 companyTextView.setText(carModel.getCompany().name());

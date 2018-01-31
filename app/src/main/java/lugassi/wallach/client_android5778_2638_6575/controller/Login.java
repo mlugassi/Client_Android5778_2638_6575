@@ -36,6 +36,7 @@ public class Login extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_login);
         try {
             db_manager = DBManagerFactory.getManager();
+            /// check if user is alredy log in
             checkSharedPreferences();
             findViews();
         } catch (Exception e) {
@@ -45,8 +46,11 @@ public class Login extends Activity implements View.OnClickListener {
 
     private void checkSharedPreferences() {
         final String username = getDefaults(CarRentConst.UserConst.USER_NAME, this);
+        // check if is login
         if (!username.equals("")) {
             String password = getDefaults(CarRentConst.UserConst.PASSWORD, this);
+
+            /// check user name and password
             new AsyncTask<String, Object, String>() {
                 @Override
                 protected void onPostExecute(String result) {
@@ -106,6 +110,7 @@ public class Login extends Activity implements View.OnClickListener {
     void login() {
         if (!checkValues())
             return;
+        /// check user name and password
         new AsyncTask<String, Object, String>() {
             @Override
             protected void onPostExecute(String result) {
@@ -140,6 +145,7 @@ public class Login extends Activity implements View.OnClickListener {
     }
 
     void signup() {
+        // open create customer activity
         Intent intent = new Intent(Login.this, AddCustomer.class);
         Login.this.startActivity(intent);
     }
@@ -157,13 +163,14 @@ public class Login extends Activity implements View.OnClickListener {
 
     }
 
+    /// set shared preferences
     public static void setDefaults(String key, String value, Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(key, value);
         editor.commit();
     }
-
+    /// get shared preferences
     public static String getDefaults(String key, Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return preferences.getString(key, "");

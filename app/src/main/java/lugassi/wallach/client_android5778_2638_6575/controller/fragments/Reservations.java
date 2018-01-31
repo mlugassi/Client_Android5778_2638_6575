@@ -43,9 +43,13 @@ public class Reservations extends Fragment implements AdapterView.OnItemLongClic
     DB_manager db_manager;
     int customerID;
     private String errorMassage = null;
+
+    /// detect reservations changes
     private MyReceiver reservationsChangedReceiver = new MyReceiver() {
         @Override
         public void onReceive(Context context, final Intent intent) {
+
+            /// update reservation list
             new AsyncTask<Integer, Object, ArrayList<Reservation>>() {
                 @Override
                 protected void onPostExecute(ArrayList<Reservation> result) {
@@ -86,6 +90,8 @@ public class Reservations extends Fragment implements AdapterView.OnItemLongClic
         View view = inflater.inflate(R.layout.fragment_reservations, container, false);
         reservationsListView = (ListView) view.findViewById(R.id.reservationsListView);
 
+
+        /// get open reservations
         new AsyncTask<Object, Object, ArrayList<Reservation>>() {
             @Override
             protected void onPostExecute(ArrayList<Reservation> reservations) {
@@ -111,6 +117,8 @@ public class Reservations extends Fragment implements AdapterView.OnItemLongClic
                         carIdEditText.setText(((Integer) reservation.getCarID()).toString());
                         startDateEditText.setText(reservation.getStartDateString());
 
+
+                        /// get branch details
                         new AsyncTask<Integer, Object, String>() {
                             @Override
                             protected void onPostExecute(String s) {
@@ -137,6 +145,9 @@ public class Reservations extends Fragment implements AdapterView.OnItemLongClic
                                 return branch.getBranchName();
                             }
                         }.execute(reservation.getCarID());
+
+
+                        /// get model details
                         new AsyncTask<Integer, Object, String>() {
                             @Override
                             protected void onPostExecute(String s) {
@@ -162,6 +173,7 @@ public class Reservations extends Fragment implements AdapterView.OnItemLongClic
                             }
                         }.execute(reservation.getCarID());
 
+                        /// close reservation listener
                         finishOrderButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

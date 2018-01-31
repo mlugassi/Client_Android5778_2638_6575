@@ -41,8 +41,12 @@ public class FavoriteModels extends Fragment implements AdapterView.OnItemLongCl
         super.onCreate(savedInstanceState);
         carModels = new ArrayList<>();
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+
+
         toolbar.setTitle(getString(R.string.title_favorite_models_fragment));
         uploadCarModels();
+
+
         carModelsAdapter = new MyListAdapter(getActivity(), carModels) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -57,10 +61,14 @@ public class FavoriteModels extends Fragment implements AdapterView.OnItemLongCl
                 final CarModel carModel = (CarModel) favoriteCarModelListView.getItemAtPosition(position);
                 carModelTextView.setText(((Integer) carModel.getModelCode()).toString());
                 nameAndCompanyEditText.setText(carModel.getModelName() + ", " + carModel.getCompany().name());
+
+                /// mark as favorite or not
                 if (isModelFavorite(carModel.getModelCode()))
                     favoriteImageButton.setBackgroundResource(R.drawable.favorite_full);
                 else
                     favoriteImageButton.setBackgroundResource(R.drawable.favorite_empty);
+
+                /// favorite listener
                 favoriteImageButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -91,6 +99,10 @@ public class FavoriteModels extends Fragment implements AdapterView.OnItemLongCl
         return view;
     }
 
+
+    /**
+     * get all favorite models from content provider
+     */
     void uploadCarModels() {
         String[] projection = new String[]{CarRentConst.DataBaseConstants.MODEL_CODE, CarRentConst.DataBaseConstants.MODEL_NAME,
                 CarRentConst.DataBaseConstants.COMPANY, CarRentConst.DataBaseConstants.ENGINE_CAPACITY,

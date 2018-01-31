@@ -50,6 +50,8 @@ public class DialogFinishOrder extends DialogFragment implements View.OnClickLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_finish_order, container, false);
 
+
+        /// get reservation
         new AsyncTask<Integer, Object, Reservation>() {
             @Override
             protected void onPostExecute(Reservation result) {
@@ -71,6 +73,8 @@ public class DialogFinishOrder extends DialogFragment implements View.OnClickLis
                 }
             }
         }.execute(getArguments().getInt(CarRentConst.ReservationConst.RESERVATION_ID));
+
+
         mileageEditText = (EditText) view.findViewById(R.id.mileageEditText);
         gasFilledCheckBox = (CheckBox) view.findViewById(R.id.gasFilledCheckBox);
         gasEditText = (EditText) view.findViewById(R.id.gasEditText);
@@ -79,6 +83,8 @@ public class DialogFinishOrder extends DialogFragment implements View.OnClickLis
 
         cancelButton.setOnClickListener(this);
         okButton.setOnClickListener(this);
+
+        /// check box of the gas filled
         gasFilledCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -114,6 +120,8 @@ public class DialogFinishOrder extends DialogFragment implements View.OnClickLis
         }
     }
 
+
+    /// dialog action, finish or cancel
     @Override
     public void onClick(View v) {
         if (v == cancelButton) {
@@ -125,6 +133,8 @@ public class DialogFinishOrder extends DialogFragment implements View.OnClickLis
             if (gasFilledCheckBox.isChecked())
                 gasCost = Integer.parseInt(gasEditText.getText().toString());
 
+
+            /// closing reservation
             new AsyncTask<Integer, Object, String>() {
                 @Override
                 protected void onPostExecute(String result) {
@@ -140,6 +150,8 @@ public class DialogFinishOrder extends DialogFragment implements View.OnClickLis
 
                 @Override
                 protected String doInBackground(Integer... params) {
+
+                    /// update reservation details and close it
                     reservation.setEndDate(Calendar.getInstance());
                     reservation.setOpen(false);
                     reservation.setFinishMileage(reservation.getBeginMileage() + params[0]);

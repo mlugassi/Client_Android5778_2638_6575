@@ -3,7 +3,7 @@ package lugassi.wallach.client_android5778_2638_6575.model.entities;
 public class Promotion {
     private int customerID;
     private int totalRentDays;
-    private boolean isUsed;
+    private boolean isUsed; // not relevant
 
 
     public Promotion() {

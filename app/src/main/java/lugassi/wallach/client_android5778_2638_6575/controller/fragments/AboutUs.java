@@ -47,18 +47,24 @@ public class AboutUs extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v == phoneTextView) {
+
+            /// open dailer
             String phone = phoneTextView.getText().toString();
             String uri = "tel:" + phone.trim();
             Intent intent = new Intent(Intent.ACTION_DIAL);
             intent.setData(Uri.parse(uri));
             startActivity(intent);
         } else if (v == mailTextView) {
+
+            /// open mail
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("plain/text");
             intent.putExtra(Intent.EXTRA_EMAIL, new String[]{mailTextView.getText().toString()});
             intent.putExtra(Intent.EXTRA_SUBJECT, "Your App");
             startActivity(Intent.createChooser(intent, ""));
         } else {
+
+            // open browser
             String url = "http://" + webTextView.getText().toString();
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));

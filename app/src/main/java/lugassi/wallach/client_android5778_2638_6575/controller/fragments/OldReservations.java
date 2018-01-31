@@ -41,9 +41,13 @@ public class OldReservations extends Fragment implements AdapterView.OnItemLongC
     DB_manager db_manager;
     int customerID;
     private String errorMassage = null;
+
+    /// detect reservations changes
     private MyReceiver reservationsChangedReceiver = new MyReceiver() {
         @Override
         public void onReceive(Context context, final Intent intent) {
+
+            ///  update reservations list
             new AsyncTask<Integer, Object, ArrayList<Reservation>>() {
                 @Override
                 protected void onPostExecute(ArrayList<Reservation> result) {
@@ -83,6 +87,8 @@ public class OldReservations extends Fragment implements AdapterView.OnItemLongC
         View view = inflater.inflate(R.layout.fragment_old_reservations, container, false);
         reservationsListView = (ListView) view.findViewById(R.id.reservationsListView);
 
+
+        // get all old reservations
         new AsyncTask<Object, Object, ArrayList<Reservation>>() {
             @Override
             protected void onPostExecute(ArrayList<Reservation> reservations) {
@@ -109,6 +115,8 @@ public class OldReservations extends Fragment implements AdapterView.OnItemLongC
                         startDateEditText.setText(reservation.getStartDateString());
                         endDateEditText.setText(reservation.getEndDateString());
 
+
+                        /// get branch details
                         new AsyncTask<Integer, Object, String>() {
                             @Override
                             protected void onPostExecute(String s) {
@@ -135,6 +143,8 @@ public class OldReservations extends Fragment implements AdapterView.OnItemLongC
                                 return branch.getBranchName();
                             }
                         }.execute(reservation.getCarID());
+
+                        /// get model details
                         new AsyncTask<Integer, Object, String>() {
                             @Override
                             protected void onPostExecute(String s) {

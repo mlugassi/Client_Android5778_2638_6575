@@ -49,6 +49,8 @@ public class AddCustomer extends Activity implements View.OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_add_customer);
         myCalendar = Calendar.getInstance();
+
+        /// date dialog
         date = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -62,10 +64,12 @@ public class AddCustomer extends Activity implements View.OnClickListener {
 
         };
         db_manager = DBManagerFactory.getManager();
+
         findViews();
         setCustomerValues();
     }
 
+    ///defalte date
     private void updateLabel() {
         String myFormat = "yyyy/MM/dd";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
@@ -92,7 +96,9 @@ public class AddCustomer extends Activity implements View.OnClickListener {
     // set customer details for option to be called to update specific branch
     void setCustomerValues() {
         customerID = getIntent().getIntExtra(CarRentConst.CustomerConst.CUSTOMER_ID, -1);
-        if (customerID >= 0) {
+        if (customerID >= 0) { // if in update mode
+
+            /// get customer details
             new AsyncTask<Integer, Object, Customer>() {
                 @Override
                 protected void onPostExecute(Customer o) {
@@ -194,6 +200,8 @@ public class AddCustomer extends Activity implements View.OnClickListener {
             customer.setGender((Gender) genderSpinner.getSelectedItem());
             customer.setBirthDay(birthDayEditText.getText().toString());
 
+
+            /// call to update customer function
             new AsyncTask<Object, Object, String>() {
                 @Override
                 protected void onPostExecute(String idResult) {
@@ -237,6 +245,7 @@ public class AddCustomer extends Activity implements View.OnClickListener {
             customer.setGender((Gender) genderSpinner.getSelectedItem());
             customer.setBirthDay(birthDayEditText.getText().toString());
 
+            /// call to add new customer function
             new AsyncTask<Object, Object, String>() {
                 @Override
                 protected void onPostExecute(String idResult) {
@@ -285,6 +294,8 @@ public class AddCustomer extends Activity implements View.OnClickListener {
         }
     }
 
+
+    /// date dialog, create of update
     @Override
     public void onClick(View v) {
         if (v == button) {
