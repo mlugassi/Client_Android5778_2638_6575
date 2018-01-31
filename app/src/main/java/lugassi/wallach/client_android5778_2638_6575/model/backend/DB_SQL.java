@@ -562,6 +562,8 @@ public class DB_SQL implements DB_manager {
             if (!results.startsWith("New")) {
                 throw new Exception("An error occurred on the server's side");
             }
+
+            /// update car reservations
             car.setReservations(car.getReservations() + 1);
             updateCar(CarRentConst.carToContentValues(car));
             return ((Integer) contentValues.getAsInteger(ReservationConst.RESERVATION_ID)).toString();
@@ -723,6 +725,8 @@ public class DB_SQL implements DB_manager {
             if (!results.startsWith("New")) {
                 throw new Exception("An error occurred on the server's side");
             }
+
+            /// update car mileage
             car.setMileage(contentValues.getAsLong(ReservationConst.FINISH_MILEAGE));
             updateCar(CarRentConst.carToContentValues(car));
             return cost.toString();
@@ -822,7 +826,7 @@ public class DB_SQL implements DB_manager {
 
     private float calculateGasCost(int modelCode, int gasFilled) throws Exception {
         CarModel carModel = getCarModel(modelCode);
-        if (gasFilled > carModel.getMaxGasTank())
+        if (gasFilled > carModel.getMaxGasTank()) /// check if overflow
             throw new Exception("Your Max Gas Model is" + carModel.getMaxGasTank());
 
         int gasToPay = carModel.getMaxGasTank() - gasFilled;
